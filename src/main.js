@@ -11,9 +11,8 @@ const app = createApp(App)
 
 
 app.use(router)
-
+app.mount('#app')
 app.use(Quasar, {
     plugins: {}
 })
 
-app.mount('#app')
