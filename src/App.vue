@@ -5,31 +5,33 @@
     </div>
 
     <div class="tabladiv">
-      <table class="tabla">
-        <thead class="tablahead">
-          <tr>
-            <th id="th1">Id</th>
-            <th>Sucursal</th>
-            <th>Origen</th>
-            <th>Destino</th>
-            <th>Fecha Salida</th>
-            <th id="th9">Opciones</th>
-          </tr>
-        </thead>
-        <tbody class="tbody">
-          <tr v-for="(dato, i) in DatosData" :key="i">
-            <td>{{ dato.Id }}</td>
-            <td>{{ dato.Sucursal }}</td>
-            <td>{{ dato.Origen }}</td>
-            <td>{{ dato.Destino }}</td>
-            <td>{{ dato.FechaSalida }}</td>
-            <td>
-              <button @click="Eliminar(i)" id="Elibtn">❌</button>
-              <button @click="Editar(producto, i)" id="Edibtn">✍️</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      
+        <div class="q-pa-md">
+          <q-markup-table dark class="bg-white " >
+            <thead class="bg-primary" >
+              <tr class="text-dark">
+             
+                <th class="text-right ">Sucursal</th>
+                <th class="text-right">Origen</th>
+                <th class="text-right">Destino</th>
+                <th class="text-right">Fecha Salida</th>
+               
+              </tr>
+            </thead>
+            <tbody class="text-dark">
+              <tr v-for="ruta in DatosData" :key="ruta">
+
+                <td class="text-right">{{ruta.Sucursal}}</td>
+                <td class="text-right">{{ruta.Origen}}</td>
+                <td class="text-right">{{ruta.Destino}}</td>
+                <td class="text-right">{{formatoFecha(ruta.FechaSalida)}}</td>
+             
+              </tr>
+              
+            </tbody>
+          </q-markup-table>
+        </div>
+      
     </div>
   </div>
 </template>
@@ -57,17 +59,41 @@ async function ObtenerDatos() {
     `https://transporte-0ydp.onrender.com/api/ruta/rutabusca`
   );
   const data = response.data;
-  DatosData.value.push({
-    Id: data.ruta[0]._id,
-    Sucursal: data.ruta[0].sucursal,
-    Origen: data.ruta[0].Origen,
-    Destino: data.ruta[0].Destino,
-    FechaSalida: data.ruta[0].fecha_salida,
+
+  data.ruta.forEach((ruta) => {
+    DatosData.value.push({
+      Id: ruta._id,
+      Sucursal: ruta.sucursal,
+      Origen: ruta.Origen,
+      Destino: ruta.Destino,
+      FechaSalida: ruta.fecha_salida,
+    });
   });
 
   console.log(data);
 }
 
+
+function formatoHora(hora) {
+  const fechaHora = new Date(hora);
+  const opcionesDeFormato = {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+
+  return fechaHora.toLocaleTimeString("es-ES", opcionesDeFormato);
+}
+function formatoFecha(fecha) {
+  const fechaHora = new Date(fecha);
+  const opcionesDeFormato = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+
+  return fechaHora.toLocaleDateString("es-ES", opcionesDeFormato);
+}
 onMounted(() => {
   ObtenerDatos();
 });
@@ -107,7 +133,7 @@ onMounted(() => {
   justify-items: center;
 }
 
-#Edibtn:hover {
+/*#Edibtn:hover {
   background-color: rgb(90, 255, 178);
   transform: scale(1.1);
   border: 3px solid green;
@@ -117,18 +143,20 @@ onMounted(() => {
   background-color: rgb(255, 179, 179);
   transform: scale(1.1);
   border: 3px solid red;
-}
+}*/
 
 #Elibtn {
   border: none;
   background-color: rgb(255, 215, 215);
   border-radius: 10px;
+  cursor: pointer;
 }
 
 #Edibtn {
   border: none;
   background-color: rgb(133, 255, 200);
   border-radius: 10px;
+  cursor: pointer;
 }
 
 #th1 {
@@ -144,10 +172,11 @@ onMounted(() => {
   border: 3px solid black;
   display: flex;
   justify-content: center;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   padding: 30px;
   border-radius: 30px;
   margin-top: 30px;
+  text-transform: capitalize;
 }
 
 td {
@@ -190,9 +219,9 @@ td {
 tr:nth-child(even) {
   background-color: rgb(184, 228, 255);
   /* Color para las filas impares */
-}
+ }
 
-#botonm:hover {
+/*#botonm:hover {
   background-color: rgb(135, 211, 255);
   transform: scale(1.1);
   border: 3px rgb(0, 136, 255) solid;
@@ -202,7 +231,7 @@ tr:nth-child(even) {
   background-color: rgb(135, 211, 255);
   transform: scale(1.1);
   border: 3px rgb(0, 136, 255) solid;
-}
+}*/
 
 th {
   background-color: rgb(113, 189, 255);
