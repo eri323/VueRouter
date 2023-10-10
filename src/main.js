@@ -8,11 +8,11 @@ import 'quasar/src/css/index.sass'
 import { router } from './Routes/Routes.js'
 
 const app = createApp(App)
-
-
-app.use(router)
-app.mount('#app')
+/* axios.defaults.baseURL = "https://transporte-0ydp.onrender.com/api/" */
 app.use(Quasar, {
     plugins: {}
 })
+app.use(router)
+app.mount('#app')
+
 
