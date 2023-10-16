@@ -12,29 +12,31 @@
           <q-card-section>
             <div class="text-h6">{{ titleModal }}</div>
           </q-card-section>
-
+          
           <q-card-section class="q-pt-none">
             Sucursal <br />
-            <q-input type="text"></q-input>
+            <q-input v-model="formData.sucursal" type="text"></q-input>
           </q-card-section>
           <q-card-section class="q-pt-none">
             Origen <br />
-            <q-input type="text"></q-input>
+            <q-input v-model="formData.origen" type="text"></q-input>
           </q-card-section>
           <q-card-section class="q-pt-none">
             Destino <br />
-            <q-input type="text"></q-input>
+            <q-input v-model="formData.destino" type="text"></q-input>
           </q-card-section>
           <q-card-section class="q-pt-none">
             Fecha De Salida
-            <q-input type="date"></q-input>
+            <q-input v-model="formData.fechaSalida" type="date"></q-input>
           </q-card-section>
-
+          
           <q-card-actions align="right" class="bg-white text-teal">
-            <q-btn flat label="OK" v-close-popup />
+            <q-btn flat label="Cancelar" v-close-popup />
+            <q-btn flat label="Aceptar" @click="agregarRuta" />
           </q-card-actions>
         </q-card>
       </q-dialog>
+      
     </div>
 
     <div class="q-pa-md">
@@ -55,7 +57,37 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
-let DatosData = ref([]);
+let formData = ref({
+  sucursal: "",
+  origen: "",
+  destino: "",
+  fechaSalida: ""
+});
+async function agregarRuta() {
+  try {
+    const response = await axios.post("ruta/rutacrear", formData.value);
+    if (response.status === 200) {
+      rows.value.push({
+        sucursal: formData.value.sucursal,
+        Origen: formData.value.Origen,
+        Destino: formData.value.Destino,
+        fecha_salida: formData.value.fecha_salida,
+       
+      });
+    
+      medium.value = false;
+    
+      formData.value = {
+        sucursal: "",
+        origen: "",
+        destino: "",
+        fechaSalida: ""
+      };
+    }
+  } catch (error) {
+    console.error("Error al agregar ruta:", error);
+  }
+}
 let rows = ref([]);
 let colums = ref([]);
 let titleModal = ref("Nueva Ruta");
@@ -71,27 +103,6 @@ async function ObtenerDatos() {
     console.log(data);
   
 }
-
-/* function formatoHora(hora) {
-  const fechaHora = new Date(hora);
-  const opcionesDeFormato = {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  };
-
-  return fechaHora.toLocaleTimeString("es-ES", opcionesDeFormato);
-} */
-/* function formatoFecha(fecha) {
-    const fechaHora = new Date(fecha);
-    const opcionesDeFormato = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    };
-
-    return fechaHora.toLocaleDateString("es-ES", opcionesDeFormato);
-} */
 
 const columns = [
   {
@@ -149,6 +160,7 @@ onMounted(() => {
 .body {
   padding: 30px;
   margin: 0;
+  text-transform: capitalize;
 }
 .containerBoton {
   display: flex;
