@@ -2,7 +2,7 @@
   <div class="body">
     <div class="containerBoton">
       <q-btn
-        label="Agregar Ruta"
+        label="Agregar vendedor"
         class="text-black"
         color="secondary"
         @click="medium = true"
@@ -14,32 +14,24 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            Sucursal <br />
-            <q-input v-model="sucursalNueva" type="text"></q-input>
+            Nombre <br />
+            <q-input v-model="nombreNuevo" type="text"></q-input>
           </q-card-section>
           <q-card-section class="q-pt-none">
-            Origen <br />
-            <q-input v-model="origenNuevo" type="text"></q-input>
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            Destino <br />
-            <q-input v-model="destinoNuevo" type="text"></q-input>
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            Fecha De Salida
-            <q-input v-model="fecha_salidaNueva" type="date"></q-input>
+            Password <br />
+            <q-input v-model="passwordNueva" type="text"></q-input>
           </q-card-section>
 
           <q-card-actions align="right" class="bg-white text-teal">
             <q-btn flat label="Cancelar" v-close-popup />
-            <q-btn flat label="Aceptar" @click="agregarRuta" />
+            <q-btn flat label="Aceptar" @click="agregarvendedor" />
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
 
     <div class="q-pa-md">
-      <q-table title="Rutas" :rows="rows" :columns="columns" row-key="name">
+      <q-table title="vendedors" :rows="rows" :columns="columns" row-key="name">
         <template v-slot:body-cell-Opciones="{ row: route }">
           <q-td :props="props">
             <q-btn v-if="route.estado">❌</q-btn>
@@ -56,76 +48,69 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
-let formData = ref({
-  sucursal: "",
-  Origen: "",
-  Destino: "",
-  fecha_salida: "",
-});
-const sucursalNueva = ref("");
-const origenNuevo = ref("");
-const destinoNuevo = ref("");
-const fecha_salidaNueva = ref("");
-async function agregarRuta() {
-  const fechaActual = new Date();
+
+const nombreNuevo = ref("");
+const passwordNueva = ref("");
+
+async function agregarvendedor() {
   const data = {
-    sucursal: sucursalNueva.value,
-    Origen: origenNuevo.value,
-    Destino: destinoNuevo.value,
-    fecha_salida: fecha_salidaNueva.value,
+    Nombre: nombreNuevo.value,
+    password: passwordNueva.value,
     estado: 1,
-    createdAt: fechaActual.toISOString(),
   };
   try {
-    const response = await axios.post("ruta/rutacrear", data);
+    const response = await axios.post("vendedor/vendedorcrear", data);
     if (response.status === 200) {
       datos.value.push(data);
-      sucursalNueva.value = "";
-      origenNuevo.value = "";
-      destinoNuevo.value = "";
-      fecha_salidaNueva.value = "";
-     
+      nombreNuevo.value = "";
+      passwordNueva.value = "";
+
       medium.value = false;
-      DatosRutaPush()
-      
-    }else{
-      console.log('Error en la solicitud HTTP:', response.status, response.statusText);
+      DatosvendedorPush();
+    } else {
+      console.log(
+        "Error en la solicitud HTTP:",
+        response.status,
+        response.statusText
+      );
     }
   } catch (error) {
-    console.error("Error al agregar ruta:", error);
+    console.error("Error al agregar vendedor:", error);
 
     if (error.response) {
-      console.log('Respuesta de error:', error.response.status, error.response.data);
+      console.log(
+        "Respuesta de error:",
+        error.response.status,
+        error.response.data
+      );
     }
   }
 }
 const datos = ref([]);
 let rows = ref([]);
 let colums = ref([]);
-let titleModal = ref("Nueva Ruta");
+let titleModal = ref("Nuevo vendedor");
 const medium = ref(false);
 async function ObtenerDatos() {
-  const response = await axios.get("ruta/rutabusca");
+  const response = await axios.get("vendedor/vendedorbusca");
   const data = response.data;
-  rows.value = data.ruta;
-  colums.value = data.ruta;
+  rows.value = data.vendedor;
+  colums.value = data.vendedor;
 
   console.log(data);
 }
-async function DatosRutaPush() {
+async function DatosvendedorPush() {
   try {
-    const response = await axios.get(`ruta/rutabusca`);
+    const response = await axios.get(`vendedor/vendedorbusca`);
     const data = response.data;
 
-    if (data.ruta.length > 0) {
-      for (const ruta of data.ruta) {
+    if (data.vendedor.length > 0) {
+      for (const vendedor of data.vendedor) {
         datos.value.push({
-          sucursal: ruta.sucursal,
-          Origen: ruta.Origen,
-          Destino: ruta.Destino,
-          fecha_salida: ruta.fecha_salida,
-          estado: ruta.estado,
-          createdAt: ruta.createdAt,
+          Nombre: vendedor.Nombre,
+          password: vendedor.password,
+
+          estado: vendedor.estado,
         });
       }
       rows.value = datos.value;
@@ -136,34 +121,20 @@ async function DatosRutaPush() {
 }
 const columns = [
   {
-    name: "Sucursal",
+    name: "Nombre",
     align: "center",
-    label: "Sucursal",
-    field: "sucursal",
+    label: "Nombre",
+    field: "Nombre",
     sortable: true,
   },
   {
-    name: "Origen",
+    name: "password",
     align: "center",
-    label: "Origen",
-    field: "Origen",
+    label: "Password",
+    field: "password",
     sortable: true,
   },
-  {
-    name: "Destino",
-    align: "center",
-    label: "Destino",
-    field: "Destino",
-    sortable: true,
-  },
-  {
-    name: "Fecha Salida",
-    label: "Fecha Salida",
-    align: "center",
-    field: "fecha_salida",
-    sortable: true,
-    format: (val) => format(new Date(val), "yyyy-MM-dd"),
-  },
+
   {
     name: "Estado",
     label: "Estado",
@@ -183,7 +154,7 @@ const columns = [
 
 onMounted(() => {
   ObtenerDatos();
-  DatosRutaPush();
+  DatosvendedorPush();
 });
 </script>
 
