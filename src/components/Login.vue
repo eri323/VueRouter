@@ -8,10 +8,9 @@
             <q-card-actions vertical align="right" class="texto">
                 <q-input type="text" label="Nombre"/>
                 <q-input type="text" label="Contraseña"/>
-                <router-link to="/">
-
+                <router-link to="/Home">
+                    <q-btn flat id="submit-btn">Aceptar</q-btn>
                 </router-link>
-                <q-btn flat id="submit-btn">Aceptar</q-btn>
             </q-card-actions>
         </q-card>
     </div>

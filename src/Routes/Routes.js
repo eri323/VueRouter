@@ -1,5 +1,5 @@
 import Login from "../components/Login.vue";
-import Home from "../components/home.vue"
+import Home from "../components/Home.vue"
 import Vendedores from "../components/Vendedores.vue";
 import Bus from "../components/Bus.vue"
 import {createRouter, createWebHashHistory} from "vue-router"
