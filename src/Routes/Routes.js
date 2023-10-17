@@ -1,11 +1,11 @@
 import Login from "../components/Login.vue";
 
-import TablaQuasar from "../components/TablaQuasar.vue";
+import Vendedores from "../components/Vendedores.vue";
 import {createRouter, createWebHashHistory} from "vue-router"
 
 const routes = [
     {path:"/", component:Login},
-    { path: "/TablaQuasar", component:TablaQuasar }
+    { path: "/Vendedores", component:Vendedores }
 ]
 
 export const router = createRouter({

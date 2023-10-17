@@ -31,7 +31,7 @@
     </div>
 
     <div class="q-pa-md">
-      <q-table title="vendedors" :rows="rows" :columns="columns" row-key="name">
+      <q-table title="Vendedores" :rows="rows" :columns="columns" row-key="name">
         <template v-slot:body-cell-Opciones="{ row: route }">
           <q-td :props="props">
             <q-btn v-if="route.estado">❌</q-btn>
@@ -96,7 +96,6 @@ async function ObtenerDatos() {
   const data = response.data;
   rows.value = data.vendedor;
   colums.value = data.vendedor;
-
   console.log(data);
 }
 async function DatosvendedorPush() {
@@ -109,7 +108,6 @@ async function DatosvendedorPush() {
         datos.value.push({
           Nombre: vendedor.Nombre,
           password: vendedor.password,
-
           estado: vendedor.estado,
         });
       }
@@ -154,7 +152,6 @@ const columns = [
 
 onMounted(() => {
   ObtenerDatos();
-  DatosvendedorPush();
 });
 </script>
 
