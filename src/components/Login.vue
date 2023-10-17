@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <router-link to="/TablaQuasar">
+        <router-link to="/Vendedores">
 
             <q-btn push color="primary" label="Vendedores" style="text-decoration: none;"/>
             
