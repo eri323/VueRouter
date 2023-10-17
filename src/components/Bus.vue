@@ -122,21 +122,21 @@ async function DatosbusPush() {
 }
 const columns = [
     {
-        name: "PLaca",
+        name: "Vehiculo",
         align: "center",
-        label: "PLaca",
+        label: "Placa",
         field: "Vehiculo",
         sortable: true,
     },
     {
-        name: "NumeroDeAsientos",
+        name: "NumAsientos",
         align: "center",
         label: "Numero De Asientos",
         field: "NumAsientos",
         sortable: true,
     },
  {
-        name: "Horario",
+        name: "horario",
         align: "center",
         label: "Horario",
         field: "horario",
