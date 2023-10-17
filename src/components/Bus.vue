@@ -14,7 +14,7 @@
                     </q-card-section>
                     <q-card-section class="q-pt-none">
                         Numero De Asientos <br />
-                        <q-input v-model="numasientosNuevo" type="text"></q-input>
+                        <q-input v-model="numasientosNuevo" type="number"></q-input>
                     </q-card-section>
                     <q-card-section class="q-pt-none">
                         Horario <br />
@@ -50,6 +50,7 @@ import { format } from "date-fns";
 
 const placaNueva = ref("");
 const numasientosNuevo = ref("");
+const horarioNuevo = ref("");
 
 async function agregarbus() {
     const data = {
@@ -101,7 +102,7 @@ async function ObtenerDatos() {
 }
 async function DatosbusPush() {
     try {
-        const response = await axios.get(`transporte/busbusca`);
+        const response = await axios.get(`transporte/transbusca`);
         const data = response.data;
 
         if (data.transporte.length > 0) {
@@ -124,21 +125,21 @@ const columns = [
         name: "PLaca",
         align: "center",
         label: "PLaca",
-        field: "PLaca",
+        field: "Vehiculo",
         sortable: true,
     },
     {
-        name: "Numero De Asientos",
+        name: "NumeroDeAsientos",
         align: "center",
         label: "Numero De Asientos",
-        field: "Numero De Asientos",
+        field: "NumAsientos",
         sortable: true,
     },
  {
         name: "Horario",
         align: "center",
         label: "Horario",
-        field: "Horario",
+        field: "horario",
         sortable: true,
     },
     {
