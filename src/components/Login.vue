@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="body">
         <q-card class="my-card">
             <div id="card-title">
         <h2>LOGIN</h2>
@@ -17,8 +17,8 @@
     </div>
 </template>
 
-<style>
-body{
+<style scoped>
+.body{
 height: 100vh;
 background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
 background-repeat: no-repeat;
