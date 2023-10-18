@@ -12,23 +12,23 @@
 
               <q-card-section style="max-height: 50vh" class="scroll">
                   <q-input v-model="sucursal" label="Sucursal" style="width: 300px;" v-if="cambio == 0" />
-                  <q-input v-model="origen" label="Origen" style="width: 300px;" v-if="cambio == 0" />
-                  <q-input v-model="destino" label="Destino" style="width: 300px;" />
-                  <q-input v-model="fecha_salida" label="Fecha salida" style="width: 300px;" />
+                  <q-input v-model="Origen" label="Origen" style="width: 300px;" v-if="cambio == 0" />
+                  <q-input v-model="Destino" label="Destino" style="width: 300px;" />
+                  <q-input type="date" v-model="fecha_salida" label="Fecha salida" style="width: 300px;" />
               </q-card-section>
 
               <q-separator />
 
               <q-card-actions align="right">
-                  <q-btn flat label="Cerrar" color="primary" v-close-popup />
-                  <q-btn flat label="Guardar 💾" color="primary" @click="editarAgregarRuta()" />
+                  <q-btn flat label="Cancelar" color="primary" v-close-popup />
+                  <q-btn flat label="Aceptar" color="primary" @click="editarAgregarRuta()" />
               </q-card-actions>
           </q-card>
       </q-dialog>
       <div>
           <h1>Rutas</h1>
           <div class="btn-agregar">
-              <q-btn color="secondary" label="Agregar" @click="agregarBus()" />
+              <q-btn color="secondary" label="Agregar" @click="agregarRuta()" />
           </div>
           <q-table title="Rutas" :rows="rows" :columns="columns" row-key="name">
               <template v-slot:body-cell-estado="props">
@@ -42,9 +42,9 @@
               <template v-slot:body-cell-opciones="props">
                   <q-td :props="props" class="botones">
                       <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
-                      <q-btn color="amber" glossy label="❌" @click="InactivarRuta(props.row._id)"
+                      <q-btn glossy label="❌" @click="InactivarRuta(props.row._id)"
                           v-if="props.row.estado == 1" />
-                      <q-btn color="amber" glossy label="✅" @click="ActivarRuta(props.row._id)" v-else />
+                      <q-btn glossy label="✔️" @click="ActivarRuta(props.row._id)" v-else />
                   </q-td>
               </template>
           </q-table>
@@ -65,8 +65,8 @@ let rows = ref([]);
 let fixed = ref(false)
 let text = ref('')
 let sucursal = ref('');
-let origen = ref();
-let destino = ref('');
+let Origen = ref();
+let Destino = ref('');
 let fecha_salida = ref('');
 let cambio = ref(0)
 
@@ -80,9 +80,7 @@ async function obtenerInfo(){
   }
 }
 
-onMounted(async () => {
-  obtenerInfo()
-});
+
 
 const columns = [
   { name: 'sucursal', label: 'Sucursal', field: 'sucursal', sortable: true },
@@ -97,29 +95,30 @@ const columns = [
   },
 ];
 
-function agregarBus() {
+function agregarRuta() {
   fixed.value = true;
-  text.value = "Agregar Bus";
+  text.value = "Agregar Ruta";
   cambio.value = 0
 }
 
 async function editarAgregarRuta() {
   if (cambio.value === 0) {
-      await rutaStore.postBus({
+      await rutaStore.postRuta({
           sucursal: sucursal.value,
-          origen: origen.value,
-          destino: destino.value,
+          Origen: Origen.value,
+          Destino: Destino.value,
           fecha_salida: fecha_salida.value,
       })
       limpiar() 
       obtenerInfo()
-
   } else {
-      let id = idBus.value;
+      let id = idRuta.value;
       if (id) {
-          await busStore.putEditarBus(id,{
-              cantidad_asientos: cantidad_asientos.value,
-              empresa_asignada: empresa_asignada.value,
+          await rutaStore.putEditarRuta(id,{
+              sucursal: sucursal.value,
+              Origen: Origen.value,
+              Destino: Destino.value,
+            fecha_salida: fecha_salida.value,
           });
          
           limpiar(); 
@@ -131,24 +130,24 @@ async function editarAgregarRuta() {
 
 
 function limpiar() {
-  placa.value = ""
-  numero_bus.value = ""
-  cantidad_asientos = ""
-  empresa_asignada = ""
+  sucursal.value = ""
+  Origen.value = ""
+  Destino.value = ""
+  fecha_salida.value = ""
 }
 
-let idBus = ref('')
-async function EditarBus(id) {
+let idRuta = ref('')
+/* async function EditarBus(id) {
   cambio.value = 1;
   const busSeleccionado = buses.value.find((bus) => bus._id === id);
   if (busSeleccionado) {
-      idBus.value = String(busSeleccionado._id);
+      idRuta.value = String(busSeleccionado._id);
       fixed.value = true;
       text.value = "Editar Bus";
       cantidad_asientos.value = busSeleccionado.cantidad_asientos;
       empresa_asignada.value = busSeleccionado.empresa_asignada;
   }
-}
+} */
 
 async function InactivarRuta(id) {
   await rutaStore.putInactivarRuta(id)
@@ -160,7 +159,9 @@ async function ActivarRuta(id) {
   obtenerInfo()
 }
 
-
+onMounted(async () => {
+  obtenerInfo()
+});
 </script>
 
 <style scoped>
