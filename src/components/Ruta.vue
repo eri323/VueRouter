@@ -20,7 +20,7 @@
               <q-separator />
 
               <q-card-actions align="right">
-                  <q-btn flat label="Cancelar" color="primary" v-close-popup  />
+                  <q-btn flat label="Cancelar" color="primary" v-close-popup />
                   <q-btn flat label="Aceptar" color="primary" @click="editarAgregarRuta()" />
               </q-card-actions>
           </q-card>
@@ -86,7 +86,7 @@ const columns = [
   { name: 'sucursal', label: 'Sucursal', field: 'sucursal', sortable: true },
   { name: 'Origen', label: 'Origen', field: 'Origen', sortable: true },
   { name: 'Destino', label: 'Destino', field: 'Destino', sortable: true},
-  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true, format: (val) => format(new Date(val), 'dd-mm-yyyy') },
+  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true, format: (val) => format(new Date(val), 'yyyy-dd-mm') },
   { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
   {
       name: 'opciones', label: 'Opciones',
@@ -99,6 +99,7 @@ function agregarRuta() {
   fixed.value = true;
   text.value = "Agregar Ruta";
   cambio.value = 0
+  limpiar()
 }
 
 async function editarAgregarRuta() {
@@ -141,6 +142,7 @@ async function EditarRuta(id) {
   cambio.value = 1;
   const rutaSeleccionada = rutas.value.find((ruta) => ruta._id === id);
   if (rutaSeleccionada) {
+    console.log(rutaSeleccionada.fecha_salida);
     idRuta.value = String(rutaSeleccionada._id);
     fixed.value = true;
     text.value = "Editar Bus";
