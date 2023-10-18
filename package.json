@@ -9,9 +9,6 @@
     "preview": "vite preview"
   }
   ,
-  "engines": {
-    "node": ">=14.20.1"
-  },
   "dependencies": {
     "@quasar/extras": "^1.16.2",
     "axios": "^1.5.0",
