@@ -72,6 +72,7 @@ let cambio = ref(0)
 async function obtenerInfo() {
     try {
         await busStore.obtenerInfoBuses();
+        console.log(busStore.buses);
         buses.value = busStore.buses;
         rows.value = busStore.buses;
     } catch (error) {
@@ -86,7 +87,7 @@ onMounted(async () => {
 const columns = [
     { name: 'Vehiculo', label: 'Placa', field: 'Vehiculo', sortable: true },
     { name: 'NumAsientos', label: 'Numero De Asientos', field: 'NumAsientos', sortable: true },
-    { name: 'conductor_id', label: 'Conductor', field: 'conductor_id' },
+    { name: 'conductor_id', label: 'Conductor', field: (row)=>row.conductor_id.nombre },
     { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
     {
         name: 'opciones', label: 'Opciones',

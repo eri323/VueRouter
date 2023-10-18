@@ -4,12 +4,11 @@ import { ref } from 'vue';
 
 export const useBusStore = defineStore('bus', () => {
     const buses = ref([]);
-    const conductores = ref([])
+  
     const obtenerInfoBuses = async () => {
         try {
             let responseBuses = await axios.get('transporte/transbusca');
             buses.value = responseBuses.data.transporte;
-            conductores.value = responseBuses.data.transporte.conductor_id.nombre
             console.log(responseBuses);
         } catch (error) {
             throw error
@@ -52,7 +51,7 @@ export const useBusStore = defineStore('bus', () => {
     }
 
     return {
-        buses,conductores,
+        buses,
         obtenerInfoBuses, postBus, putEditarBus, putInactivarBus, putActivarBus
     };
 });
