@@ -36,9 +36,7 @@
                     <q-td :props="props">
                         <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
                         <label for="" v-else style="color: red;">Inactivo</label>
-
                     </q-td>
-
                 </template>
                 <template v-slot:body-cell-opciones="props">
                     <q-td :props="props" class="botones">
@@ -104,9 +102,10 @@ function agregarBus() {
 async function editarAgregarBus() {
     if (cambio.value === 0) {
         await busStore.postBus({
-            Vehiculo: Vehiculo.value,
-            NumAsientos: NumAsientos.value,
-           conductor_id: conductor_id.value,
+            
+        Vehiculo: Vehiculo.value,
+        NumAsientos: NumAsientos.value,
+        conductor_id: conductor_id.value,
         })
         limpiar()
         obtenerInfo()
