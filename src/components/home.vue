@@ -16,9 +16,9 @@
 
       <q-drawer v-model="leftDrawerOpen" side="left" overlay behavior="mobile" elevated id="lateral">
         <router-link to="/Vendedores">  <q-btn align="left" class="btn-fixed-width" color="primary" label="Vendedores" /> </router-link>
-        <router-link to="/Bus"><q-btn>Bus</q-btn> </router-link>
-        <router-link to="/Ruta"><q-btn>Ruta</q-btn> </router-link>
-        <router-link to="/Cliente"><q-btn>Cliente</q-btn> </router-link>
+        <router-link to="/Bus"> <q-btn align="left" class="btn-fixed-width" color="primary" label="Buses" /> </router-link>
+        <router-link to="/Ruta"> <q-btn align="left" class="btn-fixed-width" color="primary" label="Rutas" /></router-link>
+        <router-link to="/Cliente"> <q-btn align="left" class="btn-fixed-width" color="primary" label="Clientes" /></router-link>
 
       </q-drawer>
 
