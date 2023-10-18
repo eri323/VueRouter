@@ -110,7 +110,7 @@ async function DatosbusPush() {
                 datos.value.push({
                     Placa: transporte.Vehiculo,
                     NumeroDeAsientos: transporte.NumAsientos,
-                    Conductor: transporte.conductor_id,
+                    Conductor: transporte.conductor_id.noombre,
                     estado: transporte.estado,
                 });
             }
