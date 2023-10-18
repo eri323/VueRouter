@@ -29,7 +29,7 @@
             <div class="btn-agregar">
                 <q-btn color="secondary" label="Agregar" @click="agregarCliente()" />
             </div>
-            <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
+            <q-table title="Clientes" :rows="rows" :columns="columns" row-key="name">
                 <template v-slot:body-cell-estado="props">
                     <q-td :props="props">
                         <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
@@ -41,9 +41,9 @@
                 <template v-slot:body-cell-opciones="props">
                     <q-td :props="props" class="botones">
                         <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
-                        <q-btn  glossy label="❌" @click="InactivarBus(props.row._id)"
+                        <q-btn  glossy label="❌" @click="InactivarCliente(props.row._id)"
                             v-if="props.row.estado == 1" />
-                        <q-btn  glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
+                        <q-btn  glossy label="✔️" @click="putActivarCliente(props.row._id)" v-else />
                     </q-td>
                 </template>
             </q-table>
@@ -146,13 +146,13 @@ async function EditarBus(id) {
     }
 }
 
-async function InactivarBus(id) {
-    await busStore.putInactivarBus(id)
+async function InactivarCliente(id) {
+    await busStore.putInactivarCliente(id)
     obtenerInfo()
 }
 
-async function ActivarBus(id) {
-    await busStore.putActivarBus(id)
+async function putActivarCliente(id) {
+    await busStore.putActivarCliente(id)
     obtenerInfo()
 }
 
