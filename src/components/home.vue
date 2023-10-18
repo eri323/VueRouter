@@ -14,11 +14,11 @@
           </q-toolbar>
       </q-header>
 
-        <q-drawer v-model="leftDrawerOpen" side="left" overlay behavior="mobile" elevated id="lateral">
-            <router-link to="/Vendedores">  <q-btn align="left" class="btn-fixed-width" color="primary" label="Vendedores" /> </router-link>
-            <router-link to="/Bus"><q-btn>Bus</q-btn> </router-link>
-            <router-link to="/Ruta"><q-btn>Rutas</q-btn></router-link>
-        </q-drawer>
+      <q-drawer v-model="leftDrawerOpen" side="left" overlay behavior="mobile" elevated id="lateral">
+        <router-link to="/Vendedores">  <q-btn align="left" class="btn-fixed-width" color="primary" label="Vendedores" /> </router-link>
+        <router-link to="/Bus"><q-btn>Bus</q-btn> </router-link>
+        <router-link to="/Ruta"><q-btn>Ruta</q-btn> </router-link>
+      </q-drawer>
 
       <q-page-container>
           <router-view />
