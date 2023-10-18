@@ -52,6 +52,15 @@
             id="btns"
           />
         </router-link>
+        <router-link to="/Ruta"
+          ><q-btn
+            align="left"
+            class="btn-fixed-width"
+            color="primary"
+            label="Rutas"
+            id="btns"
+          />
+        </router-link>
       </div>
     </q-drawer>
 
