@@ -17,7 +17,9 @@
         </div>
     </div>
 </template>
+ <script>
 
+</script>
 <style scoped>
 .body {
     margin: 0;
@@ -26,7 +28,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url("fondo.jpg");
+    background-image: url("../assets/fondo.jpg");
     background-size: cover;
     background-repeat: no-repeat;
 }
