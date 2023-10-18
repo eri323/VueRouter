@@ -11,8 +11,8 @@
               <q-separator />
 
               <q-card-section style="max-height: 50vh" class="scroll">
-                  <q-input v-model="sucursal" label="Sucursal" style="width: 300px;" v-if="cambio == 0" />
-                  <q-input v-model="Origen" label="Origen" style="width: 300px;" v-if="cambio == 0" />
+                  <q-input v-model="sucursal" label="Sucursal" style="width: 300px;" />
+                  <q-input v-model="Origen" label="Origen" style="width: 300px;" />
                   <q-input v-model="Destino" label="Destino" style="width: 300px;" />
                   <q-input type="date" v-model="fecha_salida" label="Fecha salida" style="width: 300px;" />
               </q-card-section>
@@ -20,7 +20,7 @@
               <q-separator />
 
               <q-card-actions align="right">
-                  <q-btn flat label="Cancelar" color="primary" v-close-popup />
+                  <q-btn flat label="Cancelar" color="primary" v-close-popup  />
                   <q-btn flat label="Aceptar" color="primary" @click="editarAgregarRuta()" />
               </q-card-actions>
           </q-card>
@@ -41,7 +41,7 @@
               </template>
               <template v-slot:body-cell-opciones="props">
                   <q-td :props="props" class="botones">
-                      <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
+                      <q-btn color="white" text-color="black" label="🖋️" @click="EditarRuta(props.row._id)" />
                       <q-btn glossy label="❌" @click="InactivarRuta(props.row._id)"
                           v-if="props.row.estado == 1" />
                       <q-btn glossy label="✔️" @click="ActivarRuta(props.row._id)" v-else />
@@ -86,7 +86,7 @@ const columns = [
   { name: 'sucursal', label: 'Sucursal', field: 'sucursal', sortable: true },
   { name: 'Origen', label: 'Origen', field: 'Origen', sortable: true },
   { name: 'Destino', label: 'Destino', field: 'Destino', sortable: true},
-  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida' },
+  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true, format: (val) => format(new Date(val), 'dd-mm-yyyy') },
   { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
   {
       name: 'opciones', label: 'Opciones',
@@ -115,9 +115,9 @@ async function editarAgregarRuta() {
       let id = idRuta.value;
       if (id) {
           await rutaStore.putEditarRuta(id,{
-              sucursal: sucursal.value,
-              Origen: Origen.value,
-              Destino: Destino.value,
+            sucursal: sucursal.value,
+            Origen: Origen.value,
+            Destino: Destino.value,
             fecha_salida: fecha_salida.value,
           });
          
@@ -137,17 +137,21 @@ function limpiar() {
 }
 
 let idRuta = ref('')
-/* async function EditarBus(id) {
+async function EditarRuta(id) {
   cambio.value = 1;
-  const busSeleccionado = buses.value.find((bus) => bus._id === id);
-  if (busSeleccionado) {
-      idRuta.value = String(busSeleccionado._id);
-      fixed.value = true;
-      text.value = "Editar Bus";
-      cantidad_asientos.value = busSeleccionado.cantidad_asientos;
-      empresa_asignada.value = busSeleccionado.empresa_asignada;
+  const rutaSeleccionada = rutas.value.find((ruta) => ruta._id === id);
+  if (rutaSeleccionada) {
+    idRuta.value = String(rutaSeleccionada._id);
+    fixed.value = true;
+    text.value = "Editar Bus";
+    sucursal.value = rutaSeleccionada.sucursal
+    Origen.value = rutaSeleccionada.Origen
+    Destino.value = rutaSeleccionada.Destino
+    fecha_salida.value = rutaSeleccionada.fecha_salida
   }
-} */
+}
+
+
 
 async function InactivarRuta(id) {
   await rutaStore.putInactivarRuta(id)
