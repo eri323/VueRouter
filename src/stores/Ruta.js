@@ -25,7 +25,7 @@ export const useRutaStore = defineStore('ruta', () => {
 
     const putEditarRuta = async (id, data) => {
         try {
-            let res = await axios.put(`bus/bus/${id}`, data);
+            let res = await axios.put(`ruta/rutamodificar/${id}`, data);
             return res
         } catch (error) {
             throw error;
