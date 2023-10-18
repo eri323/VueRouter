@@ -1,178 +1,178 @@
 <template>
-    <div class="body">
-        <div class="containerBoton">
-            <q-btn label="Agregar bus" class="text-black" color="secondary" @click="medium = true" />
-            <q-dialog v-model="medium">
-                <q-card style="width: 700px; max-width: 80vw">
-                    <q-card-section>
-                        <div class="text-h6">{{ titleModal }}</div>
-                    </q-card-section>
+    <div>
+        <!-- Modal -->
+        <q-dialog v-model="fixed">
+            <q-card class="modal-content">
+                <q-card-section class="row items-center q-pb-none" style="color: black;">
+                 
+                    <q-space />
+                    <q-btn icon="close" flat round dense v-close-popup />
+                </q-card-section>
+                <q-separator />
 
-                    <q-card-section class="q-pt-none">
-                        Placa <br />
-                        <q-input v-model="placaNueva" type="text"></q-input>
-                    </q-card-section>
-                    <q-card-section class="q-pt-none">
-                        Numero De Asientos <br />
-                        <q-input v-model="numasientosNuevo" type="number"></q-input>
-                    </q-card-section>
-                    <q-card-section class="q-pt-none">
-                        Conductor <br />
-                        <q-input v-model="conductorNuevo" type="text"></q-input>
-                    </q-card-section>
+                <q-card-section style="max-height: 50vh" class="scroll">
+                    <q-input v-model="Vehiculo" label="Placa" style="width: 300px;" v-if="cambio == 0" />
+                    <q-input v-model="NumAsientos" label="Numero de Asientos" type="number"
+                     style="width: 300px;" v-if="cambio == 0" />
+                    <q-input v-model="conductor_id" label="Conductor" style="width: 300px;" />
+    
+                </q-card-section>
 
-                    <q-card-actions align="right" class="bg-white text-teal">
-                        <q-btn flat label="Cancelar" v-close-popup />
-                        <q-btn flat label="Aceptar" @click="agregarbus" />
-                    </q-card-actions>
-                </q-card>
-            </q-dialog>
-        </div>
+                <q-separator />
 
-        <div class="q-pa-md">
-            <q-table title="bus" :rows="rows" :columns="columns" row-key="name">
-                <template v-slot:body-cell-Opciones="{ row: route }">
+                <q-card-actions align="right">
+                    <q-btn flat label="Cancelar" color="primary" v-close-popup />
+                    <q-btn flat label="Aceptar" color="primary" @click="editarAgregarBus()" />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+        <div>
+            <h1>Buses</h1>
+            <div class="btn-agregar">
+                <q-btn color="secondary" label="Agregar" @click="agregarBus()" />
+            </div>
+            <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
+                <template v-slot:body-cell-estado="props">
                     <q-td :props="props">
-                        <q-btn v-if="route.estado">❌</q-btn>
-                        <q-btn v-if="route.estado">✍️</q-btn>
-                        <q-btn v-else>✔️</q-btn>
+                        <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
+                        <label for="" v-else style="color: red;">Inactivo</label>
+
+                    </q-td>
+
+                </template>
+                <template v-slot:body-cell-opciones="props">
+                    <q-td :props="props" class="botones">
+                        <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
+                        <q-btn  glossy label="❌" @click="InactivarBus(props.row._id)"
+                            v-if="props.row.estado == 1" />
+                        <q-btn  glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
                     </q-td>
                 </template>
             </q-table>
         </div>
+
     </div>
 </template>
-
+  
 <script setup>
-import axios from "axios";
-import { ref, onMounted } from "vue";
-import { format } from "date-fns";
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import { format } from 'date-fns';
+import { useBusStore } from '../stores/Bus.js';
+const busStore = useBusStore()
 
-const placaNueva = ref("");
-const numasientosNuevo = ref("");
-const conductorNuevo = ref("");
-
-async function agregarbus() {
-    const data = {
-        Placa: placaNueva.value,
-        NumeroDeAsientos: numasientosNuevo.value,
-        Conductor: conductorNuevo.value,
-        estado: 1,
-    };
-    try {
-        const response = await axios.post("transporte/transcrear", data);
-        if (response.status === 200) {
-            datos.value.push(data);
-            placaNueva.value = "";
-            numasientosNuevo.value = "";
-            conductorNuevo.value="";
-
-            medium.value = false;
-            DatosbusPush();
-        } else {
-            console.log(
-                "Error en la solicitud HTTP:",
-                response.status,
-                response.statusText
-            );
-        }
-    } catch (error) {
-        console.error("Error al agregar bus:", error);
-
-        if (error.response) {
-            console.log(
-                "Respuesta de error:",
-                error.response.status,
-                error.response.data
-            );
-        }
-    }
-}
-const datos = ref([]);
+let buses = ref([]);
 let rows = ref([]);
-let colums = ref([]);
-let titleModal = ref("Nuevo bus");
-const medium = ref(false);
-async function ObtenerDatos() {
-    const response = await axios.get("transporte/transbusca");
-    const data = response.data;
-    rows.value = data.transporte;
-    colums.value = data.transporte;
-    console.log(data);
-}
-async function DatosbusPush() {
-    try {
-        const response = await axios.get(`transporte/transbusca`);
-        const data = response.data;
+let fixed = ref(false)
+let Vehiculo = ref('');
+let NumAsientos = ref();
+let conductor_id = ref('');
+let cambio = ref(0)
 
-        if (data.transporte.length > 0) {
-            for (const transporte of data.transporte) {
-                datos.value.push({
-                    Placa: transporte.Vehiculo,
-                    NumeroDeAsientos: transporte.NumAsientos,
-                    Conductor: transporte.conductor_id.noombre,
-                    estado: transporte.estado,
-                });
-            }
-            rows.value = datos.value;
-        }
+async function obtenerInfo() {
+    try {
+        await busStore.obtenerInfoBuses();
+        buses.value = busStore.buses;
+        rows.value = busStore.buses;
     } catch (error) {
-        console.error("Error al obtener datos:", error);
+        console.log(error);
     }
 }
+
+onMounted(async () => {
+    obtenerInfo()
+});
+
 const columns = [
+    { name: 'Vehiculo', label: 'Placa', field: 'Vehiculo', sortable: true },
+    { name: 'NumAsientos', label: 'Numero De Asientos', field: 'NumAsientos', sortable: true },
+    { name: 'conductor_id', label: 'Conductor', field: 'conductor_id' },
+    { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
     {
-        name: "Vehiculo",
-        align: "center",
-        label: "Placa",
-        field: "Vehiculo",
-        sortable: true,
-    },
-    {
-        name: "NumAsientos",
-        align: "center",
-        label: "Numero De Asientos",
-        field: "NumAsientos",
-        sortable: true,
-    },
- {
-        name: "conductor",
-        align: "center",
-        label: "Conductor",
-        field: "conductor",
-        sortable: true,
-    },
-    {
-        name: "Estado",
-        label: "Estado",
-        field: "estado",
-        sortable: true,
-        align: "center",
-        format: (val) => (val ? "Activo" : "Inactivo"),
-    },
-    {
-        name: "Opciones",
-        align: "center",
-        label: "Opciones",
-        field: "Opciones",
-        sortable: true,
+        name: 'opciones', label: 'Opciones',
+        field: row => null,
+        "sortable": false,
     },
 ];
 
-onMounted(() => {
-    ObtenerDatos();
-});
-</script>
-
-<style scoped>
-.body {
-    padding: 30px;
-    margin: 0;
-    text-transform: capitalize;
+function agregarBus() {
+    fixed.value = true;
+    cambio.value = 0
 }
 
-.containerBoton {
+async function editarAgregarBus() {
+    if (cambio.value === 0) {
+        await busStore.postBus({
+            Vehiculo: Vehiculo.value,
+            NumAsientos: NumAsientos.value,
+            conductor_id: conductor_id.value,
+        })
+        limpiar()
+        obtenerInfo()
+
+    } else {
+        let id = idBus.value;
+        if (id) {
+            await busStore.putEditarBus(id, {
+                Vehiculo: Vehiculo.value,
+                conductor_id: conductor_id.value,
+                NumAsientos: NumAsientos.value,
+            });
+
+            limpiar();
+            obtenerInfo()
+            fixed.value = false;
+        }
+    }
+}
+
+
+function limpiar() {
+    Vehiculo.value = ""
+    NumAsientos.value = ""
+    conductor_id = ""
+}
+
+let idBus = ref('')
+async function EditarBus(id) {
+    cambio.value = 1;
+    const busSeleccionado = buses.value.find((transporte) => transporte._id === id);
+    if (busSeleccionado) {
+        idBus.value = String(busSeleccionado._id);
+        fixed.value = true;
+        text.value = "Editar Bus";
+        conductor_id.value = busSeleccionado.conductor_id;
+        Vehiculo.value=busSeleccionado.Vehiculo;
+        NumAsientos.value=busSeleccionado.NumAsientos;
+    }
+}
+
+async function InactivarBus(id) {
+    await busStore.putInactivarBus(id)
+    obtenerInfo()
+}
+
+async function ActivarBus(id) {
+    await busStore.putActivarBus(id)
+    obtenerInfo()
+}
+
+
+</script>
+  
+<style scoped>
+.modal-content {
+    width: 400px;
+}
+
+.botones button {
+    margin: 2px;
+}
+
+.btn-agregar {
+    width: 100%;
+    margin-bottom: 5px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end
 }
 </style>
