@@ -11,11 +11,11 @@ const routes = [
     path: "/Home",
     component: Home,
     children: [
-      { path: "", redirect: "/Home" },
       { path: "/Vendedores", component: Vendedores },
-      { path: "/Bus", component: Bus },
+      { path: "/Bus", component: Bus }
     ],
   },
+  
 ];
 
 export const router = createRouter({
