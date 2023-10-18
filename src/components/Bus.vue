@@ -27,7 +27,7 @@
             </q-card>
         </q-dialog>
         <div>
-            <h1>Buses</h1>
+          
             <div class="btn-agregar">
                 <q-btn color="secondary" label="Agregar" @click="agregarBus()" />
             </div>
@@ -105,7 +105,7 @@ async function editarAgregarBus() {
         await busStore.postBus({
             Vehiculo: Vehiculo.value,
             NumAsientos: NumAsientos.value,
-            conductor_id: conductor_id.value,
+           conductor_id: conductor_id.value,
         })
         limpiar()
         obtenerInfo()
@@ -173,6 +173,6 @@ async function ActivarBus(id) {
     width: 100%;
     margin-bottom: 5px;
     display: flex;
-    justify-content: flex-end
+    justify-content: center;
 }
 </style>
