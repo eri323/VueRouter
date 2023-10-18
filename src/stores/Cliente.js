@@ -14,7 +14,7 @@ export const useClienteStore = defineStore('cliente', () => {
         }
     };
 
-    const editarAgregarCliente = async (data) =>{
+    const postcliente = async (data) =>{
         try {
             let res = await axios.post("cliente/clientecrear", data);
             return res
@@ -23,26 +23,26 @@ export const useClienteStore = defineStore('cliente', () => {
         }
     }
 
-    const putEditarRuta = async (id, data) => {
+    const putEditarCliente = async (id, data) => {
         try {
-            let res = await axios.put(`bus/clientemodificar/${id}`, data);
+            let res = await axios.put(`cliente/clientemodificar/${id}`, data);
             return res
         } catch (error) {
             throw error;
         }
     };
 
-    const putInactivarRuta = async (id)=>{
+    const putInactivarCliente = async (id)=>{
         try {
-            let r = await axios.put(`cliente/rutainac/${id}`)
+            let r = await axios.put(`cliente/clienteinac/${id}`)
             return r
         } catch (error) {
             console.log(error, "Error al cambiar el estado de la ruta");
         }
     }
-    const putActivarRuta = async (id)=>{
+    const putActivarCliente = async (id)=>{
         try {
-            let r = await axios.put(`cliente/rutaact/${id}`)
+            let r = await axios.put(`cliente/clienteact/${id}`)
             return r
         } catch (error) {
             console.log(error, "Error al cambiar el estado de la ruta");
@@ -51,6 +51,6 @@ export const useClienteStore = defineStore('cliente', () => {
 
     return{
         clientes,
-        obtenerInfoCliente, editarAgregarCliente, putEditarRuta, putInactivarRuta, putActivarRuta
+        obtenerInfoCliente, postcliente, putEditarCliente, putInactivarCliente, putActivarCliente
     };
 });

@@ -11,7 +11,7 @@
                 <q-separator />
 
                 <q-card-section style="max-height: 50vh" class="scroll">
-                    <q-input v-model="nombre" label="Nombre" style="width: 300px;" v-if="cambio == 0" />
+                    <q-input v-model="Nombre" label="Nombre" style="width: 300px;" v-if="cambio == 0" />
                     <q-input v-model="cedula" label="cedula" type="number" style="width: 300px;" v-if="cambio == 0" />
                     <q-input v-model="telefono" label="Telefono" type="number" style="width: 300px;" v-if="cambio == 0" />
                 </q-card-section>
@@ -27,7 +27,7 @@
         <div>
             <h1>Clientes</h1>
             <div class="btn-agregar">
-                <q-btn color="secondary" label="Agregar" @click="agregarBus()" />
+                <q-btn color="secondary" label="Agregar" @click="agregarCliente()" />
             </div>
             <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
                 <template v-slot:body-cell-estado="props">
@@ -62,8 +62,9 @@ const busStore = useClienteStore()
 let cliente = ref([]);
 let rows = ref([]);
 let fixed = ref(false)
-let nombre = ref('');
+let Nombre = ref('');
 let telefono = ref();
+let cedula= ref ()
 let conductor_id = ref('');
 let cambio = ref(0)
 
@@ -82,7 +83,7 @@ onMounted(async () => {
 });
 
 const columns = [
-    { name: 'CC_cliente', label: 'telefono', field: 'CC_cliente', sortable: true },
+    { name: 'CC_cliente', label: 'Cedula', field: 'CC_cliente', sortable: true },
     { name: 'Nombre_cliente', label: 'Nombre', field: 'Nombre_cliente', sortable: true },
     { name: 'Telefono_cliente', label: 'Telefono', field: 'Telefono_cliente' },
     { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
@@ -93,28 +94,28 @@ const columns = [
     },
 ];
 
-function agregarBus() {
+function agregarCliente() {
     fixed.value = true;
     cambio.value = 0
 }
 
 async function editarAgregarCliente() {
     if (cambio.value === 0) {
-        await busStore.postBus({
-            nombre: nombre.value,
-            telefono: telefono.value,
-            conductor_id: conductor_id.value,
+        await busStore.postcliente({
+            Nombre_cliente: Nombre.value,
+            Telefono_cliente: telefono.value,
+            CC_cliente: cedula.value,
         })
         limpiar()
         obtenerInfo()
 
     } else {
-        let id = idBus.value;
+        let id = idCliente.value;
         if (id) {
-            await busStore.putEditarBus(id, {
-                nombre: nombre.value,
-                cedula: cedula.value,
-                telefono: telefono.value,
+            await busStore.putEditarCliente(id, {
+                Nombre_cliente: Nombre.value,
+                Telefono_cliente: cedula.value,
+                CC_cliente: telefono.value,
             });
 
             limpiar();
@@ -126,9 +127,9 @@ async function editarAgregarCliente() {
 
 
 function limpiar() {
-    nombre.value = ""
+    Nombre.value = ""
     telefono.value = ""
-    conductor_id = ""
+    cedula.value = ""
 }
 
 let idCliente = ref('')
