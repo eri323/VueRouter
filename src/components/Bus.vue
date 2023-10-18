@@ -17,8 +17,8 @@
                         <q-input v-model="numasientosNuevo" type="number"></q-input>
                     </q-card-section>
                     <q-card-section class="q-pt-none">
-                        Horario <br />
-                        <q-input v-model="horarioNuevo" type="text"></q-input>
+                        Conductor <br />
+                        <q-input v-model="conductorNuevo" type="text"></q-input>
                     </q-card-section>
 
                     <q-card-actions align="right" class="bg-white text-teal">
@@ -50,13 +50,13 @@ import { format } from "date-fns";
 
 const placaNueva = ref("");
 const numasientosNuevo = ref("");
-const horarioNuevo = ref("");
+const conductorNuevo = ref("");
 
 async function agregarbus() {
     const data = {
         Placa: placaNueva.value,
         NumeroDeAsientos: numasientosNuevo.value,
-        Horario: horarioNuevo.value,
+        Conductor: conductorNuevo.value,
         estado: 1,
     };
     try {
@@ -65,7 +65,7 @@ async function agregarbus() {
             datos.value.push(data);
             placaNueva.value = "";
             numasientosNuevo.value = "";
-            horarioNuevo.value="";
+            conductorNuevo.value="";
 
             medium.value = false;
             DatosbusPush();
@@ -96,8 +96,8 @@ const medium = ref(false);
 async function ObtenerDatos() {
     const response = await axios.get("transporte/transbusca");
     const data = response.data;
-    rows.value = data.bus;
-    colums.value = data.bus;
+    rows.value = data.transporte;
+    colums.value = data.transporte;
     console.log(data);
 }
 async function DatosbusPush() {
@@ -108,9 +108,9 @@ async function DatosbusPush() {
         if (data.transporte.length > 0) {
             for (const transporte of data.transporte) {
                 datos.value.push({
-                    Placa: transporte.PLaca,
-                    NumeroDeAsientos: transporte.NumeroDeAsientos,
-                    Horario: transporte.Horario,
+                    Placa: transporte.Vehiculo,
+                    NumeroDeAsientos: transporte.NumAsientos,
+                    Conductor: transporte.conductor_id,
                     estado: transporte.estado,
                 });
             }
@@ -136,10 +136,10 @@ const columns = [
         sortable: true,
     },
  {
-        name: "horario",
+        name: "conductor",
         align: "center",
-        label: "Horario",
-        field: "horario",
+        label: "Conductor",
+        field: "conductor",
         sortable: true,
     },
     {
