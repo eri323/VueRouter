@@ -18,6 +18,8 @@
               <router-link to="/Vendedores">  <q-btn align="left" class="btn-fixed-width" color="primary" label="Vendedores" /> </router-link>
           <router-link to="/Bus"><q-btn>Bus</q-btn> </router-link>
           <router-link to="/Ruta"><q-btn>Ruta</q-btn> </router-link>
+          <router-link to="/Cliente"><q-btn>Cliente</q-btn> </router-link>
+
       </q-drawer>
 
       <q-page-container>
