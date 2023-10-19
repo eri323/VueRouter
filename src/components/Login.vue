@@ -1,103 +1,122 @@
 <template>
-    <div class="body">
-        <div class="contenedor">
-            <q-card class="my-card">
-                <div id="card-title">
-                    <h2>LOGIN</h2>
-                    <div class="underline-title"></div>
-                </div>
-                <q-card-actions vertical align="right" class="texto">
-                    <q-input type="text" label="Nombre" />
-                    <q-input type="text" label="Contraseña" />
-                </q-card-actions>
-                <router-link to="/Home">
-                        <q-btn flat id="submit-btn">Aceptar</q-btn>
-                    </router-link>
-            </q-card>
+  <div class="body">
+    <div class="contenedor">
+      <q-card class="my-card">
+        <div id="card-title">
+          <h2 class="log">LOGIN</h2>
+          <i class="fa-regular fa-circle-user" id="img"></i>
         </div>
+        <div class="containerData">
+          <q-card-actions vertical align="right" class="texto">
+            <q-input type="text" label="Nombre" id="input" />
+            <q-input type="password" label="Contraseña" id="input" />
+          </q-card-actions>
+          <router-link to="/Home">
+            <q-btn push id="submit-btn" text-color="black" label="Aceptar" />
+          </router-link>
+        </div>
+      </q-card>
     </div>
+  </div>
 </template>
- <script>
-
-</script>
+<script></script>
 <style scoped>
 .body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url("../assets/fondo.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("../assets/fondo.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-family: "Letra";
 }
-.contenedor{
-    display: flex;
-    background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
-    background-repeat: no-repeat;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4%;
-    padding: 2%;
+@font-face {
+    font-family: "Letra";
+    src: url("../fonts/Anta-Regular.ttf");
+}
+.contenedor {
+  display: flex;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+  background-repeat: no-repeat;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4%;
+  padding: 2%;
 }
 .my-card {
-    align-items: center;
-    padding: 129px  84px;
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
+  align-items: center;
+  padding: 10px 84px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
 }
 
 .texto {
-    display: flex;
-    gap: 40px;
-    align-items: center;
-    flex-direction: row;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .bg-teal text-white {
-    background-color: transparent;
-}
-
-h2 {
-    font-size: 40px;
-    margin: 0;
-    padding-bottom: 10px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
-
-.underline-title {
-    background: -webkit-linear-gradient(right, #a6f77b, #2ec06f);
-    height: 3px;
-    margin: -1.1rem auto 0 auto;
-    width: 89px;
+  background-color: transparent;
 }
 
 #card-title {
-    font-family: "Raleway Thin", sans-serif;
-    letter-spacing: 4px;
-    padding-bottom: 23px;
-    padding-top: 13px;
-    text-align: center;
+  font-family: "Raleway Thin", sans-serif;
+  letter-spacing: 4px;
+  padding-bottom: 23px;
+  padding-top: 13px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
 }
 
 #submit-btn {
-    background: -webkit-linear-gradient(right, #a6f77b, #2dbd6e);
-    border: none;
-    border-radius: 21px;
-    box-shadow: 0px 1px 8px #24c64f;
-    cursor: pointer;
-    color: white;
-    font-family: "Raleway SemiBold", sans-serif;
-    height: 42.3px;
-    margin: 0 auto;
-    margin-top: 30px;
-    transition: 0.25s;
-    width: 153px;
-    
-}
+  background: -webkit-linear-gradient(right, #a6f77b, #2dbd6e);
+  border: none;
+  border-radius: 10px;
 
+  cursor: pointer;
+  color: white;
+  font-family: "Raleway SemiBold", sans-serif;
+
+  margin: 0;
+  font-family: "Letra";
+  transition: 0.25s;
+}
+.log {
+  border-bottom: 3px solid rgb(45,189,110);
+  margin: 0;
+  padding: 0;
+  width: 95px;
+  display: flex;
+  justify-content: center;
+  font-family: "Letra";
+}
 #submit-btn:hover {
-    box-shadow: 0px 1px 18px #24c64f;
-}</style>
+  box-shadow: 0px 1px 10px #24c64f;
+}
+.containerData {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+}
+#input {
+  display: flex;
+  text-align: center;
+}
+#img {
+  font-size: 200px;
+}
+</style>
