@@ -26,9 +26,8 @@
           </q-card>
       </q-dialog>
       <div>
-          <h1>Rutas</h1>
           <div class="btn-agregar">
-              <q-btn color="secondary" label="Agregar" @click="agregarRuta()" />
+              <q-btn class="bg-secondary" label="Agregar ruta" @click="agregarRuta()" />
           </div>
           <q-table title="Rutas" :rows="rows" :columns="columns" row-key="name">
               <template v-slot:body-cell-estado="props">
@@ -41,7 +40,7 @@
               </template>
               <template v-slot:body-cell-opciones="props">
                   <q-td :props="props" class="botones">
-                      <q-btn color="white" text-color="black" label="🖋️" @click="EditarRuta(props.row._id)" />
+                      <q-btn color="white" text-color="black" label="✍️" @click="EditarRuta(props.row._id)" />
                       <q-btn glossy label="❌" @click="InactivarRuta(props.row._id)"
                           v-if="props.row.estado == 1" />
                       <q-btn glossy label="✔️" @click="ActivarRuta(props.row._id)" v-else />
@@ -183,7 +182,7 @@ onMounted(async () => {
   width: 100%;
   margin-bottom: 5px;
   display: flex;
-  justify-content: flex-end
+  justify-content: center;
 }
 
 .body {

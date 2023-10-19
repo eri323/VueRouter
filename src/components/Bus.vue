@@ -29,7 +29,7 @@
         <div>
           
             <div class="btn-agregar">
-                <q-btn color="secondary" label="Agregar" @click="agregarBus()" />
+                <q-btn class="bg-secondary" label="Agregar Bus" @click="agregarBus()" />
             </div>
             <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
                 <template v-slot:body-cell-estado="props">
@@ -174,5 +174,6 @@ async function ActivarBus(id) {
     margin-bottom: 5px;
     display: flex;
     justify-content: center;
+    color: black;
 }
 </style>

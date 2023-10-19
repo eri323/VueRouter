@@ -25,9 +25,9 @@
             </q-card>
         </q-dialog>     
         <div>
-            <h1>Clientes</h1>
+            
             <div class="btn-agregar">
-                <q-btn color="secondary" label="Agregar" @click="agregarCliente()" />
+                <q-btn class="bg-secondary" label="Agregar cliente" @click="agregarCliente()" />
             </div>
             <q-table title="Clientes" :rows="rows" :columns="columns" row-key="name">
                 <template v-slot:body-cell-estado="props">
@@ -174,6 +174,6 @@ onMounted(async () => {
     width: 100%;
     margin-bottom: 5px;
     display: flex;
-    justify-content: flex-end
+    justify-content: center;
 }
 </style>
