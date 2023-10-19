@@ -2,12 +2,19 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import {quasar, transformAssetUrls} from '@quasar/vite-plugin'
 
-// https://vitejs.dev/config/
+
 export default defineConfig({
   plugins: [
     vue({
-        template: {transformAssetUrls}
-    }),
+      template: {
+        // Aquí puedes configurar cómo deseas manejar las URLs de los activos en tus plantillas
+        // Por ejemplo:
+        transformAssetUrls: {
+          img: 'src',
+          image: 'xlink:href',
+          // Otras configuraciones si es necesario
+        }
+     }}),   
       quasar({
         sassVariables: 'src/quasar-variables.sass'
       })
