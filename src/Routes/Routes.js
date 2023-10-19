@@ -1,5 +1,5 @@
 import Login from "../components/Login.vue";
-import Home from "../components/Home.vue";
+import home from "../components/home.vue";
 import Vendedores from "../components/Vendedores.vue";
 import Bus from "../components/Bus.vue";
 import Ruta from "../components/Ruta.vue";
@@ -11,8 +11,8 @@ const routes = [
   { path: "/", component: Login },
 
   {
-    path: "/Home",
-    component: Home,
+    path: "/home",
+    component: home,
     children: [
       { path: "/Vendedores", component: Vendedores },
       { path: "/Bus", component: Bus },
