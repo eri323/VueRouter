@@ -6,7 +6,7 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <i class="fa-solid fa-bus" ></i>
+            <i class="fa-solid fa-bus"></i>
           </q-avatar>
           Transporte
         </q-toolbar-title>
@@ -22,42 +22,63 @@
       id="lateral"
       class="bg-primary"
     >
-<div class="perfil">
-  <div class="perfilAvatar">
-    <i class="fa-regular fa-circle-user" id="img"></i>
-  </div>
-</div>
-    
-    <div class="btns">
-      <router-link to="/Vendedores">
-      
-        <button>
-          <i class="fa-solid fa-clipboard-user"></i>
-         
-          Vendedores
-        </button>
-      </router-link>
-      <router-link to="/Bus">
-       <button>
-        <i class="fa-solid fa-bus-simple"></i>
-        buses
-       </button>
-      </router-link>
-      <router-link to="/Ruta">
-       <button>
-        <i class="fa-solid fa-road"></i>
-        Rutas
-       </button></router-link>
-      <router-link to="/Cliente">
-        <button>
-          <i class="fa-solid fa-user-tie"></i>
-          clientes
-        </button></router-link>
-    </div>
-      
+      <div class="perfil">
+        <div class="perfilAvatar">
+          <i class="fa-regular fa-circle-user" id="img"></i>
+        </div>
+      </div>
+
+      <div class="btns">
+        <router-link to="/Vendedores">
+          <button>
+            <i class="fa-solid fa-clipboard-user"></i>
+
+            Vendedores
+          </button>
+        </router-link>
+        <router-link to="/Bus">
+          <button>
+            <i class="fa-solid fa-bus-simple"></i>
+            buses
+          </button>
+        </router-link>
+        <router-link to="/Ruta">
+          <button>
+            <i class="fa-solid fa-road"></i>
+            rutas
+          </button></router-link
+        >
+        <router-link to="/Cliente">
+          <button>
+            <i class="fa-solid fa-user-tie"></i>
+            Clientes
+          </button></router-link
+        >
+      </div>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="container">
+      <div class="tarjetas">
+        <router-link to="./Vendedores" >
+          <div @click="mostrar()">
+            <i class="fa-solid fa-clipboard-user"></i>
+            <p>Vendedores</p>
+          </div>
+        </router-link>
+        
+        <div>
+          <i class="fa-solid fa-bus-simple"></i>
+          <p>Buses</p>
+        </div>
+        <div>
+          <i class="fa-solid fa-road"></i>
+          <p>Rutas</p>
+        </div>
+        <div>
+          <i class="fa-solid fa-user-tie"></i>
+          <p>Clientes</p>
+        </div>
+      </div>
       <router-view />
     </q-page-container>
   </q-layout>
@@ -67,26 +88,33 @@
 import { ref } from "vue";
 
 const leftDrawerOpen = ref(false);
-
+let mostrar = ref(true);
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
+
+/* function mostrar(){
+  mostrar.value = false;
+} */
 </script>
 
 <style scoped>
-.body{
+.body {
   background-image: url("../assets/fondo.jpg");
   background-attachment: fixed;
   background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #lateral {
   display: flex;
   flex-direction: column;
 }
-#img{
-font-size: 150px;
+#img {
+  font-size: 150px;
 }
-.perfilAvatar{
+.perfilAvatar {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -97,17 +125,16 @@ font-size: 150px;
   height: 150px;
   border: none;
 }
-.perfil{
+.perfil {
   display: flex;
   justify-content: center;
   padding: 15px;
 }
-.btns{
+.btns {
   display: flex;
   flex-direction: column;
-
 }
-.btns button{
+.btns button {
   border: none;
   font-family: "Letra";
   width: 100%;
@@ -115,14 +142,52 @@ font-size: 150px;
   padding: 15px;
   font-size: 20px;
   text-transform: capitalize;
- cursor: pointer;
+  cursor: pointer;
 }
-.btns button:hover{
+.btns button:hover {
   background-color: rgb(213, 216, 220);
   transition: ease-in-out 0.5s;
 }
 @font-face {
   font-family: "Letra";
   src: url("../fonts/Anta-Regular.ttf");
+}
+.tarjetas {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 50px;
+  gap: 25px;
+}
+.tarjetas div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  background-color: #0088ff;
+  border-radius: 15px;
+  padding: 15px;
+  width: 250px;
+  cursor: pointer;
+  
+}
+.tarjetas div:hover{
+  transform: scale(1.1);
+  transition: ease-in-out 0.4s;
+}
+.tarjetas div i {
+  font-size: 150px;
+  color: black;
+}
+.tarjetas div p {
+  font-family: "Letra";
+  font-size: 25px;
+  text-decoration: none;
+  color: white;
+}
+.container {
+  display: flex;
+  justify-content: center;
 }
 </style>
