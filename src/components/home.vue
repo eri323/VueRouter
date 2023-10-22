@@ -160,6 +160,8 @@ function mostrarta() {
 .btns {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+
 }
 .btns button {
   border: none;
@@ -184,6 +186,7 @@ function mostrarta() {
   flex-wrap: wrap;
   padding: 20px 50px;
   gap: 25px;
+  justify-content: center;
 }
 .tarjetas div {
   display: flex;

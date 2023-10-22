@@ -170,4 +170,9 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
 }
+.q-table__top relative-position row items-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>
