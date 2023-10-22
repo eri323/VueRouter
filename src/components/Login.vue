@@ -3,7 +3,7 @@
     <div class="contenedor">
       <q-card class="my-card">
         <div id="card-title">
-          <h2 class="log">LOGIN</h2>
+          <h2 class="log">Login</h2>
           <i class="fa-regular fa-circle-user" id="img"></i>
         </div>
         <div class="containerData">
@@ -100,6 +100,7 @@
   display: flex;
   justify-content: center;
   font-family: "Letra";
+  padding: 8px;
 }
 #submit-btn:hover {
   box-shadow: 0px 1px 10px #24c64f;

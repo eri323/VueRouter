@@ -20,7 +20,7 @@
       behavior="mobile"
       elevated
       id="lateral"
-      class="bg-primary"
+      class="bg-white"
     >
       <div class="perfil">
         <div class="perfilAvatar">
@@ -29,55 +29,78 @@
       </div>
 
       <div class="btns">
+        <router-link to="/home">
+          <button @click="mostrarta()">
+            <i class="fa-solid fa-house"></i>
+            Home
+          </button></router-link
+        >
         <router-link to="/Vendedores">
-          <button>
+          <button @click="mostrart()">
             <i class="fa-solid fa-clipboard-user"></i>
 
             Vendedores
           </button>
         </router-link>
         <router-link to="/Bus">
-          <button>
+          <button @click="mostrart()">
             <i class="fa-solid fa-bus-simple"></i>
             buses
           </button>
         </router-link>
         <router-link to="/Ruta">
-          <button>
+          <button @click="mostrart()">
             <i class="fa-solid fa-road"></i>
             rutas
           </button></router-link
         >
         <router-link to="/Cliente">
-          <button>
+          <button @click="mostrart()">
             <i class="fa-solid fa-user-tie"></i>
             Clientes
+          </button></router-link
+        >
+        <router-link to="/Conductores">
+          <button @click="mostrart()">
+            <i class="fa-solid fa-users-line"></i>
+            Conductores
           </button></router-link
         >
       </div>
     </q-drawer>
 
     <q-page-container class="container">
-      <div class="tarjetas">
-        <router-link to="./Vendedores" >
-          <div @click="mostrar()">
+      <div class="tarjetas" v-if="mostrar">
+        <router-link to="./Vendedores">
+          <div @click="mostrart()">
             <i class="fa-solid fa-clipboard-user"></i>
             <p>Vendedores</p>
           </div>
         </router-link>
-        
-        <div>
-          <i class="fa-solid fa-bus-simple"></i>
-          <p>Buses</p>
-        </div>
-        <div>
-          <i class="fa-solid fa-road"></i>
-          <p>Rutas</p>
-        </div>
-        <div>
-          <i class="fa-solid fa-user-tie"></i>
-          <p>Clientes</p>
-        </div>
+        <router-link to="./Bus">
+          <div @click="mostrart()">
+            <i class="fa-solid fa-bus-simple"></i>
+            <p>Buses</p>
+          </div>
+        </router-link>
+        <router-link to="./Rutas">
+          <div @click="mostrart()">
+            <i class="fa-solid fa-road"></i>
+            <p>Rutas</p>
+          </div>
+        </router-link>
+        <router-link to="./Clientes">
+          <div @click="mostrart()">
+            <i class="fa-solid fa-user-tie"></i>
+            <p>Clientes</p>
+          </div>
+        </router-link>
+        <router-link to="./Conductores">
+          <div @click="mostrart()">
+            <i class="fa-solid fa-users-line"></i>
+            <p>Conductores</p>
+          </div>
+        </router-link>
       </div>
       <router-view />
     </q-page-container>
@@ -93,9 +116,12 @@ const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
 
-/* function mostrar(){
+function mostrart() {
   mostrar.value = false;
-} */
+}
+function mostrarta() {
+  mostrar.value = true;
+}
 </script>
 
 <style scoped>
@@ -129,6 +155,7 @@ const toggleLeftDrawer = () => {
   display: flex;
   justify-content: center;
   padding: 15px;
+  background-color: #0088ff;
 }
 .btns {
   display: flex;
@@ -170,9 +197,8 @@ const toggleLeftDrawer = () => {
   padding: 15px;
   width: 250px;
   cursor: pointer;
-  
 }
-.tarjetas div:hover{
+.tarjetas div:hover {
   transform: scale(1.1);
   transition: ease-in-out 0.4s;
 }
@@ -185,6 +211,8 @@ const toggleLeftDrawer = () => {
   font-size: 25px;
   text-decoration: none;
   color: white;
+  border: none;
+  text-decoration: none;
 }
 .container {
   display: flex;

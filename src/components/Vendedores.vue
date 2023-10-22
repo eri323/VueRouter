@@ -1,42 +1,80 @@
 <template>
-  <div class="body">
-    <div class="containerBoton">
-      <q-btn
-        label="Agregar vendedor"
-        class="text-black"
-        color="secondary"
-        @click="medium = true"
-      />
-      <q-dialog v-model="medium">
-        <q-card style="width: 700px; max-width: 80vw">
-          <q-card-section>
-            <div class="text-h6">{{ titleModal }}</div>
-          </q-card-section>
+  <div>
+    <!-- Modal -->
+    <q-dialog v-model="fixed">
+      <q-card class="modal-content">
+        <q-card-section class="row items-center q-pb-none" style="color: black">
+          <div class="text-h6">{{ text }}</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-separator />
 
-          <q-card-section class="q-pt-none">
-            Nombre <br />
-            <q-input v-model="nombreNuevo" type="text"></q-input>
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            Password <br />
-            <q-input v-model="passwordNueva" type="text"></q-input>
-          </q-card-section>
+        <q-card-section style="max-height: 50vh" class="scroll">
+          <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
+          <q-input
+            v-model="password"
+            label="Contraseña"
+            type="text"
+            style="width: 300px"
+          />
+        </q-card-section>
 
-          <q-card-actions align="right" class="bg-white text-teal">
-            <q-btn flat label="Cancelar" v-close-popup />
-            <q-btn flat label="Aceptar" @click="agregarvendedor" />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-    </div>
+        <q-separator />
 
-    <div class="q-pa-md">
-      <q-table title="Vendedores" :rows="rows" :columns="columns" row-key="name">
-        <template v-slot:body-cell-Opciones="{ row: route }">
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            @click="AgregarVendedor()"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <div>
+      <div class="btn-agregar">
+        <q-btn
+          class="bg-secondary"
+          label="Agregar Vendedores"
+          @click="agregarVendedor()"
+        />
+      </div>
+      <q-table
+        title="Vendedores"
+        :rows="rows"
+        :columns="columns"
+        row-key="name"
+      >
+        <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <q-btn v-if="route.estado">❌</q-btn>
-            <q-btn v-if="route.estado">✍️</q-btn>
-            <q-btn v-else>✔️</q-btn>
+            <label for="" v-if="props.row.estado == 1" style="color: green"
+              >Activo</label
+            >
+            <label for="" v-else style="color: red">Inactivo</label>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-opciones="props">
+          <q-td :props="props" class="botones">
+            <q-btn
+              color="white"
+              text-color="black"
+              label="🖋️"
+              @click="EditarVendedor(props.row._id)"
+            />
+            <q-btn
+              glossy
+              label="❌"
+              @click="InactivarVendedor(props.row._id)"
+              v-if="props.row.estado == 1"
+            />
+            <q-btn
+              glossy
+              label="✔️"
+              @click="putActivarVendedor(props.row._id)"
+              v-else
+            />
           </q-td>
         </template>
       </q-table>
@@ -48,120 +86,122 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
-
-const nombreNuevo = ref("");
-const passwordNueva = ref("");
-
-async function agregarvendedor() {
-  const data = {
-    Nombre: nombreNuevo.value,
-    password: passwordNueva.value,
-    estado: 1,
-  };
-  try {
-    const response = await axios.post("vendedor/vendedorcrear", data);
-    if (response.status === 200) {
-      datos.value.push(data);
-      nombreNuevo.value = "";
-      passwordNueva.value = "";
-
-      medium.value = false;
-      DatosvendedorPush();
-    } else {
-      console.log(
-        "Error en la solicitud HTTP:",
-        response.status,
-        response.statusText
-      );
-    }
-  } catch (error) {
-    console.error("Error al agregar vendedor:", error);
-
-    if (error.response) {
-      console.log(
-        "Respuesta de error:",
-        error.response.status,
-        error.response.data
-      );
-    }
-  }
-}
-const datos = ref([]);
+import { useVendedorStore } from "../stores/Vendedor.js";
+const vendedorStore = useVendedorStore();
+let text = ref("");
+let vendedor = ref([]);
 let rows = ref([]);
-let colums = ref([]);
-let titleModal = ref("Nuevo vendedor");
-const medium = ref(false);
-async function ObtenerDatos() {
-  const response = await axios.get("vendedor/vendedorbusca");
-  const data = response.data;
-  rows.value = data.vendedor;
-  colums.value = data.vendedor;
-  console.log(data);
-}
-async function DatosvendedorPush() {
-  try {
-    const response = await axios.get(`vendedor/vendedorbusca`);
-    const data = response.data;
+let fixed = ref(false);
+let Nombre = ref("");
+let password = ref();
+let cambio = ref(0);
 
-    if (data.vendedor.length > 0) {
-      for (const vendedor of data.vendedor) {
-        datos.value.push({
-          Nombre: vendedor.Nombre,
-          password: vendedor.password,
-          estado: vendedor.estado,
-        });
-      }
-      rows.value = datos.value;
-    }
+async function obtenerInfo() {
+  try {
+    await vendedorStore.obtenerInfoVendedor();
+    vendedor.value = vendedorStore.vendedores;
+    rows.value = vendedorStore.vendedores;
   } catch (error) {
-    console.error("Error al obtener datos:", error);
+    console.log(error);
   }
 }
-const columns = [
-  {
-    name: "Nombre",
-    align: "center",
-    label: "Nombre",
-    field: "Nombre",
-    sortable: true,
-  },
-  {
-    name: "password",
-    align: "center",
-    label: "Password",
-    field: "password",
-    sortable: true,
-  },
 
+const columns = [
+  { name: "Nombre", label: "Nombre", field: "Nombre", sortable: true },
+  { name: "password", label: "Contraseña", field: "password" },
   {
-    name: "Estado",
+    name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
-    align: "center",
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
-    name: "Opciones",
-    align: "center",
+    name: "opciones",
     label: "Opciones",
-    field: "Opciones",
-    sortable: true,
+    field: (row) => null,
+    sortable: false,
   },
 ];
 
-onMounted(() => {
-  ObtenerDatos();
+function agregarVendedor() {
+  text.value = "agregar Vendedor";
+  fixed.value = true;
+  cambio.value = 0;
+  limpiar();
+}
+
+async function AgregarVendedor() {
+  if (cambio.value === 0) {
+    await vendedorStore.postvendedor({
+      Nombre: Nombre.value,
+      password: password.value,
+    });
+    limpiar();
+    obtenerInfo();
+  } else {
+    let id = idVendedor.value;
+    if (id) {
+      await vendedorStore.putEditarVendedor(id, {
+        Nombre: Nombre.value,
+        password: password.value,
+      });
+
+      limpiar();
+      obtenerInfo();
+      fixed.value = false;
+    }
+  }
+}
+
+function limpiar() {
+  Nombre.value = "";
+  password.value = "";
+}
+
+let idVendedor = ref("");
+async function EditarVendedor(id) {
+  cambio.value = 1;
+  const vendedorSeleccionado = vendedor.value.find(
+    (vendedor) => vendedor._id === id
+  );
+  if (vendedorSeleccionado) {
+    idVendedor.value = String(vendedorSeleccionado._id);
+    fixed.value = true;
+    text.value = "Editar vendedor";
+    Nombre.value = vendedorSeleccionado.Nombre;
+    password.value = vendedorSeleccionado.password;
+    console.log(password);
+  }
+}
+
+async function InactivarVendedor(id) {
+  await vendedorStore.putInactivarVendedor(id);
+  obtenerInfo();
+}
+
+async function putActivarVendedor(id) {
+  await vendedorStore.putActivarVendedor(id);
+  obtenerInfo();
+}
+
+onMounted(async () => {
+  obtenerInfo();
 });
 </script>
 
 <style scoped>
-.body {
-  padding: 30px;
-  margin: 0;
-  text-transform: capitalize;
+.modal-content {
+  width: 400px;
 }
-.containerBoton {
+
+.botones button {
+  margin: 2px;
+}
+
+.btn-agregar {
+  width: 100%;
+  margin-bottom: 5px;
   display: flex;
   justify-content: center;
 }
