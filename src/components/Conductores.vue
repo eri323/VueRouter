@@ -25,11 +25,16 @@
             </q-card>
         </q-dialog>     
         <div>
-            
-            <div class="btn-agregar">
-                <q-btn class="bg-secondary" label="Agregar Conductores" @click="agregarConductor()" />
+            <div class="containerheader">
+                <div>
+                    <h1>Conductores</h1>
+                </div>
+                <div class="btn-agregar">
+                    <q-btn class="bg-secondary" @click="agregarConductor()" > Agregar <br> Conductores</q-btn>
+                </div>
             </div>
-            <q-table title="Conductores" :rows="rows" :columns="columns" row-key="name">
+           
+            <q-table  :rows="rows" :columns="columns" row-key="name">
                 <template v-slot:body-cell-estado="props">
                     <q-td :props="props">
                         <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
@@ -169,10 +174,16 @@ onMounted(async () => {
     margin-bottom: 5px;
     display: flex;
     justify-content: center;
+
 }
-.q-table__top relative-position row items-center{
+.containerheader{
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
 }
+.containerheader div h1{
+    font-family: "Letra";
+    margin: 0;
+    padding: 45px;
+}
+
 </style>

@@ -130,7 +130,7 @@ function mostrarta() {
   background-attachment: fixed;
   background-size: cover;
   display: flex;
-  align-items: center;
+  
   justify-content: center;
 }
 #lateral {

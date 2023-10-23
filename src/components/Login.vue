@@ -8,8 +8,16 @@
         </div>
         <div class="containerData">
           <q-card-actions vertical align="right" class="texto">
-            <q-input type="text" label="Nombre" id="input" />
-            <q-input type="password" label="Contraseña" id="input" />
+            <q-input color="green" filled v-model="text" label="Nombre" >
+              <template v-slot:prepend>
+                <i class="fa-solid fa-user-lock"></i>
+              </template>
+            </q-input>
+            <q-input color="green" filled v-model="text" label="Contraseña" type="password">
+              <template v-slot:prepend>
+                <i class="fa-solid fa-file-signature"></i>
+              </template>
+            </q-input>
           </q-card-actions>
           <router-link to="/Home">
             <q-btn push id="submit-btn" text-color="black" label="Aceptar" />
@@ -19,7 +27,11 @@
     </div>
   </div>
 </template>
-<script></script>
+<script setup>
+import { ref } from "vue";
+
+const text = ref((''))
+</script>
 <style scoped>
 .body {
   margin: 0;
@@ -56,7 +68,7 @@
 
 .texto {
   display: flex;
-  gap: 30px;
+  gap: 20px;
   align-items: center;
   flex-direction: column;
   text-align: center;
