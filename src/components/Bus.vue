@@ -3,8 +3,8 @@
         <!-- Modal -->
         <q-dialog v-model="fixed">
             <q-card class="modal-content">
-                <q-card-section class="row items-center q-pb-none" style="color: black;">
-
+                <q-card-section class="row items-center q-pb-none" style="color: rgb(0, 0, 0); padding: 0; height: 45px;">
+                    <h1 class="TitleDialog">{{ titleDialog }}</h1>
                     <q-space />
                     <q-btn icon="close" flat round dense v-close-popup />
                 </q-card-section>
@@ -39,7 +39,7 @@
             </div>
             <div class="tbus">
                 <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
-                    <h1>fds</h1>
+                    
                     <template v-slot:body-cell-estado="props">
                         <q-td :props="props">
                             <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
@@ -75,7 +75,8 @@ let fixed = ref(false)
 let Vehiculo = ref('');
 let NumAsientos = ref();
 let conductor_id = ref('');
-let cambio = ref(0)
+let cambio = ref(0);
+let titleDialog = ref('Agregar Bus');
 
 async function obtenerInfo() {
     try {
@@ -213,14 +214,18 @@ async function ActivarBus(id) {
     height: 4px;
     border: none;
     width: 450px;
-    margin-bottom: 5%;
+  
 
 }
 
 .modal-content {
     width: 400px;
 }
-
+.TitleDialog{
+    margin: 0;
+    font-size: 15px;
+    padding: 0;
+}
 .botones button {
     margin: 2px;
 }
@@ -229,6 +234,6 @@ async function ActivarBus(id) {
     width: 100%;
     margin-bottom: 5px;
     display: flex;
-    justify-content: center;
+    justify-content: right;
     color: black;
 }</style>
