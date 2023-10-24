@@ -1,9 +1,14 @@
 <template>
   <div>
-    <!-- Modal -->
+    <div>
+      <h1 style="text-align: center;">Vendedores</h1>
+      <hr>
+    </div>
     <q-dialog v-model="fixed">
+
       <q-card class="modal-content">
-        <q-card-section class="row items-center q-pb-none" style="color: black">
+
+        <q-card-section class="subtabla" style="color: black" id>
           <div class="text-h6">{{ text }}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
@@ -12,69 +17,34 @@
 
         <q-card-section style="max-height: 50vh" class="scroll">
           <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
-          <q-input
-            v-model="password"
-            label="Contraseña"
-            type="text"
-            style="width: 300px"
-          />
+          <q-input v-model="password" label="Contraseña" type="text" style="width: 300px" />
         </q-card-section>
 
         <q-separator />
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            @click="AgregarVendedor()"
-          />
+          <q-btn flat label="Aceptar" color="primary" @click="AgregarVendedor()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
     <div>
       <div class="btn-agregar">
-        <q-btn
-          class="bg-secondary"
-          label="Agregar Vendedores"
-          @click="agregarVendedor()"
-        />
+        <q-btn class="bg-secondary" label="Agregar Vendedores" @click="agregarVendedor()" />
       </div>
-      <q-table
-        title="Vendedores"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-      >
+
+      <q-table title="Vendedores" :rows="rows" :columns="columns" row-key="name">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green"
-              >Activo</label
-            >
+            <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
             <label for="" v-else style="color: red">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn
-              color="white"
-              text-color="black"
-              label="🖋️"
-              @click="EditarVendedor(props.row._id)"
-            />
-            <q-btn
-              glossy
-              label="❌"
-              @click="InactivarVendedor(props.row._id)"
-              v-if="props.row.estado == 1"
-            />
-            <q-btn
-              glossy
-              label="✔️"
-              @click="putActivarVendedor(props.row._id)"
-              v-else
-            />
+            <q-btn color="white" text-color="black" label="🖋️" @click="EditarVendedor(props.row._id)" />
+            <q-btn glossy label="❌" @click="InactivarVendedor(props.row._id)" v-if="props.row.estado == 1" />
+            <q-btn glossy label="✔️" @click="putActivarVendedor(props.row._id)" v-else />
           </q-td>
         </template>
       </q-table>
@@ -125,7 +95,7 @@ const columns = [
 ];
 
 function agregarVendedor() {
-  text.value = "agregar Vendedor";
+  text.value = "Agregar Vendedor";
   fixed.value = true;
   cambio.value = 0;
   limpiar();
@@ -204,5 +174,24 @@ onMounted(async () => {
   margin-bottom: 5px;
   display: flex;
   justify-content: center;
+  margin-bottom: 2%;
+}
+
+hr {
+  background-color: green;
+  height: 4px;
+  border: none;
+  width: 480px;
+  margin-bottom: 1%;
+
+}
+
+h1 {
+  font-family: "Letra";
+  text-align: center;
+  font-size: px;
+  margin: 0;
+  align-items: center;
+  margin-top: 2%;
 }
 </style>
