@@ -85,7 +85,7 @@ const columns = [
   { name: 'sucursal', label: 'Sucursal', field: 'sucursal', sortable: true },
   { name: 'Origen', label: 'Origen', field: 'Origen', sortable: true },
   { name: 'Destino', label: 'Destino', field: 'Destino', sortable: true},
-  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true, format: (val) => format(new Date(val), 'yyyy-dd-mm') },
+  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true, format: (val) => format(new Date(val), 'yyyy-MM-dd') },
   { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
   {
       name: 'opciones', label: 'Opciones',
@@ -141,7 +141,7 @@ async function EditarRuta(id) {
   cambio.value = 1;
   const rutaSeleccionada = rutas.value.find((ruta) => ruta._id === id);
   if (rutaSeleccionada) {
-    console.log(rutaSeleccionada.fecha_salida);
+    rutaSeleccionada.fecha_salida = rutaSeleccionada.fecha_salida.slice(0,10)
     idRuta.value = String(rutaSeleccionada._id);
     fixed.value = true;
     text.value = "Editar Bus";
