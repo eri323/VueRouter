@@ -20,7 +20,7 @@
             </q-input>
           </q-card-actions>
      
-           <button @click="Login()">Acpetar</button>
+           <button @click="Login()">Aceptar</button>
        
         </div>
       </q-card>
