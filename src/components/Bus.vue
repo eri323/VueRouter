@@ -225,6 +225,7 @@ async function ActivarBus(id) {
     margin: 0;
     font-size: 15px;
     padding: 0;
+   
 }
 .botones button {
     margin: 2px;

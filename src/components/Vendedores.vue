@@ -155,6 +155,8 @@ async function putActivarVendedor(id) {
   obtenerInfo();
 }
 
+
+
 onMounted(async () => {
   obtenerInfo();
 });

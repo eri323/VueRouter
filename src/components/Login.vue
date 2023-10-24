@@ -8,20 +8,20 @@
         </div>
         <div class="containerData">
           <q-card-actions vertical align="right" class="texto">
-            <q-input color="green" filled v-model="text1" label="Nombre" >
+            <q-input color="green" filled v-model="data.Nombre" label="Nombre" >
               <template v-slot:prepend>
                 <i class="fa-solid fa-user-lock"></i>
               </template>
             </q-input>
-            <q-input color="green" filled v-model="text" label="Contraseña" type="password">
+            <q-input color="green" filled v-model="data.password" label="Contraseña" type="password">
               <template v-slot:prepend>
                 <i class="fa-solid fa-file-signature"></i>
               </template>
             </q-input>
           </q-card-actions>
-          <router-link to="/Home">
-            <q-btn push id="submit-btn" text-color="black" label="Aceptar" />
-          </router-link>
+     
+           <button @click="Login()">Acpetar</button>
+       
         </div>
       </q-card>
     </div>
@@ -29,9 +29,29 @@
 </template>
 <script setup>
 import { ref } from "vue";
+import {useVendedorStore } from "../stores/Vendedor"
+import { useRouter } from "vue-router";
 
-const text = ref((''))
-const text1 = ref((''))
+
+const router = useRouter()
+const data = ref({  
+  Nombre: "",
+  password: "",
+})
+const useVendedor = useVendedorStore()
+async function Login() {
+  console.log(data.value);
+  const res = await useVendedor.login(data.value)
+  console.log(res);
+
+  if(res !=200){
+    console.log("error usuario o contraseña");
+    return;
+  }
+
+  router.push("./home")
+}
+
 </script>
 <style scoped>
 .body {
