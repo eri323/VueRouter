@@ -7,25 +7,26 @@
     <q-dialog v-model="fixed">
 
       <q-card class="modal-content">
+        <div class="contorno">
 
-        <q-card-section class="subtabla" style="color: black" id>
-          <div class="text-h6">{{ text }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-separator />
+          <q-card-section class="row items-center q-pb" style="color: black" id>
+            <div class="text-h6">{{ text }}</div>
+            <q-space />
+          </q-card-section>
+          <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
-          <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
-          <q-input v-model="password" label="Contraseña" type="text" style="width: 300px" />
-        </q-card-section>
+          <q-card-section style="max-height: 50vh" class="scroll">
+            <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
+            <q-input v-model="password" label="Contraseña" type="text" style="width: 300px" />
+          </q-card-section>
 
-        <q-separator />
+          <q-separator />
 
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" @click="AgregarVendedor()" />
-        </q-card-actions>
+          <q-card-actions align="right" style="gap: 30px; margin-top: 10px;">
+            <q-btn flat label="Cancelar" color="primary" v-close-popup  />
+            <q-btn flat label="Aceptar" color="primary" @click="AgregarVendedor()" />
+          </q-card-actions>
+        </div>
       </q-card>
     </q-dialog>
     <div>
@@ -164,7 +165,14 @@ onMounted(async () => {
 
 <style scoped>
 .modal-content {
-  width: 400px;
+  width: 480px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+  border-radius: 3%;
 }
 
 .botones button {
@@ -173,18 +181,18 @@ onMounted(async () => {
 
 .btn-agregar {
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   display: flex;
-  justify-content: center;
-  margin-bottom: 2%;
+  justify-content: right;
+  color: black;
 }
 
 hr {
   background-color: green;
-  height: 4px;
-  border: none;
-  width: 480px;
-  margin-bottom: 1%;
+    height: 2px;
+    border: none;
+    width: 363px;
+    margin-bottom: 1%;
 
 }
 
@@ -195,5 +203,18 @@ h1 {
   margin: 0;
   align-items: center;
   margin-top: 2%;
+}
+
+.text-h6 {
+  font-size: 28px;
+}
+.contorno{
+  background-color: white;
+    height: 340px;
+    width: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 </style>
