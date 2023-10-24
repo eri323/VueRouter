@@ -9,7 +9,6 @@ export const useBusStore = defineStore('bus', () => {
         try {
             let responseBuses = await axios.get('transporte/transbusca');
             buses.value = responseBuses.data.transporte;
-            console.log(responseBuses);
         } catch (error) {
             throw error
         }

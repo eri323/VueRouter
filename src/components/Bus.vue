@@ -4,21 +4,21 @@
         <q-dialog v-model="fixed">
             <q-card class="modal-content">
                 <q-card-section class="row items-center q-pb-none" style="color: black;">
-                 
+
                     <q-space />
                     <q-btn icon="close" flat round dense v-close-popup />
                 </q-card-section>
                 <q-separator />
 
                 <q-card-section style="max-height: 50vh" class="scroll">
-                    <q-input v-model="Vehiculo" label="Placa" style="width: 300px"/>
-                    <q-input v-model="NumAsientos" label="Numero de Asientos" type="number"
-                     style="width: 300px;"/>
-                   
+                    <q-input v-model="Vehiculo" label="Placa" style="width: 300px" />
+                    <q-input v-model="NumAsientos" label="Numero de Asientos" type="number" style="width: 300px;" />
+
                     <div class="q-gutter-y-md column" style="max-width: 300px">
-                        <q-select clearable filled color="purple-12" v-model="conductor_id" :options="options" label="Conductor" />
-                      </div>
-    
+                        <q-select clearable filled color="primary" v-model="conductor_id" :options="options"
+                            label="Conductor" />
+                    </div>
+
                 </q-card-section>
 
                 <q-separator />
@@ -30,7 +30,7 @@
             </q-card>
         </q-dialog>
         <div>
-          
+
             <div class="btn-agregar">
                 <q-btn class="bg-secondary" label="Agregar Bus" @click="agregarBus()" />
             </div>
@@ -44,9 +44,8 @@
                 <template v-slot:body-cell-opciones="props">
                     <q-td :props="props" class="botones">
                         <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
-                        <q-btn  glossy label="❌" @click="InactivarBus(props.row._id)"
-                            v-if="props.row.estado == 1" />
-                        <q-btn  glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
+                        <q-btn glossy label="❌" @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1" />
+                        <q-btn glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
                     </q-td>
                 </template>
             </q-table>
@@ -60,8 +59,9 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { format } from 'date-fns';
 import { useBusStore } from '../stores/Bus.js';
+import { useConductorStore } from '../stores/Conductores.js';
 const busStore = useBusStore()
-
+const conductorStore = useConductorStore()
 let buses = ref([]);
 let rows = ref([]);
 let fixed = ref(false)
@@ -82,7 +82,7 @@ async function obtenerInfo() {
 }
 
 const options = ref([
-    'google','api'
+    'google', 'api'
 ])
 onMounted(async () => {
     obtenerInfo()
@@ -91,7 +91,7 @@ onMounted(async () => {
 const columns = [
     { name: 'Vehiculo', label: 'Placa', field: 'Vehiculo', sortable: true },
     { name: 'NumAsientos', label: 'Numero De Asientos', field: 'NumAsientos', sortable: true },
-    { name: 'conductor_id', label: 'Conductor', field: (row)=>row.conductor_id.nombre },
+    { name: 'conductor_id', label: 'Conductor', field: (row) => row.conductor_id.nombre },
     { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
     {
         name: 'opciones', label: 'Opciones',
@@ -101,6 +101,7 @@ const columns = [
 ];
 
 function agregarBus() {
+    obtenerConductor();
     fixed.value = true;
     cambio.value = 0
 }
@@ -108,10 +109,10 @@ function agregarBus() {
 async function editarAgregarBus() {
     if (cambio.value === 0) {
         await busStore.postBus({
-            
-        Vehiculo: Vehiculo.value,
-        NumAsientos: NumAsientos.value,
-        conductor_id: conductor_id.value,
+
+            Vehiculo: Vehiculo.value,
+            NumAsientos: NumAsientos.value,
+            conductor_id: conductor_id.value,
         })
         limpiar()
         obtenerInfo()
@@ -133,6 +134,18 @@ async function editarAgregarBus() {
 }
 
 
+async function obtenerConductor() {
+    try {
+        await conductorStore.obtenerInfoConductor();
+        options.value = conductorStore.conductores.map((conductor) => (
+            {
+                label: `${conductor.nombre}`,
+                value: String(conductor._id)
+            }));
+    } catch (error) {
+        console.log(error);
+    }
+}
 function limpiar() {
     Vehiculo.value = ""
     NumAsientos.value = ""
@@ -141,15 +154,15 @@ function limpiar() {
 
 let idBus = ref('')
 async function EditarBus(id) {
-  
+    obtenerConductor();
     const busSeleccionado = buses.value.find((transporte) => transporte._id === id);
     if (busSeleccionado) {
         idBus.value = String(busSeleccionado._id);
         fixed.value = true;
         text.value = "Editar Bus";
         conductor_id.value = busSeleccionado.conductor_id;
-        Vehiculo.value=busSeleccionado.Vehiculo;
-        NumAsientos.value=busSeleccionado.NumAsientos;
+        Vehiculo.value = busSeleccionado.Vehiculo;
+        NumAsientos.value = busSeleccionado.NumAsientos;
     }
 }
 

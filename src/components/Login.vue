@@ -8,7 +8,7 @@
         </div>
         <div class="containerData">
           <q-card-actions vertical align="right" class="texto">
-            <q-input color="green" filled v-model="text" label="Nombre" >
+            <q-input color="green" filled v-model="text1" label="Nombre" >
               <template v-slot:prepend>
                 <i class="fa-solid fa-user-lock"></i>
               </template>
@@ -31,6 +31,7 @@
 import { ref } from "vue";
 
 const text = ref((''))
+const text1 = ref((''))
 </script>
 <style scoped>
 .body {

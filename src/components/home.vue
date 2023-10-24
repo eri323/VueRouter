@@ -33,12 +33,10 @@
           <button @click="mostrarta()">
             <i class="fa-solid fa-house"></i>
             Home
-          </button></router-link
-        >
+          </button></router-link>
         <router-link to="/Vendedores">
           <button @click="mostrart()">
             <i class="fa-solid fa-clipboard-user"></i>
-
             Vendedores
           </button>
         </router-link>
@@ -71,7 +69,7 @@
 
     <q-page-container class="container">
       <div class="tarjetas" v-if="mostrar">
-        <router-link to="./Vendedores">
+        <router-link to="./Vendedores" class="a">
           <div @click="mostrart()">
             <i class="fa-solid fa-clipboard-user"></i>
             <p>Vendedores</p>
@@ -222,6 +220,10 @@ onMounted(async() => {
   color: white;
   border: none;
   text-decoration: none;
+}
+.a{
+  margin: 0;
+  height: auto;
 }
 .container {
   display: flex;
