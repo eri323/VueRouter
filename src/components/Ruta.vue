@@ -14,7 +14,7 @@
                   <q-input v-model="sucursal" label="Sucursal" style="width: 300px;" />
                   <q-input v-model="Origen" label="Origen" style="width: 300px;" />
                   <q-input v-model="Destino" label="Destino" style="width: 300px;" />
-                  <q-input type="date" v-model="fecha_salida" label="Fecha salida" style="width: 300px;" />
+                  <q-input type="date" id="fechaInp" v-model="fecha_salida" label="Fecha salida" style="width: 300px;" />
               </q-card-section>
 
               <q-separator />
@@ -81,11 +81,20 @@ async function obtenerInfo(){
 
 
 
+
 const columns = [
   { name: 'sucursal', label: 'Sucursal', field: 'sucursal', sortable: true },
   { name: 'Origen', label: 'Origen', field: 'Origen', sortable: true },
   { name: 'Destino', label: 'Destino', field: 'Destino', sortable: true},
-  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true, format: (val) => format(new Date(val), 'yyyy-MM-dd') },
+  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true,
+    format: (val) => {
+      const date = new Date(val);
+      const day = date.getDate() + 1;
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      return `${day}-${month < 10 ? '0' : ''}${month}-${year}`;
+    }
+  },
   { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
   {
       name: 'opciones', label: 'Opciones',
@@ -107,7 +116,7 @@ async function editarAgregarRuta() {
           sucursal: sucursal.value,
           Origen: Origen.value,
           Destino: Destino.value,
-          fecha_salida: fecha_salida.value,
+          fecha_salida: fecha_salida.value.slice(0,10),
       })
       limpiar() 
       obtenerInfo()
@@ -118,7 +127,7 @@ async function editarAgregarRuta() {
             sucursal: sucursal.value,
             Origen: Origen.value,
             Destino: Destino.value,
-            fecha_salida: fecha_salida.value,
+            fecha_salida: fecha_salida.value.slice(0,10),
           });
          
           limpiar(); 
@@ -141,14 +150,16 @@ async function EditarRuta(id) {
   cambio.value = 1;
   const rutaSeleccionada = rutas.value.find((ruta) => ruta._id === id);
   if (rutaSeleccionada) {
-    rutaSeleccionada.fecha_salida = rutaSeleccionada.fecha_salida.slice(0,10)
+    const fechaMostrar = new Date(Date.parse(rutaSeleccionada.fecha_salida)).toISOString().slice(0,10);
+    console.log(fechaMostrar)
+    console.log(rutaSeleccionada.fecha_salida)
     idRuta.value = String(rutaSeleccionada._id);
     fixed.value = true;
     text.value = "Editar Bus";
-    sucursal.value = rutaSeleccionada.sucursal
-    Origen.value = rutaSeleccionada.Origen
-    Destino.value = rutaSeleccionada.Destino
-    fecha_salida.value = rutaSeleccionada.fecha_salida
+    sucursal.value = rutaSeleccionada.sucursal;
+    Origen.value = rutaSeleccionada.Origen;
+    Destino.value = rutaSeleccionada.Destino;
+    fecha_salida.value = fechaMostrar;
   }
 }
 
