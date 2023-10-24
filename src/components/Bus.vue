@@ -11,10 +11,13 @@
                 <q-separator />
 
                 <q-card-section style="max-height: 50vh" class="scroll">
-                    <q-input v-model="Vehiculo" label="Placa" style="width: 300px;" v-if="cambio == 0" />
+                    <q-input v-model="Vehiculo" label="Placa" style="width: 300px"/>
                     <q-input v-model="NumAsientos" label="Numero de Asientos" type="number"
-                     style="width: 300px;" v-if="cambio == 0" />
-                    <q-input v-model="conductor_id" label="Conductor" style="width: 300px;" />
+                     style="width: 300px;"/>
+                   
+                    <div class="q-gutter-y-md column" style="max-width: 300px">
+                        <q-select clearable filled color="purple-12" v-model="conductor_id" :options="options" label="Conductor" />
+                      </div>
     
                 </q-card-section>
 
@@ -78,6 +81,9 @@ async function obtenerInfo() {
     }
 }
 
+const options = ref([
+    'google','api'
+])
 onMounted(async () => {
     obtenerInfo()
 });
@@ -135,7 +141,7 @@ function limpiar() {
 
 let idBus = ref('')
 async function EditarBus(id) {
-    cambio.value = 1;
+  
     const busSeleccionado = buses.value.find((transporte) => transporte._id === id);
     if (busSeleccionado) {
         idBus.value = String(busSeleccionado._id);

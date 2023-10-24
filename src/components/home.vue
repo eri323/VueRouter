@@ -83,13 +83,13 @@
             <p>Buses</p>
           </div>
         </router-link>
-        <router-link to="./Rutas">
+        <router-link to="./Ruta">
           <div @click="mostrart()">
             <i class="fa-solid fa-road"></i>
             <p>Rutas</p>
           </div>
         </router-link>
-        <router-link to="./Clientes">
+        <router-link to="./Cliente">
           <div @click="mostrart()">
             <i class="fa-solid fa-user-tie"></i>
             <p>Clientes</p>
@@ -108,10 +108,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+
 
 const leftDrawerOpen = ref(false);
-let mostrar = ref(true);
+let mostrar = ref(false);
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
@@ -122,6 +123,11 @@ function mostrart() {
 function mostrarta() {
   mostrar.value = true;
 }
+
+
+onMounted(async() => {
+  mostrarta();
+})
 </script>
 
 <style scoped>

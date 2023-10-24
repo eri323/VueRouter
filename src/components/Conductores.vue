@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
         <!-- Modal -->
         <q-dialog v-model="fixed">
             <q-card class="modal-content">
@@ -13,7 +13,9 @@
                 <q-card-section style="max-height: 50vh" class="scroll">
                     <q-input v-model="Nombre" label="Nombre" style="width: 300px;" />
                     <q-input v-model="cedula" label="cedula" type="number" style="width: 300px;" />
-                   
+                  
+                        
+                      
                 </q-card-section>
 
                 <q-separator />
