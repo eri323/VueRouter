@@ -29,26 +29,33 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
-        <div>
-
+        <div class="tbus">
+            <div>
+                <h1>Buses</h1>
+                <hr>
+            </div>
             <div class="btn-agregar">
                 <q-btn class="bg-secondary" label="Agregar Bus" @click="agregarBus()" />
             </div>
-            <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
-                <template v-slot:body-cell-estado="props">
-                    <q-td :props="props">
-                        <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
-                        <label for="" v-else style="color: red;">Inactivo</label>
-                    </q-td>
-                </template>
-                <template v-slot:body-cell-opciones="props">
-                    <q-td :props="props" class="botones">
-                        <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
-                        <q-btn glossy label="❌" @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1" />
-                        <q-btn glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
-                    </q-td>
-                </template>
-            </q-table>
+            <div class="tbus">
+                <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
+                    <h1>fds</h1>
+                    <template v-slot:body-cell-estado="props">
+                        <q-td :props="props">
+                            <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
+                            <label for="" v-else style="color: red;">Inactivo</label>
+                        </q-td>
+                    </template>
+                    <template v-slot:body-cell-opciones="props">
+                        <q-td :props="props" class="botones">
+                            <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
+                            <q-btn glossy label="❌" @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1" />
+                            <q-btn glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
+                        </q-td>
+                    </template>
+                </q-table>
+            </div>
+
         </div>
 
     </div>
@@ -140,7 +147,7 @@ async function obtenerConductor() {
         options.value = conductorStore.conductores.map((conductor) => (
             {
                 label: `${conductor.nombre}`,
-                value: String(conductor._id)
+                value: String(conductor._id),
             }));
     } catch (error) {
         console.log(error);
@@ -160,7 +167,7 @@ async function EditarBus(id) {
         idBus.value = String(busSeleccionado._id);
         fixed.value = true;
         text.value = "Editar Bus";
-        conductor_id.value = busSeleccionado.conductor_id;
+        conductor_id.value = String(busSeleccionado.conductor_id);
         Vehiculo.value = busSeleccionado.Vehiculo;
         NumAsientos.value = busSeleccionado.NumAsientos;
     }
@@ -180,6 +187,36 @@ async function ActivarBus(id) {
 </script>
   
 <style scoped>
+.body {
+    width: 100%;
+}
+
+.tbus {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tbus div h1 {
+    font-family: "Letra";
+    text-align: center;
+    font-size: 105px;
+    margin: 0;
+    align-items: center;
+    margin-top: 4%;
+}
+
+.tbus div hr {
+    background-color: green;
+    height: 4px;
+    border: none;
+    width: 450px;
+    margin-bottom: 5%;
+
+}
+
 .modal-content {
     width: 400px;
 }
@@ -194,5 +231,4 @@ async function ActivarBus(id) {
     display: flex;
     justify-content: center;
     color: black;
-}
-</style>
+}</style>

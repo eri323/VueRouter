@@ -226,7 +226,7 @@ onMounted(async() => {
   height: auto;
 }
 .container {
-  display: flex;
-  justify-content: center;
+
+  width: 90%;
 }
 </style>
