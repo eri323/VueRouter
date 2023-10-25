@@ -17,7 +17,9 @@
 
           <q-card-section style="max-height: 50vh" class="scroll">
             <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
-            <q-input v-model="password" label="Contraseña" type="text" style="width: 300px" />
+            <q-input v-model="password" label="Contraseña" type="password" style="width: 300px" />
+            <q-input v-model="Cedula" label="Cedula" style="width: 300px" type="number" />
+            <q-input v-model="Telefono" label="Telefono" type="number" style="width: 300px" />
           </q-card-section>
 
           <q-separator />
@@ -64,6 +66,8 @@ let vendedor = ref([]);
 let rows = ref([]);
 let fixed = ref(false);
 let Nombre = ref("");
+let Cedula = ref("");
+let Telefono = ref("");
 let password = ref();
 let cambio = ref(0);
 
@@ -79,7 +83,8 @@ async function obtenerInfo() {
 
 const columns = [
   { name: "Nombre", label: "Nombre", field: "Nombre", sortable: true },
-  { name: "password", label: "Contraseña", field: "password" },
+  { name: "Cedula", label: "Cedula", field: "Cedula" },
+  { name: "Telefono", label: "Telefono", field: "Telefono" },
   {
     name: "estado",
     label: "Estado",
@@ -107,6 +112,8 @@ async function AgregarVendedor() {
     await vendedorStore.postvendedor({
       Nombre: Nombre.value,
       password: password.value,
+      Cedula:Cedula.value,
+      Telefono: Telefono.value,
     });
     limpiar();
     obtenerInfo();
@@ -116,6 +123,8 @@ async function AgregarVendedor() {
       await vendedorStore.putEditarVendedor(id, {
         Nombre: Nombre.value,
         password: password.value,
+        Cedula:Cedula.value,
+      Telefono: Telefono.value,
       });
 
       limpiar();
@@ -128,6 +137,8 @@ async function AgregarVendedor() {
 function limpiar() {
   Nombre.value = "";
   password.value = "";
+  Cedula.value = "";
+  Telefono.value = "";
 }
 
 let idVendedor = ref("");
@@ -142,6 +153,8 @@ async function EditarVendedor(id) {
     text.value = "Editar vendedor";
     Nombre.value = vendedorSeleccionado.Nombre;
     password.value = vendedorSeleccionado.password;
+    Cedula.value = vendedorSeleccionado.Cedula;
+    Telefono.value = vendedorSeleccionado.Telefono;
     console.log(password);
   }
 }
