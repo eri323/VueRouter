@@ -20,7 +20,7 @@
             </q-input>
           </q-card-actions>
      
-           <button @click="Login()">Aceptar</button>
+           <button @click="Login()" class="btn">Aceptar</button>
        
         </div>
       </q-card>
@@ -152,5 +152,18 @@ async function Login() {
 }
 #img {
   font-size: 200px;
+}
+.btn{
+  width: 100px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+}
+.btn:hover{
+  transition: ease-in-out 0.5s;
+  transform: scale(1.1);
 }
 </style>
