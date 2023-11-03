@@ -61,10 +61,10 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { format } from 'date-fns';
-import { useBusStore } from '../stores/Bus.js';
+import { useTicketStore } from '../stores/Tickete.js';
 import { useConductorStore } from '../stores/Conductores.js';
 const busStore = useBusStore()
-const conductorStore = useConductorStore()
+/* const conductorStore = useConductorStore() */
 let buses = ref([]);
 let rows = ref([]);
 let fixed = ref(false)

@@ -162,6 +162,12 @@ async function obtenerConductor() {
     }));
   } catch (error) {
     console.log(error);
+
+
+
+
+
+    
   }
 }
 function limpiar() {

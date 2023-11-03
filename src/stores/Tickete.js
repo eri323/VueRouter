@@ -2,66 +2,57 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { ref } from 'vue';
 
-export const useVendedorStore = defineStore('vendedor', () => {
-    const vendedores = ref([]);
+export const useTicketStore = defineStore('ticket', () => {
+    const ticketes = ref([]);
 
-    const obtenerInfoVendedor = async () => {
+    const obtenerInfoTicket = async () => {
         try {
-            let responseVendedor = await axios.get('vendedor/vendedorbusca');
-            vendedores.value = responseVendedor.data.vendedor;
+            let responseTicket = await axios.get('pasaje/pasajebusca');
+            ticketes.value = responseTicket.data.ticket;
         } catch (error) {
             throw error
         }
     };
 
-    const postvendedor = async (data) => {
+    const postticket = async (data) => {
         try {
-            let res = await axios.post("vendedor/vendedorcrear", data);
+            let res = await axios.post("pasaje/pasajecrear", data);
             return res
         } catch (error) {
             throw error
         }
     }
 
-    const putEditarVendedor = async (id, data) => {
+    const putEditarTicket = async (id, data) => {
         try {
-            let res = await axios.put(`vendedor/vendedormodificar/${id}`, data);
+            let res = await axios.put(`pasaje/pasajemodificar/${id}`, data);
             return res
         } catch (error) {
             throw error;
         }
     };
 
-    const putInactivarVendedor = async (id) => {
+    const putInactivarTicket = async (id) => {
         try {
-            let r = await axios.put(`vendedor/vendedorinac/${id}`)
+            let r = await axios.put(`pasaje/pasajeinac/${id}`)
             return r
         } catch (error) {
-            console.log(error, "Error al cambiar el estado de el vendedor");
+            console.log(error, "Error al cambiar el estado de el pasaje");
         }
     }
-    const putActivarVendedor = async (id) => {
+    const putActivarTicket = async (id) => {
         try {
-            let r = await axios.put(`vendedor/vendedoract/${id}`)
+            let r = await axios.put(`pasaje/pasajeact/${id}`)
             return r
         } catch (error) {
-            console.log(error, "Error al cambiar el estado de el vendedor");
+            console.log(error, "Error al cambiar el estado de el Ticket");
         }
     }
-    const login = async (data) => {
-        try {
-            console.log(data);
-            let r = await axios.post(`vendedor/login`, data)
-            console.log(r);
-            return r.status
-        } catch (error) {
-            console.log(error);
-        }
-    }
+   
 
     return {
-        vendedores,
-        obtenerInfoVendedor, login, postvendedor, putEditarVendedor, putInactivarVendedor, putActivarVendedor
+        ticketes,
+        obtenerInfoTicket,  postticket, putEditarTicket, putInactivarTicket, putActivarTicket
     };
 });
 
