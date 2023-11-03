@@ -99,6 +99,12 @@
             <p>Conductores</p>
           </div>
         </router-link>
+         <router-link to="./Tickete">
+            <div @click="mostrart()">
+              <i class="fa-solid fa-ticket"></i>
+              <p>Tickete</p>
+            </div>
+          </router-link>
       </div>
       <router-view />
     </q-page-container>
