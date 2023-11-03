@@ -9,7 +9,7 @@
       <q-card class="modal-content">
         <div class="contorno">
 
-          <q-card-section class="row items-center q-pb" style="color: black" >
+          <q-card-section class="row items-center q-pb" style="color: black">
             <div class="text-h6">{{ text }}</div>
             <q-space />
           </q-card-section>
@@ -17,7 +17,7 @@
 
           <q-card-section style="max-height: 50vh" class="scroll">
             <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
-            <q-input v-model="password" label="Contraseña" type="password" style="width: 300px" />
+
             <q-input v-model="Cedula" label="Cedula" style="width: 300px" type="number" />
             <q-input v-model="Telefono" label="Telefono" type="number" style="width: 300px" />
           </q-card-section>
@@ -25,7 +25,7 @@
           <q-separator />
 
           <q-card-actions align="right" style="gap: 30px; margin-top: 10px;">
-            <q-btn flat label="Cancelar" color="primary" v-close-popup  />
+            <q-btn flat label="Cancelar" color="primary" v-close-popup />
             <q-btn flat label="Aceptar" color="primary" @click="AgregarVendedor()" />
           </q-card-actions>
         </div>
@@ -111,8 +111,8 @@ async function AgregarVendedor() {
   if (cambio.value === 0) {
     await vendedorStore.postvendedor({
       Nombre: Nombre.value,
-      password: password.value,
-      Cedula:Cedula.value,
+
+      Cedula: Cedula.value,
       Telefono: Telefono.value,
     });
     limpiar();
@@ -122,9 +122,9 @@ async function AgregarVendedor() {
     if (id) {
       await vendedorStore.putEditarVendedor(id, {
         Nombre: Nombre.value,
-        password: password.value,
-        Cedula:Cedula.value,
-      Telefono: Telefono.value,
+
+        Cedula: Cedula.value,
+        Telefono: Telefono.value,
       });
 
       limpiar();
@@ -136,7 +136,7 @@ async function AgregarVendedor() {
 
 function limpiar() {
   Nombre.value = "";
-  password.value = "";
+
   Cedula.value = "";
   Telefono.value = "";
 }
@@ -152,7 +152,6 @@ async function EditarVendedor(id) {
     fixed.value = true;
     text.value = "Editar vendedor";
     Nombre.value = vendedorSeleccionado.Nombre;
-    password.value = vendedorSeleccionado.password;
     Cedula.value = vendedorSeleccionado.Cedula;
     Telefono.value = vendedorSeleccionado.Telefono;
     console.log(password);
@@ -202,10 +201,10 @@ onMounted(async () => {
 
 hr {
   background-color: green;
-    height: 2px;
-    border: none;
-    width: 363px;
-    margin-bottom: 1%;
+  height: 2px;
+  border: none;
+  width: 363px;
+  margin-bottom: 1%;
 
 }
 
@@ -221,13 +220,14 @@ h1 {
   font-size: 28px;
 
 }
-.contorno{
+
+.contorno {
   background-color: white;
-    height: 90%;
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  height: 90%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>
