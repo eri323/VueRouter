@@ -1,5 +1,9 @@
 <template>
     <div>
+        <div>
+      <h1 style="text-align: center;">Clientes</h1>
+      <hr>
+    </div>
         <!-- Modal -->
         <q-dialog v-model="fixed">
             <q-card class="modal-content">
