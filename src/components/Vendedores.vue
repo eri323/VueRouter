@@ -212,7 +212,6 @@ hr {
 h1 {
   font-family: "Letra";
   text-align: center;
-  font-size: px;
   margin: 0;
   align-items: center;
   margin-top: 2%;

@@ -11,7 +11,6 @@
           <q-card-section class="row items-center q-pb-none" style="color: black;">
             <div class="text-h6">{{ text }}</div>
             <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
           </q-card-section>
           <q-separator />
 
@@ -24,7 +23,7 @@
 
           <q-separator />
 
-          <q-card-actions align="right">
+          <q-card-actions align="right" style="gap: 30px; margin-top: 10px;">
             <q-btn flat label="Cancelar" color="primary" v-close-popup />
             <q-btn flat label="Aceptar" color="primary" @click="editarAgregarRuta()" />
           </q-card-actions>
@@ -189,7 +188,7 @@ onMounted(async () => {
 <style scoped>
 .modal-content {
   width: 480px;
-  height: 600px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -199,8 +198,8 @@ onMounted(async () => {
 }
 .contorno{
   background-color: white;
-    height: 446px;
-    width: 397px;
+    height: 90%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -241,9 +240,14 @@ hr {
 h1 {
   font-family: "Letra";
   text-align: center;
-  font-size: px;
   margin: 0;
   align-items: center;
   margin-top: 2%;
+}
+.text-h6 {
+  font-size: 28px;
+}
+.q-card__section--vert {
+    padding: 16px;
 }
 </style>
