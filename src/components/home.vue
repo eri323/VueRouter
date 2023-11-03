@@ -64,6 +64,12 @@
             Conductores
           </button></router-link
         >
+         <router-link to="/Tickete">
+            <button @click="mostrart()">
+               <i class="fa-solid fa-ticket"></i>
+              Ticket
+            </button></router-link
+          >
       </div>
     </q-drawer>
 

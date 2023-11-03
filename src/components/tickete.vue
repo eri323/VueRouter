@@ -13,11 +13,7 @@
                 <q-card-section style="max-height: 50vh" class="scroll">
                     <q-input v-model="Vehiculo" label="Numero ticket" style="width: 300px" />
                     <q-input v-model="NumAsientos" label="Tipo venta" type="number" style="width: 300px;" />
-                    <q-input v-model="NumAsientos" label="Fecha venta" type="number" style="width: 300px;" />
-                    <q-input v-model="NumAsientos" label="Numero pasajes" type="number" style="width: 300px;" />
-                    <q-input v-model="NumAsientos" label="Nombre vendedor" type="number" style="width: 300px;" />
-                    <q-input v-model="NumAsientos" label="Nombre cliente" type="number" style="width: 300px;" />
-                    <q-input v-model="NumAsientos" label="Nombre ruta" type="number" style="width: 300px;" />
+                  
 
 
 
