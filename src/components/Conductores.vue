@@ -1,59 +1,63 @@
 <template>
-    <div >
+    <div>
         <!-- Modal -->
         <q-dialog v-model="fixed">
             <q-card class="modal-content">
-                <q-card-section class="row items-center q-pb-none" style="color: black;">
-                    <div class="text-h6">{{ text }}</div>
-                    <q-space />
-                    <q-btn icon="close" flat round dense v-close-popup />
-                </q-card-section>
-                <q-separator />
+                <div class="contorno">
+                    <q-card-section class="row items-center q-pb-none" style="color: black;">
+                        <div class="text-h6">{{ text }}</div>
+                        <q-space />
 
-                <q-card-section style="max-height: 50vh" class="scroll">
-                    <q-input v-model="Nombre" label="Nombre" style="width: 300px;" />
-                    <q-input v-model="cedula" label="cedula" type="number" style="width: 300px;" />
-                  
-                        
-                      
-                </q-card-section>
+                    </q-card-section>
+                    <q-separator />
+                    <q-card-section style="max-height: 50vh" class="scroll">
+                        <q-input v-model="Nombre" label="Nombre" style="width: 300px;" />
+                        <q-input v-model="cedula" label="cedula" type="number" style="width: 300px;" />
 
-                <q-separator />
 
-                <q-card-actions align="right">
-                    <q-btn flat label="Cancelar" color="primary" v-close-popup />
-                    <q-btn flat label="Aceptar" color="primary" @click="AgregarConductor()" />
-                </q-card-actions>
+
+                    </q-card-section>
+
+                    <q-separator />
+
+                    <q-card-actions align="right">
+                        <q-btn flat label="Cancelar" color="primary" v-close-popup />
+                        <q-btn flat label="Aceptar" color="primary" @click="AgregarConductor()" />
+                    </q-card-actions>
+                </div>
             </q-card>
-        </q-dialog>     
+        </q-dialog>
         <div>
             <div class="containerheader">
                 <div>
                     <h1>Conductores</h1>
+                    <hr>
                 </div>
                 <div class="btn-agregar">
-                    <q-btn class="bg-secondary" @click="agregarConductor()" > Agregar <br> Conductores</q-btn>
+                    <q-btn class="bg-secondary" label="Agregar Conductor" @click="agregarConductor()"> </q-btn>
                 </div>
             </div>
-           
-            <q-table  :rows="rows" :columns="columns" row-key="name">
-                <template v-slot:body-cell-estado="props">
-                    <q-td :props="props">
-                        <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
-                        <label for="" v-else style="color: red;">Inactivo</label>
+            <div class="containerheader">
+                <q-table :rows="rows" :columns="columns" row-key="name">
+                    <template v-slot:body-cell-estado="props">
+                        <q-td :props="props">
+                            <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
+                            <label for="" v-else style="color: red;">Inactivo</label>
 
-                    </q-td>
+                        </q-td>
 
-                </template>
-                <template v-slot:body-cell-opciones="props">
-                    <q-td :props="props" class="botones">
-                        <q-btn color="white" text-color="black" label="🖋️" @click="EditarConductor(props.row._id)" />
-                        <q-btn  glossy label="❌" @click="InactivarConductor(props.row._id)"
-                            v-if="props.row.estado == 1" />
-                        <q-btn  glossy label="✔️" @click="putActivarConductor(props.row._id)" v-else />
-                    </q-td>
-                </template>
-            </q-table>
+                    </template>
+                    <template v-slot:body-cell-opciones="props">
+                        <q-td :props="props" class="botones">
+                            <q-btn color="white" text-color="black" label="🖋️" @click="EditarConductor(props.row._id)" />
+                            <q-btn glossy label="❌" @click="InactivarConductor(props.row._id)"
+                                v-if="props.row.estado == 1" />
+                            <q-btn glossy label="✔️" @click="putActivarConductor(props.row._id)" v-else />
+                        </q-td>
+                    </template>
+                </q-table>
+            </div>
+
         </div>
 
     </div>
@@ -70,7 +74,7 @@ let conductor = ref([]);
 let rows = ref([]);
 let fixed = ref(false)
 let Nombre = ref('');
-let cedula= ref ()
+let cedula = ref()
 let cambio = ref(0)
 
 async function obtenerInfo() {
@@ -97,7 +101,7 @@ const columns = [
 ];
 
 function agregarConductor() {
-    text.value="agregar Conductor"
+    text.value = "Agregar Conductor"
     fixed.value = true;
     cambio.value = 0;
     limpiar()
@@ -117,7 +121,7 @@ async function AgregarConductor() {
         if (id) {
             await conductorStore.putEditarConductor(id, {
                 nombre: Nombre.value,
-               cedula: cedula.value,
+                cedula: cedula.value,
             });
 
             limpiar();
@@ -141,8 +145,8 @@ async function EditarConductor(id) {
         idConductor.value = String(conductorSeleccionado._id);
         fixed.value = true;
         text.value = "Editar Conductor";
-        Nombre.value=conductorSeleccionado.nombre;
-        cedula.value=conductorSeleccionado.cedula;
+        Nombre.value = conductorSeleccionado.nombre;
+        cedula.value = conductorSeleccionado.cedula;
         console.log(id);
     }
 }
@@ -167,25 +171,60 @@ onMounted(async () => {
     width: 400px;
 }
 
+.contorno {
+    background-color: white;
+    height: 340px;
+    width: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-h6 {
+    font-size: 28px;
+}
+
 .botones button {
     margin: 2px;
 }
 
 .btn-agregar {
-    width: 100%;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: right;
+  color: black;
+}
 
-}
-.containerheader{
-    display: flex;
+.containerheader {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
     flex-direction: column;
+    align-items: center;
 }
-.containerheader div h1{
-    font-family: "Letra";
-    margin: 0;
-    padding: 45px;
+/* .containerheader div hr {
+  background-color: green;
+  height: 4px;
+  border: none;
+  width: 450px;
+} */
+.containerheader div h1 {
+  font-family: "Letra";
+  text-align: center;
+  font-size: 105px;
+  margin: 0;
+  align-items: center;
+  margin-top: 4%;
+}
+hr {
+    background-color: green;
+    height: 2px;
+    border: none;
+    width: 363px;
+    margin-bottom: 1%;
+
 }
 
 </style>
