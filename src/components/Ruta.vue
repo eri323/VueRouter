@@ -1,53 +1,58 @@
 <template>
   <div>
-      <!-- Modal -->
-      <q-dialog v-model="fixed">
-          <q-card class="modal-content">
-              <q-card-section class="row items-center q-pb-none" style="color: black;">
-                  <div class="text-h6">{{ text }}</div>
-                  <q-space />
-                  <q-btn icon="close" flat round dense v-close-popup />
-              </q-card-section>
-              <q-separator />
+    <div>
+      <h1 style="text-align: center;">Rutas</h1>
+      <hr>
+    </div>
+    <!-- Modal -->
+    <q-dialog v-model="fixed">
+      <q-card class="modal-content">
+        <div class="contorno">
+          <q-card-section class="row items-center q-pb-none" style="color: black;">
+            <div class="text-h6">{{ text }}</div>
+            <q-space />
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
+          <q-separator />
 
-              <q-card-section style="max-height: 50vh" class="scroll">
-                  <q-input v-model="sucursal" label="Sucursal" style="width: 300px;" />
-                  <q-input v-model="Origen" label="Origen" style="width: 300px;" />
-                  <q-input v-model="Destino" label="Destino" style="width: 300px;" />
-                  <q-input type="date" id="fechaInp" v-model="fecha_salida" label="Fecha salida" style="width: 300px;" />
-              </q-card-section>
+          <q-card-section style="max-height: 50vh" class="scroll">
+            <q-input v-model="sucursal" label="Sucursal" style="width: 300px;" />
+            <q-input v-model="Origen" label="Origen" style="width: 300px;" />
+            <q-input v-model="Destino" label="Destino" style="width: 300px;" />
+            <q-input type="date" id="fechaInp" v-model="fecha_salida" label="Fecha salida" style="width: 300px;" />
+          </q-card-section>
 
-              <q-separator />
+          <q-separator />
 
-              <q-card-actions align="right">
-                  <q-btn flat label="Cancelar" color="primary" v-close-popup />
-                  <q-btn flat label="Aceptar" color="primary" @click="editarAgregarRuta()" />
-              </q-card-actions>
-          </q-card>
-      </q-dialog>
-      <div>
-          <div class="btn-agregar">
-              <q-btn class="bg-secondary" label="Agregar ruta" @click="agregarRuta()" />
-          </div>
-          <q-table title="Rutas" :rows="rows" :columns="columns" row-key="name">
-              <template v-slot:body-cell-estado="props">
-                  <q-td :props="props">
-                      <label for="" v-if="props.row.estado == 1" style="color: green;" >Activo</label>
-                      <label for="" v-else style="color: red;">Inactivo</label>
-
-                  </q-td>
-
-              </template>
-              <template v-slot:body-cell-opciones="props">
-                  <q-td :props="props" class="botones">
-                      <q-btn color="white" text-color="black" label="✍️" @click="EditarRuta(props.row._id)" />
-                      <q-btn glossy label="❌" @click="InactivarRuta(props.row._id)"
-                          v-if="props.row.estado == 1" />
-                      <q-btn glossy label="✔️" @click="ActivarRuta(props.row._id)" v-else />
-                  </q-td>
-              </template>
-          </q-table>
+          <q-card-actions align="right">
+            <q-btn flat label="Cancelar" color="primary" v-close-popup />
+            <q-btn flat label="Aceptar" color="primary" @click="editarAgregarRuta()" />
+          </q-card-actions>
+        </div>
+      </q-card>
+    </q-dialog>
+    <div>
+      <div class="btn-agregar">
+        <q-btn class="bg-secondary" label="Agregar ruta" @click="agregarRuta()" />
       </div>
+      <q-table title="Rutas" :rows="rows" :columns="columns" row-key="name">
+        <template v-slot:body-cell-estado="props">
+          <q-td :props="props">
+            <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
+            <label for="" v-else style="color: red;">Inactivo</label>
+
+          </q-td>
+
+        </template>
+        <template v-slot:body-cell-opciones="props">
+          <q-td :props="props" class="botones">
+            <q-btn color="white" text-color="black" label="✍️" @click="EditarRuta(props.row._id)" />
+            <q-btn glossy label="❌" @click="InactivarRuta(props.row._id)" v-if="props.row.estado == 1" />
+            <q-btn glossy label="✔️" @click="ActivarRuta(props.row._id)" v-else />
+          </q-td>
+        </template>
+      </q-table>
+    </div>
 
   </div>
 </template>
@@ -69,13 +74,13 @@ let Destino = ref('');
 let fecha_salida = ref('');
 let cambio = ref(0)
 
-async function obtenerInfo(){
+async function obtenerInfo() {
   try {
-      await rutaStore.obtenerInfoRutas();
-      rutas.value = rutaStore.rutas;
-      rows.value = rutaStore.rutas;
+    await rutaStore.obtenerInfoRutas();
+    rutas.value = rutaStore.rutas;
+    rows.value = rutaStore.rutas;
   } catch (error) {
-      console.log(error);
+    console.log(error);
   }
 }
 
@@ -85,8 +90,9 @@ async function obtenerInfo(){
 const columns = [
   { name: 'sucursal', label: 'Sucursal', field: 'sucursal', sortable: true },
   { name: 'Origen', label: 'Origen', field: 'Origen', sortable: true },
-  { name: 'Destino', label: 'Destino', field: 'Destino', sortable: true},
-  { name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true,
+  { name: 'Destino', label: 'Destino', field: 'Destino', sortable: true },
+  {
+    name: 'fecha_salida', label: 'Fecha salida', field: 'fecha_salida', sortable: true,
     format: (val) => {
       const date = new Date(val);
       const day = date.getDate() + 1;
@@ -97,9 +103,9 @@ const columns = [
   },
   { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
   {
-      name: 'opciones', label: 'Opciones',
-      field: row => null,
-      "sortable": false,
+    name: 'opciones', label: 'Opciones',
+    field: row => null,
+    "sortable": false,
   },
 ];
 
@@ -112,28 +118,28 @@ function agregarRuta() {
 
 async function editarAgregarRuta() {
   if (cambio.value === 0) {
-      await rutaStore.postRuta({
-          sucursal: sucursal.value,
-          Origen: Origen.value,
-          Destino: Destino.value,
-          fecha_salida: fecha_salida.value.slice(0,10),
-      })
-      limpiar() 
-      obtenerInfo()
+    await rutaStore.postRuta({
+      sucursal: sucursal.value,
+      Origen: Origen.value,
+      Destino: Destino.value,
+      fecha_salida: fecha_salida.value.slice(0, 10),
+    })
+    limpiar()
+    obtenerInfo()
   } else {
-      let id = idRuta.value;
-      if (id) {
-          await rutaStore.putEditarRuta(id,{
-            sucursal: sucursal.value,
-            Origen: Origen.value,
-            Destino: Destino.value,
-            fecha_salida: fecha_salida.value.slice(0,10),
-          });
-         
-          limpiar(); 
-          obtenerInfo()
-          fixed.value = false;
-      }
+    let id = idRuta.value;
+    if (id) {
+      await rutaStore.putEditarRuta(id, {
+        sucursal: sucursal.value,
+        Origen: Origen.value,
+        Destino: Destino.value,
+        fecha_salida: fecha_salida.value.slice(0, 10),
+      });
+
+      limpiar();
+      obtenerInfo()
+      fixed.value = false;
+    }
   }
 }
 
@@ -150,7 +156,7 @@ async function EditarRuta(id) {
   cambio.value = 1;
   const rutaSeleccionada = rutas.value.find((ruta) => ruta._id === id);
   if (rutaSeleccionada) {
-    const fechaMostrar = new Date(Date.parse(rutaSeleccionada.fecha_salida)).toISOString().slice(0,10);
+    const fechaMostrar = new Date(Date.parse(rutaSeleccionada.fecha_salida)).toISOString().slice(0, 10);
     console.log(fechaMostrar)
     console.log(rutaSeleccionada.fecha_salida)
     idRuta.value = String(rutaSeleccionada._id);
@@ -182,18 +188,34 @@ onMounted(async () => {
 
 <style scoped>
 .modal-content {
-  width: 400px;
+  width: 480px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+  border-radius: 3%;
 }
-
+.contorno{
+  background-color: white;
+    height: 446px;
+    width: 397px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .botones button {
   margin: 2px;
 }
 
 .btn-agregar {
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   display: flex;
   justify-content: center;
+  justify-content: flex-end;
 }
 
 .body {
@@ -201,9 +223,27 @@ onMounted(async () => {
   margin: 0;
   text-transform: capitalize;
 }
+
 .containerBoton {
   display: flex;
   justify-content: center;
 }
 
+hr {
+  background-color: green;
+  height: 2px;
+  border: none;
+  width: 363px;
+  margin-bottom: 1%;
+
+}
+
+h1 {
+  font-family: "Letra";
+  text-align: center;
+  font-size: px;
+  margin: 0;
+  align-items: center;
+  margin-top: 2%;
+}
 </style>
