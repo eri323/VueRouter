@@ -23,7 +23,7 @@
 
           <q-separator />
 
-          <q-card-actions align="right">
+          <q-card-actions align="right" style="gap: 30px; margin-top: 10px;" >
             <q-btn flat label="Cancelar" color="primary" v-close-popup />
             <q-btn flat label="Aceptar" color="primary" @click="editarAgregarBus()" />
           </q-card-actions>
@@ -230,7 +230,7 @@ async function ActivarBus(id) {
 
 .modal-content {
   width: 480px;
-  height: 600px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -252,14 +252,14 @@ hr {
   font-size: 28px;
 }
 
-.contorno {
+.contorno{
   background-color: white;
-  height: 340px;
-  width: 420px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    height: 90%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .TitleDialog {

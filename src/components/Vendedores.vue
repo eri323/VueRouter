@@ -9,7 +9,7 @@
       <q-card class="modal-content">
         <div class="contorno">
 
-          <q-card-section class="row items-center q-pb" style="color: black" id>
+          <q-card-section class="row items-center q-pb" style="color: black" >
             <div class="text-h6">{{ text }}</div>
             <q-space />
           </q-card-section>
@@ -220,6 +220,7 @@ h1 {
 
 .text-h6 {
   font-size: 28px;
+
 }
 .contorno{
   background-color: white;

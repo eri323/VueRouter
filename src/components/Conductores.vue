@@ -12,7 +12,7 @@
                     <q-separator />
                     <q-card-section style="max-height: 50vh" class="scroll">
                         <q-input v-model="Nombre" label="Nombre" style="width: 300px;" />
-                        <q-input v-model="cedula" label="cedula" type="number" style="width: 300px;" />
+                        <q-input v-model="cedula" label="Cedula" type="number" style="width: 300px;" />
 
 
 
@@ -20,7 +20,7 @@
 
                     <q-separator />
 
-                    <q-card-actions align="right">
+                    <q-card-actions align="right" style="gap: 30px; margin-top: 10px;"  >
                         <q-btn flat label="Cancelar" color="primary" v-close-popup />
                         <q-btn flat label="Aceptar" color="primary" @click="AgregarConductor()" />
                     </q-card-actions>
@@ -168,13 +168,20 @@ onMounted(async () => {
   
 <style scoped>
 .modal-content {
-    width: 400px;
+  width: 480px;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+  border-radius: 3%;
 }
 
 .contorno {
-    background-color: white;
-    height: 340px;
-    width: 420px;
+     background-color: white;
+    height: 80%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -183,6 +190,7 @@ onMounted(async () => {
 
 .text-h6 {
     font-size: 28px;
+    margin-bottom: 25px;
 }
 
 .botones button {
