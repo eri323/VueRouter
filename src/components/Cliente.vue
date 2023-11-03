@@ -3,10 +3,10 @@
         <!-- Modal -->
         <q-dialog v-model="fixed">
             <q-card class="modal-content">
-                <q-card-section class="row items-center q-pb-none" style="color: black;">
+                <div class="contorno">
+                    <q-card-section class="row items-center q-pb-none" style="color: black;">
                     <div class="text-h6">{{ text }}</div>
                     <q-space />
-                    <q-btn icon="close" flat round dense v-close-popup />
                 </q-card-section>
                 <q-separator />
 
@@ -22,10 +22,10 @@
                     <q-btn flat label="Cancelar" color="primary" v-close-popup />
                     <q-btn flat label="Aceptar" color="primary" @click="AgregarCliente()" />
                 </q-card-actions>
+                </div>
             </q-card>
-        </q-dialog>     
+        </q-dialog>
         <div>
-            
             <div class="btn-agregar">
                 <q-btn class="bg-secondary" label="Agregar cliente" @click="agregarCliente()" />
             </div>
@@ -92,7 +92,7 @@ const columns = [
 ];
 
 function agregarCliente() {
-    text.value="agregar cliente"
+    text.value="Agregar Cliente"
     fixed.value = true;
     cambio.value = 0;
     limpiar()
@@ -163,17 +163,61 @@ onMounted(async () => {
   
 <style scoped>
 .modal-content {
-    width: 400px;
+  width: 480px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+  border-radius: 3%;
 }
 
 .botones button {
-    margin: 2px;
+  margin: 2px;
 }
 
 .btn-agregar {
-    width: 100%;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: right;
+  color: black;
 }
+
+hr {
+  background-color: green;
+    height: 2px;
+    border: none;
+    width: 363px;
+    margin-bottom: 1%;
+
+}
+
+h1 {
+  font-family: "Letra";
+  text-align: center;
+  font-size: px;
+  margin: 0;
+  align-items: center;
+  margin-top: 2%;
+}
+
+.text-h6 {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+.contorno{
+  background-color: white;
+    height: 90%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.q-card__actions{
+     margin-top: 10px;
+}
+
 </style>

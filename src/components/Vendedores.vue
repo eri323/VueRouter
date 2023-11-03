@@ -179,7 +179,7 @@ onMounted(async () => {
 <style scoped>
 .modal-content {
   width: 480px;
-  height: 600px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -223,8 +223,8 @@ h1 {
 }
 .contorno{
   background-color: white;
-    height: 340px;
-    width: 420px;
+    height: 90%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     justify-content: center;
