@@ -6,52 +6,78 @@
           <h2 class="log">Login</h2>
           <i class="fa-regular fa-circle-user" id="img"></i>
         </div>
-        <div class="containerData">
+        <div class="containerData" v-if="MostrarData">
           <q-card-actions vertical align="right" class="texto">
-            <q-input color="green" filled v-model="data.Nombre" label="Nombre" >
+            <q-input color="green" filled v-model="data.Nombre" label="Nombre">
               <template v-slot:prepend>
                 <i class="fa-solid fa-user-lock"></i>
               </template>
             </q-input>
-            <q-input color="green" filled v-model="data.password" label="Contraseña" type="password">
+
+            <q-input
+              color="green"
+              filled
+              v-model="data.password"
+              label="Contraseña"
+              type="password"
+            >
               <template v-slot:prepend>
                 <i class="fa-solid fa-file-signature"></i>
               </template>
             </q-input>
           </q-card-actions>
-     
-           <button @click="Login()" class="btn">Aceptar</button>
-       
+
+         
         </div>
+        <div class="containerError" v-if="mostrarError">
+          <h4>Por favor digite el Nombre o Contraseña/Nombre o Contraseña incorrectas</h4>
+        </div>
+        <button @click="Login()" class="btn">Aceptar</button>
       </q-card>
     </div>
   </div>
 </template>
 <script setup>
 import { ref } from "vue";
-import {useVendedorStore } from "../stores/Vendedor"
+import { useVendedorStore } from "../stores/Vendedor";
 import { useRouter } from "vue-router";
-
-
-const router = useRouter()
-const data = ref({  
+let mostrarError = ref(false);
+let MostrarData = ref(true);
+let error = ref("melo");
+const router = useRouter();
+const data = ref({
   Nombre: "",
   password: "",
-})
-const useVendedor = useVendedorStore()
+});
+const useVendedor = useVendedorStore();
 async function Login() {
   console.log(data.value);
-  const res = await useVendedor.login(data.value)
+  const res = await useVendedor.login(data.value);
   console.log(res);
 
-  if(res !=200){
+  if (res != 200) {
     console.log("error usuario o contraseña");
+    mostrarError.value = true;
+    MostrarData.value= false;
+    setTimeout(() => {
+      mostrarError.value = false;
+      MostrarData.value = true;
+    }, 2200);
     return;
   }
 
-  router.push("./home")
+  router.push("./home");
 }
 
+/* function validar(){
+  let validation = true;
+  if(data.Nombre.value.trim() == ""){
+    error.value="paila"
+    validation = false
+  }
+ 
+  return validation
+} */
 </script>
 <style scoped>
 .body {
@@ -67,8 +93,8 @@ async function Login() {
   font-family: "Letra";
 }
 @font-face {
-    font-family: "Letra";
-    src: url("../fonts/Anta-Regular.ttf");
+  font-family: "Letra";
+  src: url("../fonts/Anta-Regular.ttf");
 }
 .contenedor {
   display: flex;
@@ -126,7 +152,7 @@ async function Login() {
   transition: 0.25s;
 }
 .log {
-  border-bottom: 3px solid rgb(45,189,110);
+  border-bottom: 3px solid rgb(45, 189, 110);
   margin: 0;
   padding: 0;
   width: 95px;
@@ -144,7 +170,6 @@ async function Login() {
   justify-content: center;
   align-items: center;
   gap: 20px;
-
 }
 #input {
   display: flex;
@@ -153,7 +178,7 @@ async function Login() {
 #img {
   font-size: 200px;
 }
-.btn{
+.btn {
   width: 100px;
   font-size: 18px;
   border-radius: 5px;
@@ -162,8 +187,23 @@ async function Login() {
   cursor: pointer;
   background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
 }
-.btn:hover{
+.btn:hover {
   transition: ease-in-out 0.5s;
   transform: scale(1.1);
+}
+.containerError {
+  background-color: rgba(255, 0, 0, 0.36);
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8px;
+  border:  3px solid red;
+  margin-bottom: 15px;
+}
+.containerError h4 {
+  font-size: 15px;
+  margin: 0;
 }
 </style>

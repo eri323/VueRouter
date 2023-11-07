@@ -4,28 +4,48 @@
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <div class="contorno">
-
           <q-card-section class="row items-center q-pb" style="color: black" id>
             <div class="text-h6">{{ titleDialog }}</div>
             <q-space />
           </q-card-section>
 
           <q-separator />
+          <div v-if="mostrarData">
+            <q-card-section style="max-height: 50vh" class="scroll">
+              <q-input v-model="Vehiculo" label="Placa" style="width: 300px" />
+              <q-input
+                v-model="NumAsientos"
+                label="Numero de Asientos"
+                type="number"
+                style="width: 300px"
+              />
 
-          <q-card-section style="max-height: 50vh" class="scroll">
-            <q-input v-model="Vehiculo" label="Placa" style="width: 300px" />
-            <q-input v-model="NumAsientos" label="Numero de Asientos" type="number" style="width: 300px" />
+              <div class="q-gutter-y-md column" style="max-width: 300px">
+                <q-select
+                  clearable
+                  filled
+                  color="primary"
+                  v-model="conductor_id"
+                  :options="options"
+                  label="Conductor"
+                />
+              </div>
+            </q-card-section>
+          </div>
 
-            <div class="q-gutter-y-md column" style="max-width: 300px">
-              <q-select clearable filled color="primary" v-model="conductor_id" :options="options" label="Conductor" />
-            </div>
-          </q-card-section>
-
+          <div class="containerError" v-if="mostrarError">
+            <h4>{{ error }}</h4>
+          </div>
           <q-separator />
 
-          <q-card-actions align="right" style="gap: 30px; margin-top: 10px;" >
+          <q-card-actions align="right" style="gap: 30px; margin-top: 10px">
             <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn flat label="Aceptar" color="primary" @click="editarAgregarBus()" />
+            <q-btn
+              flat
+              label="Aceptar"
+              color="primary"
+              @click="editarAgregarBus()"
+            />
           </q-card-actions>
         </div>
       </q-card>
@@ -42,15 +62,32 @@
         <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
-              <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
+              <label for="" v-if="props.row.estado == 1" style="color: green"
+                >Activo</label
+              >
               <label for="" v-else style="color: red">Inactivo</label>
             </q-td>
           </template>
           <template v-slot:body-cell-opciones="props">
             <q-td :props="props" class="botones">
-              <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
-              <q-btn glossy label="❌" @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1" />
-              <q-btn glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
+              <q-btn
+                color="white"
+                text-color="black"
+                label="🖋️"
+                @click="EditarBus(props.row._id)"
+              />
+              <q-btn
+                glossy
+                label="❌"
+                @click="InactivarBus(props.row._id)"
+                v-if="props.row.estado == 1"
+              />
+              <q-btn
+                glossy
+                label="✔️"
+                @click="ActivarBus(props.row._id)"
+                v-else
+              />
             </q-td>
           </template>
         </q-table>
@@ -75,7 +112,9 @@ let NumAsientos = ref();
 let conductor_id = ref("");
 let cambio = ref(0);
 let titleDialog = ref("");
-
+let mostrarData = ref(true);
+let mostrarError = ref(false);
+let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 async function obtenerInfo() {
   try {
     await busStore.obtenerInfoBuses();
@@ -124,17 +163,45 @@ function agregarBus() {
   obtenerConductor();
   fixed.value = true;
   cambio.value = 0;
-  titleDialog.value = "Agregar Bus"
+  titleDialog.value = "Agregar Bus";
 }
 
 async function editarAgregarBus() {
+  if (Vehiculo.value == "") {
+    mostrarData.value = false;
+    mostrarError.value = true;
+    error.value = "Digite la placa del vehiculo porfavor";
+    setTimeout(() => {
+      mostrarData.value = true;
+      mostrarError.value = false;
+      error.value = "";
+    }, 2200);
+  } else if (NumAsientos.value == "") {
+    mostrarData.value = false;
+    mostrarError.value = true;
+    error.value = "Especifique el numero de asientos porfavor";
+    setTimeout(() => {
+      mostrarData.value = true;
+      mostrarError.value = false;
+      error.value = "";
+    }, 2200);
+  } else if (conductor_id.value == "") {
+    mostrarData.value = false;
+    mostrarError.value = true;
+    error.value = "Seleccione el conductor porfavor";
+    setTimeout(() => {
+      mostrarData.value = true;
+      mostrarError.value = false;
+      error.value = "";
+    }, 2200);
+  }
   if (cambio.value === 0) {
     await busStore.postBus({
       Vehiculo: Vehiculo.value,
       NumAsientos: NumAsientos.value,
       conductor_id: conductor_id.value,
     });
-    titleDialog.value = "Editar Bus"
+    titleDialog.value = "Editar Bus";
     limpiar();
     obtenerInfo();
   } else {
@@ -145,7 +212,7 @@ async function editarAgregarBus() {
         conductor_id: conductor_id.value,
         NumAsientos: NumAsientos.value,
       });
-      titleDialog.value = "Editar Bus"
+      titleDialog.value = "Editar Bus";
       limpiar();
       obtenerInfo();
       fixed.value = false;
@@ -162,12 +229,6 @@ async function obtenerConductor() {
     }));
   } catch (error) {
     console.log(error);
-
-
-
-
-
-    
   }
 }
 function limpiar() {
@@ -185,14 +246,12 @@ async function EditarBus(id) {
   if (busSeleccionado) {
     idBus.value = String(busSeleccionado._id);
     fixed.value = true;
-    titleDialog.value = "Editar Bus"
+    titleDialog.value = "Editar Bus";
     conductor_id.value = String(busSeleccionado.conductor_id);
     Vehiculo.value = busSeleccionado.Vehiculo;
     NumAsientos.value = busSeleccionado.NumAsientos;
   }
-  
 }
-
 
 async function InactivarBus(id) {
   await busStore.putInactivarBus(id);
@@ -209,7 +268,21 @@ async function ActivarBus(id) {
 .body {
   width: 100%;
 }
-
+.containerError {
+  background-color: rgba(255, 0, 0, 0.429);
+  padding: 15px;
+  text-align: center;
+  font-family: "Letra";
+  font-weight: bold;
+  width: 310px;
+  border: 3px solid red;
+  margin-bottom: 5px;
+}
+.containerError h4 {
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+}
 .tbus {
   width: 100%;
   text-align: center;
@@ -251,21 +324,20 @@ hr {
   border: none;
   width: 363px;
   margin-bottom: 1%;
-
 }
 
 .text-h6 {
   font-size: 28px;
 }
 
-.contorno{
+.contorno {
   background-color: white;
-    height: 90%;
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  height: 90%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .TitleDialog {
