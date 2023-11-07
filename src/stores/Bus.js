@@ -25,7 +25,7 @@ export const useBusStore = defineStore('bus', () => {
 
     const putEditarBus = async (id, data) => {
         try {
-            let res = await axios.put(`transporte/transbuscaid/${id}`, data);
+            let res = await axios.put(`transporte/transmodificar/${id}`, data);
             return res
         } catch (error) {
             throw error;

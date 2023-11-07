@@ -1,170 +1,250 @@
 <template>
+  <div>
     <div>
-        <div>
-      <h1 style="text-align: center;">Clientes</h1>
-      <hr>
+      <h1 style="text-align: center">Clientes</h1>
+      <hr />
     </div>
-        <!-- Modal -->
-        <q-dialog v-model="fixed">
-            <q-card class="modal-content">
-                <div class="contorno">
-                    <q-card-section class="row items-center q-pb-none" style="color: black;">
-                    <div class="text-h6">{{ text }}</div>
-                    <q-space />
-                </q-card-section>
-                <q-separator />
+    <!-- Modal -->
+    <q-dialog v-model="fixed">
+      <q-card class="modal-content">
+        <div class="contorno">
+          <q-card-section
+            class="row items-center q-pb-none"
+            style="color: black"
+          >
+            <div class="text-h6">{{ text }}</div>
+            <q-space />
+          </q-card-section>
+          <q-separator />
+          <div v-if="mostrarData">
+            <q-card-section style="max-height: 50vh" class="scroll">
+              <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
+              <q-input
+                v-model="cedula"
+                label="cedula"
+                type="number"
+                style="width: 300px"
+              />
+              <q-input
+                v-model="telefono"
+                label="Telefono"
+                type="number"
+                style="width: 300px"
+              />
+            </q-card-section>
+          </div>
+          <div class="containerError" v-if="mostrarError">
+            <h4>{{ error }}</h4>
+          </div>
 
-                <q-card-section style="max-height: 50vh" class="scroll">
-                    <q-input v-model="Nombre" label="Nombre" style="width: 300px;" />
-                    <q-input v-model="cedula" label="cedula" type="number" style="width: 300px;" />
-                    <q-input v-model="telefono" label="Telefono" type="number" style="width: 300px;"  />
-                </q-card-section>
+          <q-separator />
 
-                <q-separator />
-
-                <q-card-actions align="right">
-                    <q-btn flat label="Cancelar" color="primary" v-close-popup />
-                    <q-btn flat label="Aceptar" color="primary" @click="AgregarCliente()" />
-                </q-card-actions>
-                </div>
-            </q-card>
-        </q-dialog>
-        <div>
-            <div class="btn-agregar">
-                <q-btn class="bg-secondary" label="Agregar cliente" @click="agregarCliente()" />
-            </div>
-            <q-table title="Clientes" :rows="rows" :columns="columns" row-key="name">
-                <template v-slot:body-cell-estado="props">
-                    <q-td :props="props">
-                        <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
-                        <label for="" v-else style="color: red;">Inactivo</label>
-
-                    </q-td>
-
-                </template>
-                <template v-slot:body-cell-opciones="props">
-                    <q-td :props="props" class="botones">
-                        <q-btn color="white" text-color="black" label="🖋️" @click="EditarCliente(props.row._id)" />
-                        <q-btn  glossy label="❌" @click="InactivarCliente(props.row._id)"
-                            v-if="props.row.estado == 1" />
-                        <q-btn  glossy label="✔️" @click="putActivarCliente(props.row._id)" v-else />
-                    </q-td>
-                </template>
-            </q-table>
+          <q-card-actions align="right">
+            <q-btn flat label="Cancelar" color="primary" v-close-popup />
+            <q-btn
+              flat
+              label="Aceptar"
+              color="primary"
+              @click="AgregarCliente()"
+            />
+          </q-card-actions>
         </div>
-
+      </q-card>
+    </q-dialog>
+    <div>
+      <div class="btn-agregar">
+        <q-btn
+          class="bg-secondary"
+          label="Agregar cliente"
+          @click="agregarCliente()"
+        />
+      </div>
+      <q-table title="Clientes" :rows="rows" :columns="columns" row-key="name">
+        <template v-slot:body-cell-estado="props">
+          <q-td :props="props">
+            <label for="" v-if="props.row.estado == 1" style="color: green"
+              >Activo</label
+            >
+            <label for="" v-else style="color: red">Inactivo</label>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-opciones="props">
+          <q-td :props="props" class="botones">
+            <q-btn
+              color="white"
+              text-color="black"
+              label="🖋️"
+              @click="EditarCliente(props.row._id)"
+            />
+            <q-btn
+              glossy
+              label="❌"
+              @click="InactivarCliente(props.row._id)"
+              v-if="props.row.estado == 1"
+            />
+            <q-btn
+              glossy
+              label="✔️"
+              @click="putActivarCliente(props.row._id)"
+              v-else
+            />
+          </q-td>
+        </template>
+      </q-table>
     </div>
+  </div>
 </template>
-  
+
 <script setup>
-import axios from 'axios';
-import { ref, onMounted } from 'vue';
-import { format } from 'date-fns';
-import { useClienteStore } from '../stores/Cliente.js';
-const clienteStore = useClienteStore()
-let text = ref('')
+import axios from "axios";
+import { ref, onMounted } from "vue";
+import { format } from "date-fns";
+import { useClienteStore } from "../stores/Cliente.js";
+const clienteStore = useClienteStore();
+let text = ref("");
 let cliente = ref([]);
 let rows = ref([]);
-let fixed = ref(false)
-let Nombre = ref('');
+let fixed = ref(false);
+let Nombre = ref("");
 let telefono = ref();
-let cedula= ref ()
-let cambio = ref(0)
-
+let cedula = ref();
+let cambio = ref(0);
+let mostrarError = ref(false);
+let mostrarData = ref(true);
+let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 async function obtenerInfo() {
-    try {
-        await clienteStore.obtenerInfoCliente();
-        cliente.value = clienteStore.clientes;
-        rows.value = clienteStore.clientes;
-    } catch (error) {
-        console.log(error);
-    }
+  try {
+    await clienteStore.obtenerInfoCliente();
+    cliente.value = clienteStore.clientes;
+    rows.value = clienteStore.clientes;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-
-
 const columns = [
-    { name: 'CC_cliente', label: 'Cedula', field: 'CC_cliente', sortable: true },
-    { name: 'Nombre_cliente', label: 'Nombre', field: 'Nombre_cliente', sortable: true },
-    { name: 'Telefono_cliente', label: 'Telefono', field: 'Telefono_cliente' },
-    { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
-    {
-        name: 'opciones', label: 'Opciones',
-        field: row => null,
-        "sortable": false,
-    },
+  { name: "CC_cliente", label: "Cedula", field: "CC_cliente", sortable: true },
+  {
+    name: "Nombre_cliente",
+    label: "Nombre",
+    field: "Nombre_cliente",
+    sortable: true,
+  },
+  { name: "Telefono_cliente", label: "Telefono", field: "Telefono_cliente" },
+  {
+    name: "estado",
+    label: "Estado",
+    field: "estado",
+    sortable: true,
+    format: (val) => (val ? "Activo" : "Inactivo"),
+  },
+  {
+    name: "opciones",
+    label: "Opciones",
+    field: (row) => null,
+    sortable: false,
+  },
 ];
 
 function agregarCliente() {
-    text.value="Agregar Cliente"
-    fixed.value = true;
-    cambio.value = 0;
-    limpiar()
+  text.value = "Agregar Cliente";
+  fixed.value = true;
+  cambio.value = 0;
+  limpiar();
 }
 
 async function AgregarCliente() {
+  if (Nombre.value == "") {
+    mostrarData.value = false;
+    mostrarError.value = true;
+    error.value = "Digite el nombre porfavor";
+    setTimeout(() => {
+      mostrarData.value = true;
+      mostrarError.value = false;
+      error.value = "";
+    }, 2200);
+  } else if (cedula.value == "") {
+    mostrarData.value = false;
+    mostrarError.value = true;
+    error.value = "Digite el numero de cedula porfavor";
+    setTimeout(() => {
+      mostrarData.value = true;
+      mostrarError.value = false;
+      error.value = "";
+    }, 2200);
+  } else if (telefono.value == "") {
+    mostrarData.value = false;
+    mostrarError.value = true;
+    error.value = "Digite el numero telfonico porfavor";
+    setTimeout(() => {
+      mostrarData.value = true;
+      mostrarError.value = false;
+      error.value = "";
+    }, 2200);
+  } else {
     if (cambio.value === 0) {
-        await clienteStore.postcliente({
-            Nombre_cliente: Nombre.value,
-            Telefono_cliente: telefono.value,
-            CC_cliente: cedula.value,
-        })
-        limpiar()
-        obtenerInfo()
-
+      await clienteStore.postcliente({
+        Nombre_cliente: Nombre.value,
+        Telefono_cliente: telefono.value,
+        CC_cliente: cedula.value,
+      });
+      limpiar();
+      obtenerInfo();
     } else {
-        let id = idCliente.value;
-        if (id) {
-            await clienteStore.putEditarCliente(id, {
-                Nombre_cliente: Nombre.value,
-                Telefono_cliente: telefono.value,
-                CC_cliente: cedula.value,
-            });
+      let id = idCliente.value;
+      if (id) {
+        await clienteStore.putEditarCliente(id, {
+          Nombre_cliente: Nombre.value,
+          Telefono_cliente: telefono.value,
+          CC_cliente: cedula.value,
+        });
 
-            limpiar();
-            obtenerInfo()
-            fixed.value = false;
-        }
+        limpiar();
+        obtenerInfo();
+        fixed.value = false;
+      }
     }
+  }
 }
-
 
 function limpiar() {
-    Nombre.value = ""
-    telefono.value = ""
-    cedula.value = ""
+  Nombre.value = "";
+  telefono.value = "";
+  cedula.value = "";
 }
 
-let idCliente = ref('')
+let idCliente = ref("");
 async function EditarCliente(id) {
-    cambio.value = 1;
-    const clienteSeleccionado = cliente.value.find((cliente) => cliente._id === id);
-    if (clienteSeleccionado) {
-        idCliente.value = String(clienteSeleccionado._id);
-        fixed.value = true;
-        text.value = "Editar Cliente";
-        Nombre.value=clienteSeleccionado.Nombre_cliente;
-        cedula.value=clienteSeleccionado.CC_cliente;
-        telefono.value=clienteSeleccionado.Telefono_cliente;
-        console.log(id);
-    }
+  cambio.value = 1;
+  const clienteSeleccionado = cliente.value.find(
+    (cliente) => cliente._id === id
+  );
+  if (clienteSeleccionado) {
+    idCliente.value = String(clienteSeleccionado._id);
+    fixed.value = true;
+    text.value = "Editar Cliente";
+    Nombre.value = clienteSeleccionado.Nombre_cliente;
+    cedula.value = clienteSeleccionado.CC_cliente;
+    telefono.value = clienteSeleccionado.Telefono_cliente;
+    console.log(id);
+  }
 }
 
 async function InactivarCliente(id) {
-    await clienteStore.putInactivarCliente(id)
-    obtenerInfo()
+  await clienteStore.putInactivarCliente(id);
+  obtenerInfo();
 }
 
 async function putActivarCliente(id) {
-    await clienteStore.putActivarCliente(id)
-    obtenerInfo()
+  await clienteStore.putActivarCliente(id);
+  obtenerInfo();
 }
 
 onMounted(async () => {
-    obtenerInfo()
+  obtenerInfo();
 });
 </script>
-  
+
 <style scoped>
 .modal-content {
   width: 480px;
@@ -188,14 +268,27 @@ onMounted(async () => {
   justify-content: right;
   color: black;
 }
-
+.containerError {
+  background-color: rgba(255, 0, 0, 0.429);
+  padding: 15px;
+  text-align: center;
+  font-family: "Letra";
+  font-weight: bold;
+  width: 310px;
+  border: 3px solid red;
+  margin-bottom: 5px;
+}
+.containerError h4 {
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+}
 hr {
   background-color: green;
-    height: 2px;
-    border: none;
-    width: 363px;
-    margin-bottom: 1%;
-
+  height: 2px;
+  border: none;
+  width: 363px;
+  margin-bottom: 1%;
 }
 
 h1 {
@@ -211,17 +304,16 @@ h1 {
   font-size: 28px;
   margin-bottom: 30px;
 }
-.contorno{
+.contorno {
   background-color: white;
-    height: 90%;
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  height: 90%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.q-card__actions{
-     margin-top: 10px;
+.q-card__actions {
+  margin-top: 10px;
 }
-
 </style>

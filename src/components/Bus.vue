@@ -126,7 +126,7 @@ async function obtenerInfo() {
   }
 }
 
-const options = ref(["google", "api"]);
+const options = ref([]);
 onMounted(async () => {
   obtenerInfo();
 });
@@ -143,6 +143,7 @@ const columns = [
     name: "conductor_id",
     label: "Conductor",
     field: (row) => row.conductor_id.nombre,
+    sortable: true,
   },
   {
     name: "estado",
@@ -158,8 +159,19 @@ const columns = [
     sortable: false,
   },
 ];
-
+async function obtenerConductor() {
+  try {
+    await conductorStore.obtenerInfoConductor();
+    options.value = conductorStore.conductores.map((conductor) => ({
+      label: `${conductor.nombre}`,
+      value: String(conductor._id),
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+}
 function agregarBus() {
+  
   obtenerConductor();
   fixed.value = true;
   cambio.value = 0;
@@ -194,43 +206,31 @@ async function editarAgregarBus() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  }
-  if (cambio.value === 0) {
-    await busStore.postBus({
-      Vehiculo: Vehiculo.value,
-      NumAsientos: NumAsientos.value,
-      conductor_id: conductor_id.value,
-    });
-    titleDialog.value = "Editar Bus";
-    limpiar();
-    obtenerInfo();
   } else {
-    let id = idBus.value;
-    if (id) {
-      await busStore.putEditarBus(id, {
+    if (cambio.value == 0) {
+      await busStore.postBus({
         Vehiculo: Vehiculo.value,
-        conductor_id: conductor_id.value,
         NumAsientos: NumAsientos.value,
+        conductor_id: conductor_id.value,
       });
-      titleDialog.value = "Editar Bus";
       limpiar();
       obtenerInfo();
-      fixed.value = false;
+    } else {
+      let id = idBus.value;
+      if (id) {
+        await busStore.putEditarBus(id, {
+          Vehiculo: Vehiculo.value,
+          conductor_id: conductor_id.value,
+          NumAsientos: NumAsientos.value,
+        });
+        limpiar();
+        obtenerInfo();
+        fixed.value = false;
+      }
     }
   }
 }
 
-async function obtenerConductor() {
-  try {
-    await conductorStore.obtenerInfoConductor();
-    options.value = conductorStore.conductores.map((conductor) => ({
-      label: `${conductor.nombre}`,
-      value: String(conductor._id),
-    }));
-  } catch (error) {
-    console.log(error);
-  }
-}
 function limpiar() {
   Vehiculo.value = "";
   NumAsientos.value = "";
@@ -240,6 +240,7 @@ function limpiar() {
 let idBus = ref("");
 async function EditarBus(id) {
   obtenerConductor();
+  cambio.value=1;
   const busSeleccionado = buses.value.find(
     (transporte) => transporte._id === id
   );
