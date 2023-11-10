@@ -103,6 +103,7 @@ import { format } from "date-fns";
 import { useBusStore } from "../stores/Bus.js";
 import {useQuasar} from "quasar"
 import { useConductorStore } from "../stores/Conductores.js";
+import { validationResult } from "express-validator";
 const busStore = useBusStore();
 const conductorStore = useConductorStore();
 const $q = useQuasar()
@@ -179,9 +180,8 @@ function agregarBus() {
   cambio.value = 0;
   titleDialog.value = "Agregar Bus";
 }
-
-async function editarAgregarBus() {
-  if (Vehiculo.value == "") {
+function validar(){
+   if (Vehiculo.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite la placa del vehiculo porfavor";
@@ -208,7 +208,37 @@ async function editarAgregarBus() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else {
+  } else{
+    
+  }
+}
+async function editarAgregarBus() {
+  validar()
+    try {
+    showDefault();
+    await busStore.postBus(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Bus Agregado",
+      timeout: 2000,
+      type: 'positive',
+    });
+    obtenerInfo();
+  } catch (error) {
+    if (notification) {
+      notification()
+    };
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: 'negative',
+    });
+  }
+ 
     if (cambio.value == 0) {
       await busStore.postBus({
         Vehiculo: Vehiculo.value,
@@ -230,7 +260,7 @@ async function editarAgregarBus() {
         fixed.value = false;
       }
     }
-  }
+  
 }
 
 function limpiar() {
