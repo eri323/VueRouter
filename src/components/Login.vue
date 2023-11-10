@@ -14,23 +14,20 @@
               </template>
             </q-input>
 
-            <q-input
-              color="green"
-              filled
-              v-model="data.password"
-              label="Contraseña"
-              type="password"
-            >
+            <q-input color="green" filled v-model="data.password" label="Contraseña" type="password">
               <template v-slot:prepend>
                 <i class="fa-solid fa-file-signature"></i>
               </template>
             </q-input>
           </q-card-actions>
 
-         
+
         </div>
         <div class="containerError" v-if="mostrarError">
-          <h4>Por favor digite el Nombre o Contraseña/Nombre o Contraseña incorrectas</h4>
+          <h4>Por favor digite el Nombre o Contraseña</h4>
+        </div>
+        <div class="containerError" v-if="error2">
+          <h4>Nombre o Contraseña incorrecta</h4>
         </div>
         <button @click="Login()" class="btn">Aceptar</button>
       </q-card>
@@ -43,6 +40,7 @@ import { useVendedorStore } from "../stores/Vendedor";
 import { useRouter } from "vue-router";
 let mostrarError = ref(false);
 let MostrarData = ref(true);
+let error2 = ref(false);
 let error = ref("melo");
 const router = useRouter();
 const data = ref({
@@ -50,25 +48,30 @@ const data = ref({
   password: "",
 });
 const useVendedor = useVendedorStore();
+
 async function Login() {
   console.log(data.value);
-  const res = await useVendedor.login(data.value);
-  console.log(res);
-
-  if (res != 200) {
-    console.log("error usuario o contraseña");
-    mostrarError.value = true;
-    MostrarData.value= false;
-    setTimeout(() => {
-      mostrarError.value = false;
-      MostrarData.value = true;
-    }, 2200);
-    return;
+  try {
+    const res = await useVendedor.login(data.value);
+    console.log(res);
+    if ( data.value.Nombre=="" && data.value.password=="") {
+      mostrarError.value = true;
+      setTimeout(() => {
+        mostrarError.value = false;
+      }, 2200);
+      return
+    } else if (res !=200) {
+      error2.value = true;
+      setTimeout(() => {
+        error2.value = false;
+      }, 2200);
+    } else {
+      router.push("./home");
+    }
+  } catch (error) {
+    console.error("Error in login:", error);
   }
-
-  router.push("./home");
 }
-
 /* function validar(){
   let validation = true;
   if(data.Nombre.value.trim() == ""){
@@ -92,10 +95,12 @@ async function Login() {
   background-repeat: no-repeat;
   font-family: "Letra";
 }
+
 @font-face {
   font-family: "Letra";
   src: url("../fonts/Anta-Regular.ttf");
 }
+
 .contenedor {
   display: flex;
   background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
@@ -105,6 +110,7 @@ async function Login() {
   border-radius: 4%;
   padding: 2%;
 }
+
 .my-card {
   align-items: center;
   padding: 10px 84px;
@@ -151,6 +157,7 @@ async function Login() {
   font-family: "Letra";
   transition: 0.25s;
 }
+
 .log {
   border-bottom: 3px solid rgb(45, 189, 110);
   margin: 0;
@@ -161,9 +168,11 @@ async function Login() {
   font-family: "Letra";
   padding: 8px;
 }
+
 #submit-btn:hover {
   box-shadow: 0px 1px 10px #24c64f;
 }
+
 .containerData {
   display: flex;
   flex-direction: column;
@@ -171,13 +180,16 @@ async function Login() {
   align-items: center;
   gap: 20px;
 }
+
 #input {
   display: flex;
   text-align: center;
 }
+
 #img {
   font-size: 200px;
 }
+
 .btn {
   width: 100px;
   font-size: 18px;
@@ -187,10 +199,12 @@ async function Login() {
   cursor: pointer;
   background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
 }
+
 .btn:hover {
   transition: ease-in-out 0.5s;
   transform: scale(1.1);
 }
+
 .containerError {
   background-color: rgba(255, 0, 0, 0.36);
   width: 200px;
@@ -199,11 +213,11 @@ async function Login() {
   align-items: center;
   text-align: center;
   padding: 8px;
-  border:  3px solid red;
+  border: 3px solid red;
   margin-bottom: 15px;
 }
+
 .containerError h4 {
   font-size: 15px;
   margin: 0;
-}
-</style>
+}</style>

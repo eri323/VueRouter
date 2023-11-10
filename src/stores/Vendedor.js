@@ -56,6 +56,7 @@ export const useVendedorStore = defineStore('vendedor', () => {
             return r.status
         } catch (error) {
             console.log(error);
+            return error.response.data
         }
     }
 
