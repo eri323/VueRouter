@@ -191,6 +191,7 @@ async function Login() {
   transition: ease-in-out 0.5s;
   transform: scale(1.1);
 }
+
 .containerError {
   background-color: rgba(255, 0, 0, 0.36);
   width: 200px;

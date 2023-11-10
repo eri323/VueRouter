@@ -101,9 +101,11 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useBusStore } from "../stores/Bus.js";
+import {useQuasar} from "quasar"
 import { useConductorStore } from "../stores/Conductores.js";
 const busStore = useBusStore();
 const conductorStore = useConductorStore();
+const $q = useQuasar()
 let buses = ref([]);
 let rows = ref([]);
 let fixed = ref(false);
@@ -255,13 +257,94 @@ async function EditarBus(id) {
 }
 
 async function InactivarBus(id) {
-  await busStore.putInactivarBus(id);
-  obtenerInfo();
-}
+  try {
+    showDefault();
+      await busStore.putInactivarBus(id);
+        if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Bus Inactivo",
+      timeout: 2000,
+      type: 'positive',
+    });
+      obtenerInfo();
+  } catch (error) {
+     if (notification) {
+      notification()
+    };
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: 'negative',
+    });
+  }
 
+
+}
+const showDefault = () => {
+  notification = $q.notify({
+    spinner: true,
+    message: "Please wait...",
+    timeout: 0,
+  });
+};
+
+let validacion = ref(false);
+let notification = ref(null);
+/* async function ActivarVendedor(id) {
+  try {
+    showDefault();
+    await VendedoresStore.putActivarVendedor(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Vendedor Inactivado",
+      timeout: 2000,
+      type: 'positive',
+    });
+    obtenerInfo()
+  } catch (error) {
+    if (notification) {
+      notification()
+    };
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: 'negative',
+    });
+  }
+} */
 async function ActivarBus(id) {
-  await busStore.putActivarBus(id);
-  obtenerInfo();
+   try {
+    showDefault();
+    await busStore.putActivarBus(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Bus Activo",
+      timeout: 2000,
+      type: 'positive',
+    });
+    obtenerInfo();
+  } catch (error) {
+    if (notification) {
+      notification()
+    };
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: 'negative',
+    });
+  }
 }
 </script>
 
