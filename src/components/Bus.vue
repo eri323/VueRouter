@@ -12,7 +12,14 @@
           <q-separator />
           <div v-if="mostrarData">
             <q-card-section style="max-height: 50vh" class="scroll">
+              <q-input
+                v-model="NumBus"
+                type="number"
+                label="Numero de bus"
+                style="width: 300px"
+              />
               <q-input v-model="Vehiculo" label="Placa" style="width: 300px" />
+
               <q-input
                 v-model="NumAsientos"
                 label="Numero de Asientos"
@@ -30,6 +37,12 @@
                   label="Conductor"
                 />
               </div>
+              <q-input
+                v-model="Soat"
+                label="Soat"
+                type="date"
+                style="width: 300px"
+              />
             </q-card-section>
           </div>
 
@@ -101,18 +114,20 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useBusStore } from "../stores/Bus.js";
-import {useQuasar} from "quasar"
+import { useQuasar } from "quasar";
 import { useConductorStore } from "../stores/Conductores.js";
-import { validationResult } from "express-validator";
+
 const busStore = useBusStore();
 const conductorStore = useConductorStore();
-const $q = useQuasar()
+const $q = useQuasar();
 let buses = ref([]);
 let rows = ref([]);
 let fixed = ref(false);
+let NumBus = ref("");
 let Vehiculo = ref("");
 let NumAsientos = ref();
-let conductor_id = ref("");
+let conductor_id = ref([]);
+let Soat = ref("");
 let cambio = ref(0);
 let titleDialog = ref("");
 let mostrarData = ref(true);
@@ -135,6 +150,7 @@ onMounted(async () => {
 });
 
 const columns = [
+  { name: "NumBus", label: "Numero de bus", field: "NumBus", sortable: true },
   { name: "Vehiculo", label: "Placa", field: "Vehiculo", sortable: true },
   {
     name: "NumAsientos",
@@ -155,6 +171,13 @@ const columns = [
     sortable: true,
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
+  { name: "Soat", label: "Soat", field: "Soat", sortable: true,   format: (val) => {
+      const date = new Date(val);
+      const day = date.getDate() + 1;
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      return `${day}-${month < 10 ? '0' : ''}${month}-${year}`;
+    } },
   {
     name: "opciones",
     label: "Opciones",
@@ -174,14 +197,13 @@ async function obtenerConductor() {
   }
 }
 function agregarBus() {
-  
   obtenerConductor();
   fixed.value = true;
   cambio.value = 0;
   titleDialog.value = "Agregar Bus";
 }
-function validar(){
-   if (Vehiculo.value == "") {
+function validar() {
+  if (Vehiculo.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite la placa del vehiculo porfavor";
@@ -208,71 +230,97 @@ function validar(){
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else{
-    
+  } else {
+    validacion.value = true;
   }
 }
 async function editarAgregarBus() {
-  validar()
-    try {
-    showDefault();
-    await busStore.postBus(id);
-    if (notification) {
-      notification();
-    }
-    $q.notify({
-      spinner: false,
-      message: "Bus Agregado",
-      timeout: 2000,
-      type: 'positive',
-    });
-    obtenerInfo();
-  } catch (error) {
-    if (notification) {
-      notification()
-    };
-    $q.notify({
-      spinner: false,
-      message: `${error.response.data.error.errors[0].msg}`,
-      timeout: 2000,
-      type: 'negative',
-    });
-  }
- 
+  validar();
+  if (validacion.value === true) {
     if (cambio.value == 0) {
-      await busStore.postBus({
-        Vehiculo: Vehiculo.value,
-        NumAsientos: NumAsientos.value,
-        conductor_id: conductor_id.value,
-      });
-      limpiar();
-      obtenerInfo();
+      try {
+        showDefault();
+        await busStore.postBus({
+          NumBus: NumBus.value,
+          Vehiculo: Vehiculo.value,
+          NumAsientos: NumAsientos.value,
+          conductor_id: conductor_id.value,
+          Soat: Soat.value,
+        });
+        if (notification) {
+          notification();
+        }
+        limpiar();
+        $q.notify({
+          spinner: false,
+          message: "Bus Agregado",
+          timeout: 2000,
+          type: "positive",
+        });
+        obtenerInfo();
+      } catch (error) {
+        if (notification) {
+          notification();
+        }
+        $q.notify({
+          spinner: false,
+          message: `${error.response.data.error.errors[0].msg}`,
+          timeout: 2000,
+          type: "negative",
+        });
+      }
     } else {
       let id = idBus.value;
       if (id) {
-        await busStore.putEditarBus(id, {
-          Vehiculo: Vehiculo.value,
-          conductor_id: conductor_id.value,
-          NumAsientos: NumAsientos.value,
-        });
-        limpiar();
-        obtenerInfo();
-        fixed.value = false;
+        try {
+          await busStore.putEditarBus(id, {
+            NumBus: NumBus.value,
+            Vehiculo: Vehiculo.value,
+            NumAsientos: NumAsientos.value,
+            conductor_id: conductor_id._rawValue.value,
+            Soat: Soat.value,
+          });
+          if (notification) {
+            notification();
+          }
+          limpiar();
+          $q.notify({
+            spinner: false,
+            message: "Bus Actualizado",
+            timeout: 2000,
+            type: "positive",
+          });
+          obtenerInfo();
+          fixed.value = false;
+        } catch (error) {
+          if (notification) {
+            notification();
+          }
+          $q.notify({
+            spinner: false,
+            message: `${error.response.data.error.errors[0].msg}`,
+            timeout: 2000,
+            type: "negative",
+          });
+        }
       }
     }
-  
+    validacion.value = false;
+  } 
 }
 
 function limpiar() {
+  NumBus.value = "";
   Vehiculo.value = "";
   NumAsientos.value = "";
   conductor_id = "";
+  Soat.value = "";
 }
 
 let idBus = ref("");
 async function EditarBus(id) {
   obtenerConductor();
-  cambio.value=1;
+  cambio.value = 1;
   const busSeleccionado = buses.value.find(
     (transporte) => transporte._id === id
   );
@@ -280,39 +328,39 @@ async function EditarBus(id) {
     idBus.value = String(busSeleccionado._id);
     fixed.value = true;
     titleDialog.value = "Editar Bus";
-    conductor_id.value = String(busSeleccionado.conductor_id);
+    NumBus.value = busSeleccionado.NumBus;
     Vehiculo.value = busSeleccionado.Vehiculo;
     NumAsientos.value = busSeleccionado.NumAsientos;
+    conductor_id.value = String(busSeleccionado.conductor_id.nombre);
+    Soat.value = format(new Date(busSeleccionado.Soat), 'yyyy-MM-dd');
   }
 }
 
 async function InactivarBus(id) {
   try {
     showDefault();
-      await busStore.putInactivarBus(id);
-        if (notification) {
+    await busStore.putInactivarBus(id);
+    if (notification) {
       notification();
     }
     $q.notify({
       spinner: false,
       message: "Bus Inactivo",
       timeout: 2000,
-      type: 'positive',
+      type: "positive",
     });
-      obtenerInfo();
+    obtenerInfo();
   } catch (error) {
-     if (notification) {
-      notification()
-    };
+    if (notification) {
+      notification();
+    }
     $q.notify({
       spinner: false,
       message: `${error.response.data.error.errors[0].msg}`,
       timeout: 2000,
-      type: 'negative',
+      type: "negative",
     });
   }
-
-
 }
 const showDefault = () => {
   notification = $q.notify({
@@ -351,7 +399,7 @@ let notification = ref(null);
   }
 } */
 async function ActivarBus(id) {
-   try {
+  try {
     showDefault();
     await busStore.putActivarBus(id);
     if (notification) {
@@ -361,18 +409,18 @@ async function ActivarBus(id) {
       spinner: false,
       message: "Bus Activo",
       timeout: 2000,
-      type: 'positive',
+      type: "positive",
     });
     obtenerInfo();
   } catch (error) {
     if (notification) {
-      notification()
-    };
+      notification();
+    }
     $q.notify({
       spinner: false,
       message: `${error.response.data.error.errors[0].msg}`,
       timeout: 2000,
-      type: 'negative',
+      type: "negative",
     });
   }
 }
