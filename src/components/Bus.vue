@@ -171,13 +171,19 @@ const columns = [
     sortable: true,
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
-  { name: "Soat", label: "Soat", field: "Soat", sortable: true,   format: (val) => {
+  {
+    name: "Soat",
+    label: "Soat",
+    field: "Soat",
+    sortable: true,
+    format: (val) => {
       const date = new Date(val);
       const day = date.getDate() + 1;
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
-      return `${day}-${month < 10 ? '0' : ''}${month}-${year}`;
-    } },
+      return `${day}-${month < 10 ? "0" : ""}${month}-${year}`;
+    },
+  },
   {
     name: "opciones",
     label: "Opciones",
@@ -203,7 +209,16 @@ function agregarBus() {
   titleDialog.value = "Agregar Bus";
 }
 function validar() {
-  if (Vehiculo.value == "") {
+  if (NumBus.value == "") {
+    mostrarData.value = false;
+    mostrarError.value = true;
+    error.value = "Digite el número del bus porfavor";
+    setTimeout(() => {
+      mostrarData.value = true;
+      mostrarError.value = false;
+      error.value = "";
+    }, 2200);
+  } else if (Vehiculo.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite la placa del vehiculo porfavor";
@@ -306,7 +321,7 @@ async function editarAgregarBus() {
       }
     }
     validacion.value = false;
-  } 
+  }
 }
 
 function limpiar() {
@@ -332,7 +347,7 @@ async function EditarBus(id) {
     Vehiculo.value = busSeleccionado.Vehiculo;
     NumAsientos.value = busSeleccionado.NumAsientos;
     conductor_id.value = String(busSeleccionado.conductor_id.nombre);
-    Soat.value = format(new Date(busSeleccionado.Soat), 'yyyy-MM-dd');
+    Soat.value = format(new Date(busSeleccionado.Soat), "yyyy-MM-dd");
   }
 }
 
@@ -439,9 +454,12 @@ async function ActivarBus(id) {
   width: 310px;
   border: 3px solid red;
   margin-bottom: 5px;
+  height: 180px;
+  display: flex;
+  align-items: center;
 }
 .containerError h4 {
-  font-size: 15px;
+  font-size: 25px;
   margin: 0;
   padding: 0;
 }
@@ -490,6 +508,7 @@ hr {
 
 .text-h6 {
   font-size: 28px;
+  font-family: "Letra";
 }
 
 .contorno {

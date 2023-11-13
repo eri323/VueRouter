@@ -97,8 +97,10 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
+import { useQuasar } from "quasar";
 import { useRutaStore } from "../stores/Ruta.js";
 const rutaStore = useRutaStore();
+const $q = useQuasar();
 let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 
 let rutas = ref([]);
@@ -159,8 +161,7 @@ function agregarRuta() {
   cambio.value = 0;
   limpiar();
 }
-
-async function editarAgregarRuta() {
+function validar() {
   if (Origen.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
@@ -170,6 +171,7 @@ async function editarAgregarRuta() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
+    
   } else if (Destino.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
@@ -189,28 +191,78 @@ async function editarAgregarRuta() {
       error.value = "";
     }, 2200);
   } else {
+    validacion.value = true;
+  }
+}
+async function editarAgregarRuta() {
+  validar();
+  if (validacion.value === true) {
     if (cambio.value === 0) {
-      await rutaStore.postRuta({
-        Origen: Origen.value,
-        Destino: Destino.value,
-        hora_salida: hora_salida.value,
-      });
-      limpiar();
-      obtenerInfo();
-    } else {
-      let id = idRuta.value;
-      if (id) {
-        await rutaStore.putEditarRuta(id, {
+      try {
+        showDefault();
+        await rutaStore.postRuta({
           Origen: Origen.value,
           Destino: Destino.value,
           hora_salida: hora_salida.value,
         });
-
+        if (notification) {
+          notification();
+        }
         limpiar();
+        $q.notify({
+          spinner: false,
+          message: "Ruta Agregada",
+          timeout: 2000,
+          type: "positive",
+        });
         obtenerInfo();
-        fixed.value = false;
+      } catch (error) {
+        if (notification) {
+          notification();
+        }
+        $q.notify({
+          spinner: false,
+          message: `${error.response.data.error.errors[0].msg}`,
+          timeout: 2000,
+          type: "negative",
+        });
+      }
+    } else {
+      let id = idRuta.value;
+      if (id) {
+        try {
+          await rutaStore.putEditarRuta(id, {
+            Origen: Origen.value,
+            Destino: Destino.value,
+            hora_salida: hora_salida.value,
+          });
+          if (notification) {
+            notification();
+          }
+          limpiar();
+          $q.notify({
+            spinner: false,
+            message: "Bus Actualizado",
+            timeout: 2000,
+            type: "positive",
+          });
+          obtenerInfo();
+          fixed.value = false;
+        } catch (error) {
+          if (notification) {
+            notification();
+            console.log(notification);
+          }
+          $q.notify({
+            spinner: false,
+           /*  message: `${error.response.data.error.errors[0].msg}`, */
+            timeout: 2000,
+            type: "negative",
+          });
+        }
       }
     }
+    validacion.value = false;
   }
 }
 
@@ -226,11 +278,11 @@ async function EditarRuta(id) {
   cambio.value = 1;
   const rutaSeleccionada = rutas.value.find((ruta) => ruta._id === id);
   if (rutaSeleccionada) {
-   /*  const fechaMostrar = new Date(Date.parse(rutaSeleccionada.hora_salida))
+    /*  const fechaMostrar = new Date(Date.parse(rutaSeleccionada.hora_salida))
       .toISOString()
       .slice(0, 10); */
-/*     console.log(fechaMostrar);
- */    console.log(rutaSeleccionada.hora_salida);
+    /*     console.log(fechaMostrar);
+     */ console.log(rutaSeleccionada.hora_salida);
     idRuta.value = String(rutaSeleccionada._id);
     fixed.value = true;
     text.value = "Editar Bus";
@@ -240,15 +292,67 @@ async function EditarRuta(id) {
     hora_salida.value = rutaSeleccionada.hora_salida;
   }
 }
-
+let validacion = ref(false);
+let notification = ref(null);
+const showDefault = () => {
+  notification = $q.notify({
+    spinner: true,
+    message: "Please wait...",
+    timeout: 0,
+  });
+};
 async function InactivarRuta(id) {
-  await rutaStore.putInactivarRuta(id);
-  obtenerInfo();
+  try {
+    showDefault();
+    await rutaStore.putInactivarRuta(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Ruta Inactiva",
+      timeout: 2000,
+      type: "positive",
+    });
+    obtenerInfo();
+  } catch (error) {
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: "negative",
+    });
+  }
 }
 
 async function ActivarRuta(id) {
-  await rutaStore.putActivarRuta(id);
-  obtenerInfo();
+  try {
+    showDefault();
+    await rutaStore.putActivarRuta(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Ruta Activa",
+      timeout: 2000,
+      type: "positive",
+    });
+    obtenerInfo();
+  } catch (error) {
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: "negative",
+    });
+  }
 }
 
 onMounted(async () => {
@@ -315,9 +419,14 @@ hr {
   width: 310px;
   border: 3px solid red;
   margin-bottom: 5px;
+  height: 180px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ font-size: 80px;
 }
 .containerError h4 {
-  font-size: 15px;
+  font-size: 25px;
   margin: 0;
   padding: 0;
 }
@@ -330,5 +439,7 @@ h1 {
 }
 .text-h6 {
   font-size: 28px;
+  font-family: "Letra";
+  margin-bottom: 10px;
 }
 </style>
