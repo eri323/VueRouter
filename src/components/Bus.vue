@@ -160,16 +160,7 @@ function agregarBus() {
   titleDialog.value = "Agregar Bus";
 }
 function validar() {
-  if (NumBus.value == "") {
-    mostrarData.value = false;
-    mostrarError.value = true;
-    error.value = "Digite el número del bus porfavor";
-    setTimeout(() => {
-      mostrarData.value = true;
-      mostrarError.value = false;
-      error.value = "";
-    }, 2200);
-  } else if (Vehiculo.value == "") {
+  if (Vehiculo.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite la placa del vehiculo porfavor";
@@ -255,6 +246,8 @@ async function editarAgregarBus() {
             NumAsientos: NumAsientos.value,
             conductor_id: conductor_id._rawValue.value,
             Soat: Soat.value,
+
+            
           });
           if (notification) {
             notification();
@@ -307,10 +300,8 @@ async function EditarBus(id) {
     NumBus.value = busSeleccionado.NumBus;
     Vehiculo.value = busSeleccionado.Vehiculo;
     NumAsientos.value = busSeleccionado.NumAsientos;
-    conductor_id.value = {
-      label: String(busSeleccionado.conductor_id.nombre),
-      value: String(busSeleccionado.conductor_id._id)
-    }
+    conductor_id.value = String(busSeleccionado.conductor_id._id)
+
     Soat.value = format(new Date(busSeleccionado.Soat), "yyyy-MM-dd");
   }
 }

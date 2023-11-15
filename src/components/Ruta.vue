@@ -8,25 +8,17 @@
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <div class="contorno">
-          <q-card-section
-            class="row items-center q-pb-none"
-            style="color: black"
-          >
+          <q-card-section class="row items-center q-pb-none" style="color: black">
             <div class="text-h6">{{ text }}</div>
             <q-space />
           </q-card-section>
           <q-separator />
           <div v-if="mostrarData">
             <q-card-section style="max-height: 50vh" class="scroll">
+               <q-input v-model="codigo" label="Codigo" style="width: 300px" />
               <q-input v-model="Origen" label="Origen" style="width: 300px" />
               <q-input v-model="Destino" label="Destino" style="width: 300px" />
-              <q-input
-                type="time"
-                id="fechaInp"
-                v-model="hora_salida"
-                label="Hora De salida"
-                style="width: 300px"
-              />
+              <q-input type="time" id="fechaInp" v-model="hora_salida" label="Hora De salida" style="width: 300px" />
             </q-card-section>
           </div>
 
@@ -38,55 +30,27 @@
 
           <q-card-actions align="center" style="gap: 30px; margin-top: 10px">
             <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn
-              flat
-              label="Aceptar"
-              color="primary"
-              @click="editarAgregarRuta()"
-            />
+            <q-btn flat label="Aceptar" color="primary" @click="editarAgregarRuta()" />
           </q-card-actions>
         </div>
       </q-card>
     </q-dialog>
     <div>
       <div class="btn-agregar">
-        <q-btn
-          class="bg-secondary"
-          label="Agregar ruta"
-          @click="agregarRuta()"
-        />
+        <q-btn class="bg-secondary" label="Agregar ruta" @click="agregarRuta()" />
       </div>
       <q-table title="Rutas" :rows="rows" :columns="columns" row-key="name">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green"
-              >Activo</label
-            >
+            <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
             <label for="" v-else style="color: red">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn
-              color="white"
-              text-align="center"
-              text-color="black"
-              label="🖋️"
-              @click="EditarRuta(props.row._id)"
-            />
-            <q-btn
-      
-              glossy
-              label="❌"
-              @click="InactivarRuta(props.row._id)"
-              v-if="props.row.estado == 1"
-            />
-            <q-btn
-              glossy
-              label="✔️"
-              @click="ActivarRuta(props.row._id)"
-              v-else
-            />
+            <q-btn color="white" text-align="center" text-color="black" label="🖋️" @click="EditarRuta(props.row._id)" />
+            <q-btn glossy label="❌" @click="InactivarRuta(props.row._id)" v-if="props.row.estado == 1" />
+            <q-btn glossy label="✔️" @click="ActivarRuta(props.row._id)" v-else />
           </q-td>
         </template>
       </q-table>
@@ -108,6 +72,7 @@ let rutas = ref([]);
 let rows = ref([]);
 let fixed = ref(false);
 let text = ref("");
+let codigo = ref("");
 let sucursal = ref("");
 let Origen = ref();
 let Destino = ref("");
@@ -126,6 +91,7 @@ async function obtenerInfo() {
 }
 
 const columns = [
+  { name: "codigo", label: "Codigo", field: "codigo", sortable: true },
   { name: "Origen", label: "Origen", field: "Origen", sortable: true },
   { name: "Destino", label: "Destino", field: "Destino", sortable: true },
   {
@@ -172,7 +138,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-    
+
   } else if (Destino.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
@@ -202,6 +168,7 @@ async function editarAgregarRuta() {
       try {
         showDefault();
         await rutaStore.postRuta({
+          Codigo: codigo.value,
           Origen: Origen.value,
           Destino: Destino.value,
           hora_salida: hora_salida.value,
@@ -234,6 +201,7 @@ async function editarAgregarRuta() {
         try {
           showDefault();
           await rutaStore.putEditarRuta(id, {
+               Codigo: codigo.value,
             Origen: Origen.value,
             Destino: Destino.value,
             hora_salida: hora_salida.value,
@@ -257,7 +225,7 @@ async function editarAgregarRuta() {
           }
           $q.notify({
             spinner: false,
-           /*  message: `${error.response.data.error.errors[0].msg}`, */
+            /*  message: `${error.response.data.error.errors[0].msg}`, */
             timeout: 2000,
             type: "negative",
           });
@@ -269,7 +237,7 @@ async function editarAgregarRuta() {
 }
 
 function limpiar() {
-  sucursal.value = "";
+  codigo.value = "";
   Origen.value = "";
   Destino.value = "";
   hora_salida.value = "";
@@ -288,7 +256,7 @@ async function EditarRuta(id) {
     idRuta.value = String(rutaSeleccionada._id);
     fixed.value = true;
     text.value = "Editar Bus";
-    sucursal.value = rutaSeleccionada.sucursal;
+    codigo.value =rutaSeleccionada.codigo;
     Origen.value = rutaSeleccionada.Origen;
     Destino.value = rutaSeleccionada.Destino;
     hora_salida.value = rutaSeleccionada.hora_salida;
@@ -373,6 +341,7 @@ onMounted(async () => {
   background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
   border-radius: 3%;
 }
+
 .contorno {
   background-color: white;
   height: 90%;
@@ -382,6 +351,7 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
 }
+
 .botones button {
   margin: 2px;
 }
@@ -412,6 +382,7 @@ hr {
   width: 363px;
   margin-bottom: 1%;
 }
+
 .containerError {
   background-color: rgba(255, 0, 0, 0.429);
   padding: 15px;
@@ -422,16 +393,18 @@ hr {
   border: 3px solid red;
   margin-bottom: 5px;
   height: 180px;
- display: flex;
- justify-content: center;
- align-items: center;
- font-size: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 80px;
 }
+
 .containerError h4 {
   font-size: 25px;
   margin: 0;
   padding: 0;
 }
+
 h1 {
   font-family: "Letra";
   text-align: center;
@@ -439,6 +412,7 @@ h1 {
   align-items: center;
   margin-top: 2%;
 }
+
 .text-h6 {
   font-size: 28px;
   font-family: "Letra";

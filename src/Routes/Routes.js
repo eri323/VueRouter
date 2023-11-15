@@ -5,7 +5,7 @@ import Bus from "../components/Bus.vue";
 import Ruta from "../components/Ruta.vue";
 import Cliente from "../components/Cliente.vue";
 import Conductores from "../components/Conductores.vue";
-import Tickete from "../components/tickete.vue";
+import Tickete from "../components/Tickete.vue";
 import Venta from "../components/Venta.vue"
 
 import { createRouter, createWebHashHistory } from "vue-router";

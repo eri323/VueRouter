@@ -27,7 +27,7 @@
           <h4>Por favor digite el Nombre o Contraseña</h4>
         </div>
         <div class="containerError" v-if="error2">
-          <h4>Nombre o Contraseña incorrecta</h4>
+          <h4>{{ msj }}</h4>
         </div>
         <button @click="Login()" class="btn">Aceptar</button>
       </q-card>
@@ -42,6 +42,7 @@ let mostrarError = ref(false);
 let MostrarData = ref(true);
 let error2 = ref(false);
 let error = ref("melo");
+let msj=ref("");
 const router = useRouter();
 const data = ref({
   Nombre: "",
@@ -50,27 +51,34 @@ const data = ref({
 const useVendedor = useVendedorStore();
 
 async function Login() {
-  console.log(data.value);
-  try {
-    const res = await useVendedor.login(data.value);
-    console.log(res);
-    if ( data.value.Nombre=="" && data.value.password=="") {
-      mostrarError.value = true;
-      setTimeout(() => {
-        mostrarError.value = false;
-      }, 2200);
-      return
-    } else if (res !=200) {
-      error2.value = true;
-      setTimeout(() => {
-        error2.value = false;
-      }, 2200);
-    } else {
-      router.push("./home");
+
+  if (data.value.Nombre == "" && data.value.password == "") {
+    mostrarError.value = true;
+    setTimeout(() => {
+      mostrarError.value = false;
+    }, 2200);
+    return
+  } else {
+    try {
+      const res = await useVendedor.login(data.value);
+      console.log(res);
+      if (res != 200) {
+        error2.value = true;
+        msj.value=res.msg
+        setTimeout(() => {
+          error2.value = false;
+        }, 2200);
+      } else {
+        router.push("./home");
+      }
+
+
+    } catch (error) {
+      console.error("Error in login:", error);
     }
-  } catch (error) {
-    console.error("Error in login:", error);
   }
+  console.log(data.value);
+
 }
 /* function validar(){
   let validation = true;
@@ -81,6 +89,7 @@ async function Login() {
  
   return validation
 } */
+
 </script>
 <style scoped>
 .body {
@@ -220,4 +229,5 @@ async function Login() {
 .containerError h4 {
   font-size: 15px;
   margin: 0;
-}</style>
+}
+</style>

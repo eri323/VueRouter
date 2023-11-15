@@ -8,7 +8,7 @@ export const useTicketStore = defineStore('ticket', () => {
     const obtenerInfoTicket = async () => {
         try {
             let responseTicket = await axios.get('pasaje/pasajebusca');
-            ticketes.value = responseTicket.data.ticket;
+            ticketes.value = responseTicket.data.pasaje;
         } catch (error) {
             throw error
         }

@@ -56,7 +56,7 @@
         </div>
       </div>
       <div class="containerheader">
-        <q-table :rows="rows" :columns="columns" row-key="name">
+        <q-table :rows="rows" :columns="columns" row-key="name" title="Conductores">
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
               <label for="" v-if="props.row.estado == 1" style="color: green"

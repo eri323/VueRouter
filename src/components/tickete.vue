@@ -62,7 +62,14 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { format } from 'date-fns';
 import { useTicketStore } from '../stores/Tickete.js';
-import { useConductorStore } from '../stores/Conductores.js';
+import { useVendedorStore } from '../stores/Vendedor.js';
+import { useClienteStore } from '../stores/Cliente.js';
+import { useRutaStore } from '../stores/Ruta.js';
+import { useBusStore } from '../stores/Bus.js';
+const TicketStore = useTicketStore()
+const VendedorStore = useVendedorStore()
+const clienteStore = useClienteStore()
+const rutaStore = useRutaStore()
 const busStore = useBusStore()
 /* const conductorStore = useConductorStore() */
 let buses = ref([]);
@@ -92,7 +99,7 @@ onMounted(async () => {
 });
 
 const columns = [
-    { name: 'Vehiculo', label: 'Placa', field: 'Vehiculo', sortable: true },
+    { name: 'Nmro_ticket', label: 'Numero de ticket', field: 'Nmro_ticket', sortable: true },
     { name: 'NumAsientos', label: 'Numero De Asientos', field: 'NumAsientos', sortable: true },
     { name: 'conductor_id', label: 'Conductor', field: (row) => row.conductor_id.nombre },
     { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },

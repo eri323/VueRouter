@@ -16,6 +16,7 @@ export const useBusStore = defineStore('bus', () => {
 
     const postBus = async (data) => {
         try {
+            console.log("d", data);
             let res = await axios.post("transporte/transcrear", data);
             return res
         } catch (error) {
