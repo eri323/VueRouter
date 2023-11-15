@@ -61,13 +61,13 @@ import { useBusStore } from "../stores/Bus.js";
 import { useRutaStore } from "../stores/Ruta.js";
 import { useClienteStore } from "../stores/Cliente.js";
 import { useTicketStore } from "../stores/Tickete.js";
-import { useLoginStore } from "../stores/Login.js";
+/* import { useLoginStore } from "../stores/Login.js"; */
 
 const busStore = useBusStore();
 const rutaStore = useRutaStore();
 const clienteStrore = useClienteStore();
 const ticketStore = useTicketStore();
-const loginStore = useLoginStore();
+/* const loginStore = useLoginStore(); */
 
 
 let fixed = ref(false);

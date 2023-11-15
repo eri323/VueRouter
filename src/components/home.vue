@@ -70,6 +70,12 @@
               Ticket
             </button></router-link
           >
+          <router-link to="/Venta">
+              <button @click="mostrart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                Venta
+              </button></router-link
+            >
       </div>
     </q-drawer>
 
@@ -111,6 +117,12 @@
               <p>Tickete</p>
             </div>
           </router-link>
+           <router-link to="./Venta">
+              <div @click="mostrart()">
+               <i class="fa-solid fa-cart-shopping"></i>
+                <p>Venta</p>
+              </div>
+            </router-link>
       </div>
       <router-view />
     </q-page-container>

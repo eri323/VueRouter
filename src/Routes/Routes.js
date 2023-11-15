@@ -6,6 +6,7 @@ import Ruta from "../components/Ruta.vue";
 import Cliente from "../components/Cliente.vue";
 import Conductores from "../components/Conductores.vue";
 import Tickete from "../components/tickete.vue";
+import Venta from "../components/Venta.vue"
 
 import { createRouter, createWebHashHistory } from "vue-router";
 
@@ -21,7 +22,8 @@ const routes = [
       { path: "/Ruta", component: Ruta},
       { path: "/Cliente", component: Cliente},
       { path: "/Conductores", component:Conductores},
-      { path: "/Tickete", component: Tickete }
+      { path: "/Tickete", component: Tickete },
+      { path: "/Venta", component: Venta }
     ],
   },
   

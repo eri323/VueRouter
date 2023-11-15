@@ -71,10 +71,11 @@
               color="white"
               text-align="center"
               text-color="black"
-              label="✍️"
+              label="🖋️"
               @click="EditarRuta(props.row._id)"
             />
             <q-btn
+      
               glossy
               label="❌"
               @click="InactivarRuta(props.row._id)"
@@ -231,6 +232,7 @@ async function editarAgregarRuta() {
       let id = idRuta.value;
       if (id) {
         try {
+          showDefault();
           await rutaStore.putEditarRuta(id, {
             Origen: Origen.value,
             Destino: Destino.value,

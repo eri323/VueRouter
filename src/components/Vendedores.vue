@@ -16,81 +16,40 @@
             <q-card-section style="max-height: 50vh" class="scroll">
               <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
 
-              <q-input
-                v-model="Cedula"
-                label="Cedula"
-                style="width: 300px"
-                type="number"
-              />
-              <q-input
-                v-model="Telefono"
-                label="Telefono"
-                type="number"
-                style="width: 300px"
-              />
+              <q-input v-model="Cedula" label="Cedula" style="width: 300px" type="number" />
+              <q-input v-model="Telefono" label="Telefono" type="number" style="width: 300px" />
             </q-card-section>
           </div>
 
           <div class="containerError" v-if="mostrarError">
-            <h4 >{{ error }} </h4>
+            <h4>{{ error }} </h4>
           </div>
           <q-separator />
 
           <q-card-actions align="right" style="gap: 30px; margin-top: 10px">
             <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn
-              flat
-              label="Aceptar"
-              color="primary"
-              @click="AgregarVendedor()"
-            />
+            <q-btn flat label="Aceptar" color="primary" @click="AgregarVendedor()" />
           </q-card-actions>
         </div>
       </q-card>
     </q-dialog>
     <div>
       <div class="btn-agregar">
-        <q-btn
-          class="bg-secondary"
-          label="Agregar Vendedores"
-          @click="agregarVendedor()"
-        />
+        <q-btn class="bg-secondary" label="Agregar Vendedores" @click="agregarVendedor()" />
       </div>
 
-      <q-table
-        title="Vendedores"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-      >
+      <q-table title="Vendedores" :rows="rows" :columns="columns" row-key="name">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green"
-              >Activo</label
-            >
+            <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
             <label for="" v-else style="color: red">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn
-              color="white"
-              text-color="black"
-              label="🖋️"
-              @click="EditarVendedor(props.row._id)"
-            />
-            <q-btn
-              glossy
-              label="❌"
-              @click="InactivarVendedor(props.row._id)"
-              v-if="props.row.estado == 1"
-            />
-            <q-btn
-              glossy
-              label="✔️"
-              @click="putActivarVendedor(props.row._id)"
-              v-else
-            />
+            <q-btn color="white" text-color="black" label="🖋️" @click="EditarVendedor(props.row._id)" />
+            <q-btn glossy label="❌" @click="InactivarVendedor(props.row._id)" v-if="props.row.estado == 1" />
+            <q-btn glossy label="✔️" @click="putActivarVendedor(props.row._id)" v-else />
           </q-td>
         </template>
       </q-table>
@@ -103,6 +62,8 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useVendedorStore } from "../stores/Vendedor.js";
+import { useQuasar } from "quasar";
+const $q = useQuasar();
 const vendedorStore = useVendedorStore();
 let text = ref("");
 let vendedor = ref([]);
@@ -150,59 +111,125 @@ function agregarVendedor() {
   cambio.value = 0;
   limpiar();
 }
+const showDefault = () => {
+  notification = $q.notify({
+    spinner: true,
+    message: "Please wait...",
+    timeout: 0,
+  });
+};
 
-async function AgregarVendedor() {
+let validacion = ref(false);
+let notification = ref(null);
+function validar() {
   if (Nombre.value == "") {
     mostrarData.value = false;
-      mostrarError.value = true;
-      error.value= "Digite un nombre porfavor"
+    mostrarError.value = true;
+    error.value = "Digite un nombre porfavor"
     setTimeout(() => {
       mostrarData.value = true;
       mostrarError.value = false;
-      error.value= ""
+      error.value = ""
     }, 2200);
   } else if (Cedula.value == "") {
     mostrarData.value = false;
-      mostrarError.value = true;
-      error.value= "Digite la cedula porfavor"
+    mostrarError.value = true;
+    error.value = "Digite la cedula porfavor"
     setTimeout(() => {
       mostrarData.value = true;
       mostrarError.value = false;
-      error.value= ""
+      error.value = ""
     }, 2200);
   } else if (Telefono.value == "") {
     mostrarData.value = false;
-      mostrarError.value = true;
-      error.value= "Digite el numero de telefono porfavor"
+    mostrarError.value = true;
+    error.value = "Digite el numero de telefono porfavor"
     setTimeout(() => {
       mostrarData.value = true;
       mostrarError.value = false;
-      error.value= ""
+      error.value = ""
     }, 2200);
-  }
-  if (cambio.value === 0) {
-    await vendedorStore.postvendedor({
-      Nombre: Nombre.value,
-      Cedula: Cedula.value,
-      Telefono: Telefono.value,
-    });
-    limpiar();
-    obtenerInfo();
   } else {
-    let id = idVendedor.value;
-    if (id) {
-      await vendedorStore.putEditarVendedor(id, {
-        Nombre: Nombre.value,
-
-        Cedula: Cedula.value,
-        Telefono: Telefono.value,
-      });
-
-      limpiar();
-      obtenerInfo();
-      fixed.value = false;
-    }
+    validacion.value = true;
   }
+}
+async function AgregarVendedor() {
+  validar();
+  if (validacion.value == true) {
+
+    if (cambio.value === 0) {
+      try {
+        showDefault();
+        await vendedorStore.postvendedor({
+          Nombre: Nombre.value,
+          Cedula: Cedula.value,
+          Telefono: Telefono.value,
+        });
+        if (notification) {
+          notification();
+        }
+        limpiar();
+        $q.notify({
+          spinner: false,
+          message: "Bus Agregado",
+          timeout: 2000,
+          type: "positive",
+        });
+        obtenerInfo();
+      } catch (error) {
+        if (notification) {
+          notification();
+        }
+        $q.notify({
+          spinner: false,
+          message: `${error.response.data.error.errors[0].msg}`,
+          timeout: 2000,
+          type: "negative",
+        });
+      }
+
+
+    } else {
+      let id = idVendedor.value;
+      if (id) {
+        try {
+          showDefault();
+          await vendedorStore.putEditarVendedor(id, {
+            Nombre: Nombre.value,
+
+            Cedula: Cedula.value,
+            Telefono: Telefono.value,
+          });
+          if (notification) {
+            notification();
+          }
+          limpiar();
+          $q.notify({
+            spinner: false,
+            message: "Bus Actualizado",
+            timeout: 2000,
+            type: "positive",
+          });
+          obtenerInfo();
+          fixed.value = false;
+        } catch (error) {
+          if (notification) {
+            notification();
+          }
+          $q.notify({
+            spinner: false,
+            message: `${error.response.data.error.errors[0].msg}`,
+            timeout: 2000,
+            type: "negative",
+          });
+        }
+
+      }
+    }
+    validacion.value = false;
+  }
+
+
 }
 
 function limpiar() {
@@ -230,13 +257,57 @@ async function EditarVendedor(id) {
 }
 
 async function InactivarVendedor(id) {
-  await vendedorStore.putInactivarVendedor(id);
-  obtenerInfo();
+  try {
+    showDefault();
+    await vendedorStore.putInactivarVendedor(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Bus Inactivo",
+      timeout: 2000,
+      type: "positive",
+    });
+    obtenerInfo();
+  } catch (error) {
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: "negative",
+    });
+  }
 }
 
 async function putActivarVendedor(id) {
-  await vendedorStore.putActivarVendedor(id);
-  obtenerInfo();
+ try {
+    showDefault();
+    await vendedorStore.putActivarVendedor(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Vendedor Activo",
+      timeout: 2000,
+      type: "positive",
+    });
+    obtenerInfo();
+  } catch (error) {
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: "negative",
+    });
+  }
 }
 
 onMounted(async () => {
@@ -255,6 +326,7 @@ onMounted(async () => {
   background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
   border-radius: 3%;
 }
+
 .containerError {
   background-color: rgba(255, 0, 0, 0.429);
   padding: 15px;
@@ -265,11 +337,13 @@ onMounted(async () => {
   border: 3px solid red;
   margin-bottom: 5px;
 }
+
 .containerError h4 {
   font-size: 15px;
   margin: 0;
   padding: 0;
 }
+
 .botones button {
   margin: 2px;
 }

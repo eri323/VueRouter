@@ -12,37 +12,15 @@
           <q-separator />
           <div v-if="mostrarData">
             <q-card-section style="max-height: 50vh" class="scroll">
-              <q-input
-                v-model="NumBus"
-                type="number"
-                label="Numero de bus"
-                style="width: 300px"
-              />
+              <q-input v-model="NumBus" type="number" label="Numero de bus" style="width: 300px" />
               <q-input v-model="Vehiculo" label="Placa" style="width: 300px" />
 
-              <q-input
-                v-model="NumAsientos"
-                label="Numero de Asientos"
-                type="number"
-                style="width: 300px"
-              />
+              <q-input v-model="NumAsientos" label="Numero de Asientos" type="number" style="width: 300px" />
 
               <div class="q-gutter-y-md column" style="max-width: 300px">
-                <q-select
-                  clearable
-                  filled
-                  color="primary"
-                  v-model="conductor_id"
-                  :options="options"
-                  label="Conductor"
-                />
+                <q-select clearable filled color="primary" v-model="conductor_id" :options="options" label="Conductor" />
               </div>
-              <q-input
-                v-model="Soat"
-                label="Soat"
-                type="date"
-                style="width: 300px"
-              />
+              <q-input v-model="Soat" label="Soat" type="date" style="width: 300px" />
             </q-card-section>
           </div>
 
@@ -53,12 +31,7 @@
 
           <q-card-actions align="right" style="gap: 30px; margin-top: 10px">
             <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn
-              flat
-              label="Aceptar"
-              color="primary"
-              @click="editarAgregarBus()"
-            />
+            <q-btn flat label="Aceptar" color="primary" @click="editarAgregarBus()" />
           </q-card-actions>
         </div>
       </q-card>
@@ -75,32 +48,15 @@
         <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
-              <label for="" v-if="props.row.estado == 1" style="color: green"
-                >Activo</label
-              >
+              <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
               <label for="" v-else style="color: red">Inactivo</label>
             </q-td>
           </template>
           <template v-slot:body-cell-opciones="props">
             <q-td :props="props" class="botones">
-              <q-btn
-                color="white"
-                text-color="black"
-                label="🖋️"
-                @click="EditarBus(props.row._id)"
-              />
-              <q-btn
-                glossy
-                label="❌"
-                @click="InactivarBus(props.row._id)"
-                v-if="props.row.estado == 1"
-              />
-              <q-btn
-                glossy
-                label="✔️"
-                @click="ActivarBus(props.row._id)"
-                v-else
-              />
+              <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
+              <q-btn glossy label="❌" @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1" />
+              <q-btn glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
             </q-td>
           </template>
         </q-table>
@@ -110,7 +66,8 @@
 </template>
 
 <script setup>
-import axios from "axios";
+/* import axios from "axios"; */
+/* import { format } from "date-fns"; */
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useBusStore } from "../stores/Bus.js";
@@ -176,13 +133,7 @@ const columns = [
     label: "Soat",
     field: "Soat",
     sortable: true,
-    format: (val) => {
-      const date = new Date(val);
-      const day = date.getDate() + 1;
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-      return `${day}-${month < 10 ? "0" : ""}${month}-${year}`;
-    },
+    format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   {
     name: "opciones",
@@ -245,6 +196,15 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
+  } else if (Soat.value == "") {
+    mostrarData.value = false;
+    mostrarError.value = true;
+    error.value = "Seleccione la fecha de vencimiento del seguro SOAT";
+    setTimeout(() => {
+      mostrarData.value = true;
+      mostrarError.value = false;
+      error.value = "";
+    }, 2200);
   } else {
     validacion.value = true;
   }
@@ -288,6 +248,7 @@ async function editarAgregarBus() {
       let id = idBus.value;
       if (id) {
         try {
+          showDefault();
           await busStore.putEditarBus(id, {
             NumBus: NumBus.value,
             Vehiculo: Vehiculo.value,
@@ -328,7 +289,7 @@ function limpiar() {
   NumBus.value = "";
   Vehiculo.value = "";
   NumAsientos.value = "";
-  conductor_id = "";
+  conductor_id.value = "";
   Soat.value = "";
 }
 
@@ -346,7 +307,10 @@ async function EditarBus(id) {
     NumBus.value = busSeleccionado.NumBus;
     Vehiculo.value = busSeleccionado.Vehiculo;
     NumAsientos.value = busSeleccionado.NumAsientos;
-    conductor_id.value = String(busSeleccionado.conductor_id.nombre);
+    conductor_id.value = {
+      label: String(busSeleccionado.conductor_id.nombre),
+      value: String(busSeleccionado.conductor_id._id)
+    }
     Soat.value = format(new Date(busSeleccionado.Soat), "yyyy-MM-dd");
   }
 }
@@ -445,6 +409,7 @@ async function ActivarBus(id) {
 .body {
   width: 100%;
 }
+
 .containerError {
   background-color: rgba(255, 0, 0, 0.429);
   padding: 15px;
@@ -458,11 +423,13 @@ async function ActivarBus(id) {
   display: flex;
   align-items: center;
 }
+
 .containerError h4 {
   font-size: 25px;
   margin: 0;
   padding: 0;
 }
+
 .tbus {
   width: 100%;
   text-align: center;
