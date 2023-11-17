@@ -15,7 +15,7 @@
           <q-separator />
           <div v-if="mostrarData">
             <q-card-section style="max-height: 50vh" class="scroll">
-               <q-input v-model="codigo" label="Codigo" style="width: 300px" />
+               <q-input v-model="codigo" label="codigo" style="width: 300px" />
               <q-input v-model="Origen" label="Origen" style="width: 300px" />
               <q-input v-model="Destino" label="Destino" style="width: 300px" />
               <q-input type="time" id="fechaInp" v-model="hora_salida" label="Hora De salida" style="width: 300px" />
@@ -91,7 +91,7 @@ async function obtenerInfo() {
 }
 
 const columns = [
-  { name: "codigo", label: "Codigo", field: "codigo", sortable: true },
+  { name: "codigo", label: "codigo", field: "codigo", sortable: true },
   { name: "Origen", label: "Origen", field: "Origen", sortable: true },
   { name: "Destino", label: "Destino", field: "Destino", sortable: true },
   {
@@ -168,7 +168,7 @@ async function editarAgregarRuta() {
       try {
         showDefault();
         await rutaStore.postRuta({
-          Codigo: codigo.value,
+          codigo: codigo.value,
           Origen: Origen.value,
           Destino: Destino.value,
           hora_salida: hora_salida.value,
@@ -201,7 +201,7 @@ async function editarAgregarRuta() {
         try {
           showDefault();
           await rutaStore.putEditarRuta(id, {
-               Codigo: codigo.value,
+            codigo: codigo.value,
             Origen: Origen.value,
             Destino: Destino.value,
             hora_salida: hora_salida.value,

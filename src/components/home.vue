@@ -29,48 +29,53 @@
       </div>
 
       <div class="btns">
-        <router-link to="/home">
+        <router-link class="link" to="/main">
+          <button @click="mostrarta()">
+            <i class="fa-solid fa-house"></i>
+            Menu
+          </button></router-link>
+        <router-link class="link" to="/home">
           <button @click="mostrarta()">
             <i class="fa-solid fa-house"></i>
             Home
           </button></router-link>
-        <router-link to="/Vendedores">
+        <router-link class="link" to="/Vendedores">
           <button @click="mostrart()">
             <i class="fa-solid fa-clipboard-user"></i>
             Vendedores
           </button>
         </router-link>
-        <router-link to="/Bus">
+        <router-link class="link" to="/Bus">
           <button @click="mostrart()">
             <i class="fa-solid fa-bus-simple"></i>
             buses
           </button>
         </router-link>
-        <router-link to="/Ruta">
+        <router-link class="link" to="/Ruta">
           <button @click="mostrart()">
             <i class="fa-solid fa-road"></i>
             rutas
           </button></router-link
         >
-        <router-link to="/Cliente">
+        <router-link class="link" to="/Cliente">
           <button @click="mostrart()">
             <i class="fa-solid fa-user-tie"></i>
             Clientes
           </button></router-link
         >
-        <router-link to="/Conductores">
+        <router-link class="link" to="/Conductores">
           <button @click="mostrart()">
             <i class="fa-solid fa-users-line"></i>
             Conductores
           </button></router-link
         >
-         <router-link to="/Tickete">
+         <router-link class="link" to="/Tickete">
             <button @click="mostrart()">
                <i class="fa-solid fa-ticket"></i>
               Ticket
             </button></router-link
           >
-          <router-link to="/Venta">
+          <router-link class="link" to="/Venta">
               <button @click="mostrart()">
                 <i class="fa-solid fa-cart-shopping"></i>
                 Venta

@@ -68,39 +68,46 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <div>
-      <q-table title="Ticket" :rows="rows" :columns="columns" row-key="name">
-        <template v-slot:body-cell-estado="props">
-          <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green"
-              >Activo</label
-            >
-            <label for="" v-else style="color: red">Inactivo</label>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-opciones="props">
-          <q-td :props="props" class="botones">
-            <q-btn
-              color="white"
-              text-color="black"
-              label="🖋️"
-              @click="EditarTicket(props.row._id)"
-            />
-            <q-btn
-              glossy
-              label="❌"
-              @click="InactivarTicket(props.row._id)"
-              v-if="props.row.estado == 1"
-            />
-            <q-btn
-              glossy
-              label="✔️"
-              @click="ActivarTicket(props.row._id)"
-              v-else
-            />
-          </q-td>
-        </template>
-      </q-table>
+    <div class="t">
+      <div>
+        <h1>Tickets</h1>
+        <hr>
+      </div>
+      <div class="t">
+        <q-table title="Ticket" :rows="rows" :columns="columns" row-key="name">
+          <template v-slot:body-cell-estado="props">
+            <q-td :props="props">
+              <label for="" v-if="props.row.estado == 1" style="color: green"
+                >Activo</label
+              >
+              <label for="" v-else style="color: red">Inactivo</label>
+            </q-td>
+          </template>
+          <template v-slot:body-cell-opciones="props">
+            <q-td :props="props" class="botones">
+              <q-btn
+                color="white"
+                text-color="black"
+                label="🖋️"
+                @click="EditarTicket(props.row._id)"
+              />
+              <q-btn
+                glossy
+                label="❌"
+                @click="InactivarTicket(props.row._id)"
+                v-if="props.row.estado == 1"
+              />
+              <q-btn
+                glossy
+                label="✔️"
+                @click="ActivarTicket(props.row._id)"
+                v-else
+              />
+            </q-td>
+          </template>
+        </q-table>
+      </div>
+     
     </div>
   </div>
 </template>
@@ -176,9 +183,9 @@ const columns = [
   {
     name: "Cliente_id",
     label: "Cliente",
-    field: (row) => `${row.Cliente_id.Nombre_cliente}`,
+    field: (row) => `${row.Cliente_id.Nombre_cliente} - ${row.Cliente_id.CC_cliente}- ${row.Cliente_id.Telefono_cliente}`,
   },
-  { name: "Ruta_id", label: "Ruta", field: (row) => `${row.Ruta_id.codigo}` },
+  { name: "Ruta_id", label: "Ruta", field: (row) => `${row.Ruta_id.Origen}-${row.Ruta_id.Destino}` },
   {
     name: "Transporte_id",
     label: "Bus",
@@ -213,7 +220,7 @@ async function obtenerCliente() {
   try {
     await clienteStore.obtenerInfoCliente();
     optionsCliente.value = clienteStore.clientes.map((cliente) => ({
-      label: `${cliente.nombre}`,
+      label: `${cliente.nombre} - ${cliente.CC_cliente} - ${cliente.Telefono_cliente}`,
       value: String(cliente._id),
     }));
   } catch (error) {
@@ -293,7 +300,7 @@ async function EditarTicket(id) {
     };
 
     cliente.value = {
-      label: `${TicketSeleccionado.cliente_id.Nombre_cliente}`,
+      label: `${TicketSeleccionado.cliente_id.Nombre_cliente}-${TicketSeleccionado.cliente_id.CC_cliente}- ${TicketSeleccionado.cliente_id.Telefono_cliente}`,
       value: String(TicketSeleccionado.cliente_id._id),
     };
 
@@ -370,5 +377,31 @@ async function ActivarTicket(id) {
   display: flex;
   justify-content: center;
   color: black;
+}
+.t {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.t div h1 {
+  font-family: "Letra";
+  text-align: center;
+  font-size: 105px;
+  margin: 0;
+  align-items: center;
+  margin-top: 4%;
+}
+
+.t div hr {
+  background-color: green;
+  height: 4px;
+  border: none;
+  width: 450px;
+}
+th{
+  text-align: center;
 }
 </style>
