@@ -10,7 +10,6 @@
           >
             <div class="text-h6">{{ text }}</div>
             <q-space />
-           
           </q-card-section>
           <q-separator />
           <q-card-section style="max-height: 50vh" class="scroll">
@@ -70,8 +69,7 @@
                 backgroundColor: NumAsientos === i ? 'red' : 'initial',
               }"
             >
-           
-              {{ i }}  <i class="fi fi-sr-chair-office"></i>
+              {{ i }} <i class="fi fi-sr-chair-office"></i>
             </button>
           </div>
         </div>
@@ -310,9 +308,9 @@ onMounted(async () => {
 
 .container-info {
   display: flex;
-  width: 1000px;
-justify-content: center;
-align-items: center;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
 }
 
