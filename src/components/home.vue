@@ -66,13 +66,13 @@
         <router-link class="link" to="/Conductores">
           <button @click="mostrart()">
             <i class="fa-solid fa-users-line"></i>
-            Conductores
+            Conductores 
           </button></router-link
         >
-         <router-link class="link" to="/Tickete">
+         <router-link class="link" to="/tickete">
             <button @click="mostrart()">
                <i class="fa-solid fa-ticket"></i>
-              Ticket
+              Tickete
             </button></router-link
           >
           <router-link class="link" to="/Venta">
@@ -116,7 +116,7 @@
             <p>Conductores</p>
           </div>
         </router-link>
-         <router-link to="./Tickete">
+         <router-link to="./tickete">
             <div @click="mostrart()">
               <i class="fa-solid fa-ticket"></i>
               <p>Tickete</p>
