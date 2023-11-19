@@ -118,7 +118,7 @@ const columns = [
   {
     name: "conductor_id",
     label: "Conductor",
-    field: (row) => row.conductor_id.nombre,
+    field: (row) => `${row.conductor_id.nombre}`,
     sortable: true,
   },
   {
@@ -213,17 +213,7 @@ async function editarAgregarBus() {
           conductor_id: conductor_id.value,
           Soat: Soat.value,
         });
-        if (notification) {
-          notification();
-        }
-        limpiar();
-        $q.notify({
-          spinner: false,
-          message: "Bus Agregado",
-          timeout: 2000,
-          type: "positive",
-        });
-        obtenerInfo();
+       
       } catch (error) {
         if (notification) {
           notification();

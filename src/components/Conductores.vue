@@ -56,7 +56,12 @@
         </div>
       </div>
       <div class="containerheader">
-        <q-table :rows="rows" :columns="columns" row-key="name" title="Conductores">
+        <q-table
+          :rows="rows"
+          :columns="columns"
+          row-key="name"
+          title="Conductores"
+        >
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
               <label for="" v-if="props.row.estado == 1" style="color: green"
@@ -97,6 +102,7 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
+import { useQuasar } from "quasar";
 import { useConductorStore } from "../stores/Conductores.js";
 const conductorStore = useConductorStore();
 let text = ref("");
@@ -108,6 +114,7 @@ let cedula = ref();
 let cambio = ref(0);
 let mostrarData = ref(true);
 let mostrarError = ref(false);
+const $q = useQuasar();
 let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 async function obtenerInfo() {
   try {
@@ -143,8 +150,18 @@ function agregarConductor() {
   cambio.value = 0;
   limpiar();
 }
+const showDefault = () => {
+  notification = $q.notify({
+    spinner: true,
+    message: "Please wait...",
+    timeout: 0,
+  });
+};
 
-async function AgregarConductor() {
+let validacion = ref(false);
+let notification = ref(null);
+
+function validar() {
   if (Nombre.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
@@ -164,26 +181,67 @@ async function AgregarConductor() {
       error.value = "";
     }, 2200);
   } else {
+    validacion.value = true;
+  }
+}
+
+async function AgregarConductor() {
+  validar();
+  if (validacion.value === true) {
     if (cambio.value === 0) {
-      await conductorStore.postconductor({
-        nombre: Nombre.value,
-        cedula: cedula.value,
-      });
-      limpiar();
-      obtenerInfo();
-    } else {
-      let id = idConductor.value;
-      if (id) {
-        await conductorStore.putEditarConductor(id, {
+      try {
+        showDefault();
+        await conductorStore.postconductor({
           nombre: Nombre.value,
           cedula: cedula.value,
         });
-
+        if (notification) {
+          notification();
+        }
         limpiar();
+        $q.notify({
+          spinner: false,
+          message: "Conductor Agregado",
+          timeout: 2000,
+          type: "positive",
+        });
         obtenerInfo();
-        fixed.value = false;
+      } catch (error) {}
+    } else {
+      let id = idConductor.value;
+      if (id) {
+        try {
+          showDefault();
+          await conductorStore.putEditarConductor(id, {
+            nombre: Nombre.value,
+            cedula: cedula.value,
+          });
+          if (notification) {
+            notification();
+          }
+          limpiar();
+          $q.notify({
+            spinner: false,
+            message: "Conductor Actualizado",
+            timeout: 2000,
+            type: "positive",
+          });
+          obtenerInfo();
+          fixed.value = false;
+        } catch (error) {
+          if (notification) {
+            notification();
+          }
+          $q.notify({
+            spinner: false,
+            message: `${error.response.data.error.errors[0].msg}`,
+            timeout: 2000,
+            type: "negative",
+          });
+        }
       }
     }
+    validacion.value = false;
   }
 }
 
@@ -209,13 +267,57 @@ async function EditarConductor(id) {
 }
 
 async function InactivarConductor(id) {
-  await conductorStore.putInactivarConductor(id);
-  obtenerInfo();
+  try {
+    showDefault();
+    await conductorStore.putInactivarConductor(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Conductor Inactivo",
+      timeout: 2000,
+      type: "positive",
+    });
+    obtenerInfo();
+  } catch (error) {
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: "negative",
+    });
+  }
 }
 
 async function putActivarConductor(id) {
-  await conductorStore.putActivarConductor(id);
-  obtenerInfo();
+  try {
+    showDefault();
+    await conductorStore.putActivarConductor(id);
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: "Conductor Activo",
+      timeout: 2000,
+      type: "positive",
+    });
+    obtenerInfo();
+  } catch (error) {
+    if (notification) {
+      notification();
+    }
+    $q.notify({
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: "negative",
+    });
+  }
 }
 
 onMounted(async () => {
