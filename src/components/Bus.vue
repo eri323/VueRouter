@@ -118,7 +118,7 @@ const columns = [
   {
     name: "conductor_id",
     label: "Conductor",
-    field: (row) => `${row.conductor_id.nombre}`,
+    field: (row) => row.conductor_id.nombre,
     sortable: true,
   },
   {
@@ -290,8 +290,10 @@ async function EditarBus(id) {
     NumBus.value = busSeleccionado.NumBus;
     Vehiculo.value = busSeleccionado.Vehiculo;
     NumAsientos.value = busSeleccionado.NumAsientos;
-    conductor_id.value = String(busSeleccionado.conductor_id._id)
-
+    conductor_id.value = {
+      label: `${busSeleccionado.conductor_id}-${busSeleccionado.conductor_id.nombre}`,
+      value: String(busSeleccionado.conductor_id._id),
+    }
     Soat.value = format(new Date(busSeleccionado.Soat), "yyyy-MM-dd");
   }
 }
