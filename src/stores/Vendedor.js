@@ -48,11 +48,13 @@ export const useVendedorStore = defineStore('vendedor', () => {
             console.log(error, "Error al cambiar el estado de el vendedor");
         }
     }
+    const vendedor = ref([])
     const login = async (data) => {
         try {
-            console.log(data);
+        
             let r = await axios.post(`vendedor/login`, data)
             console.log(r);
+            vendedor.value=r.data.vendedor
             return r.status
         } catch (error) {
             console.log(error);
@@ -61,7 +63,7 @@ export const useVendedorStore = defineStore('vendedor', () => {
     }
 
     return {
-        vendedores,
+        vendedores, vendedor,
         obtenerInfoVendedor, login, postvendedor, putEditarVendedor, putInactivarVendedor, putActivarVendedor
     };
 });

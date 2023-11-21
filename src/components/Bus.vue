@@ -210,10 +210,21 @@ async function editarAgregarBus() {
           NumBus: NumBus.value,
           Vehiculo: Vehiculo.value,
           NumAsientos: NumAsientos.value,
-          conductor_id: conductor_id.value,
+          conductor_id: conductor_id._rawValue.value,
           Soat: Soat.value,
         });
-       
+        if(notification){
+          notification();
+        }
+        $q.notify({
+          spinner: false,
+          message: `Bus Agregado`,
+          timeout: 2000,
+          type: "positive",
+        })
+       obtenerInfo()
+        fixed.value = false;
+        limpiar();
       } catch (error) {
         if (notification) {
           notification();

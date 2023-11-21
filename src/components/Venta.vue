@@ -122,12 +122,14 @@ import { useBusStore } from "../stores/Bus.js";
 import { useRutaStore } from "../stores/Ruta.js";
 import { useClienteStore } from "../stores/Cliente.js";
 import { useTicketStore } from "../stores/Tickete.js";
+import {useVendedorStore} from "../stores/Vendedor.js";
 /* import { useLoginStore } from "../stores/Login.js"; */
 
 const busStore = useBusStore();
 const rutaStore = useRutaStore();
 const clienteStrore = useClienteStore();
 const ticketStore = useTicketStore();
+const VendedoresStore = useVendedorStore();
 /* const loginStore = useLoginStore(); */
 
 let fixed = ref(false);
@@ -242,7 +244,7 @@ async function CrearTicket() {
 }
 
 async function obtenerVendedor() {
-  vendedor.value = loginStore.vendedor;
+  vendedor.value=VendedoresStore.vendedor
 }
 
 let tickets = ref([]);
