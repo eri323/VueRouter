@@ -4,6 +4,7 @@
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <q-card-section class="row items-center q-pb-none" style="color: black">
+          <h4>{{text}}</h4>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -131,6 +132,7 @@ let fecha_venta = ref("");
 let Vendedor_id = ref("");
 let Cliente_id = ref("");
 let Ruta_id = ref("");
+let text = ref("");
 let Transporte_id = ref("");
 let optionsVendedor = ref([]);
 let optionsCliente = ref([]);
@@ -299,7 +301,7 @@ async function EditarTicket(id) {
       value: String(TicketSeleccionado.Vendedor_id._id),
     };
 
-    cliente.value = {
+    Cliente_id.value = {
       label: `${TicketSeleccionado.cliente_id.Nombre_cliente}-${TicketSeleccionado.cliente_id.CC_cliente}- ${TicketSeleccionado.cliente_id.Telefono_cliente}`,
       value: String(TicketSeleccionado.cliente_id._id),
     };

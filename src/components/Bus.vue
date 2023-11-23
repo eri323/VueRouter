@@ -116,6 +116,8 @@ const columns = [
     sortable: true,
   },
   {
+
+    
     name: "conductor_id",
     label: "Conductor",
     field: (row) => row.conductor_id.nombre,
