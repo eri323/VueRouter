@@ -3,76 +3,86 @@
     <!-- Modal -->
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
-        <q-card-section class="row items-center q-pb-none" style="color: black">
-          <h4>{{text}}</h4>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-separator />
+        <div class="contorno">
+          <q-card-section
+            class="row items-center q-pb-none"
+            style="color: black"
+          >
+            <div class="text-h6">{{ text }}</div>
+            <q-space />
+          </q-card-section>
+          <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
-          <div class="q-pa" style="width: 300px">
-            <q-input
-              v-model="Nmro_ticket"
-              type="text"
-              label="Numero Asiento"
-              style="width: 300px"
+          <q-card-section style="max-height: 50vh" class="scroll">
+            <div class="q-pa" style="width: 300px">
+              <q-input
+                v-model="Nmro_ticket"
+                type="text"
+                label="Numero Ticket"
+                style="width: 300px"
+              />
+
+              <div class="q-gutter">
+                <q-select
+                  v-model="Vendedor_id"
+                  :options="optionsVendedor"
+                  label="Vendedor"
+                />
+              </div>
+            </div>
+            <div class="q-pa" style="width: 300px">
+              <div class="q-gutter">
+                <q-select
+                  v-model="Cliente_id"
+                  :options="optionsCliente"
+                  label="Cliente"
+                />
+              </div>
+            </div>
+            <div class="q-pa" style="width: 300px">
+              <div class="q-gutter">
+                <q-select
+                  v-model="Ruta_id"
+                  :options="optionsRutas"
+                  label="Rutas"
+                />
+              </div>
+            </div>
+            <div class="q-pa" style="width: 300px">
+              <div class="q-gutter">
+                <q-select
+                  v-model="Transporte_id"
+                  :options="optionsBus"
+                  label="Bus"
+                />
+              </div>
+              <q-input
+                v-model="fecha_venta"
+                type="date"
+                label="Fecha de Venta"
+                style="width: 300px"
+              />
+            </div>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-actions align="right">
+            <q-btn flat label="Cancelar" color="primary" v-close-popup />
+            <q-btn
+              flat
+              label="Aceptar"
+              color="primary"
+              @click="editarTicket()"
             />
-            <q-input
-              v-model="fecha_venta"
-              type="date"
-              label="Fecha de Venta"
-              style="width: 300px"
-            />
-            <div class="q-gutter">
-              <q-select
-                v-model="Vendedor_id"
-                :options="optionsVendedor"
-                label="Vendedor"
-              />
-            </div>
-          </div>
-          <div class="q-pa" style="width: 300px">
-            <div class="q-gutter">
-              <q-select
-                v-model="Cliente_id"
-                :options="optionsCliente"
-                label="Cliente"
-              />
-            </div>
-          </div>
-          <div class="q-pa" style="width: 300px">
-            <div class="q-gutter">
-              <q-select
-                v-model="Ruta_id"
-                :options="optionsRutas"
-                label="Rutas"
-              />
-            </div>
-          </div>
-          <div class="q-pa" style="width: 300px">
-            <div class="q-gutter">
-              <q-select
-                v-model="Transporte_id"
-                :options="optionsBus"
-                label="Bus"
-              />
-            </div>
-          </div>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" @click="editarTicket()" />
-        </q-card-actions>
+          </q-card-actions>
+        </div>
       </q-card>
     </q-dialog>
     <div class="t">
       <div>
         <h1>Tickets</h1>
-        <hr>
+        <hr />
       </div>
       <div class="t">
         <q-table title="Ticket" :rows="rows" :columns="columns" row-key="name">
@@ -108,7 +118,6 @@
           </template>
         </q-table>
       </div>
-     
     </div>
   </div>
 </template>
@@ -122,6 +131,8 @@ import { useVendedorStore } from "../stores/Vendedor.js";
 import { useClienteStore } from "../stores/Cliente.js";
 import { useRutaStore } from "../stores/Ruta.js";
 import { useBusStore } from "../stores/Bus.js";
+import { useQuasar } from "quasar";
+const $q = useQuasar();
 const TicketStore = useTicketStore();
 const VendedorStore = useVendedorStore();
 const clienteStore = useClienteStore();
@@ -185,13 +196,19 @@ const columns = [
   {
     name: "Cliente_id",
     label: "Cliente",
-    field: (row) => `${row.Cliente_id.Nombre_cliente} - ${row.Cliente_id.CC_cliente}- ${row.Cliente_id.Telefono_cliente}`,
+    field: (row) =>
+      `${row.Cliente_id.Nombre_cliente} - ${row.Cliente_id.CC_cliente}- ${row.Cliente_id.Telefono_cliente}`,
   },
-  { name: "Ruta_id", label: "Ruta", field: (row) => `${row.Ruta_id.Origen}-${row.Ruta_id.Destino}` },
+  {
+    name: "Ruta_id",
+    label: "Ruta",
+    field: (row) => `${row.Ruta_id.Origen}-${row.Ruta_id.Destino}`,
+  },
   {
     name: "Transporte_id",
     label: "Bus",
-    field: (row) => `${row.Transporte_id.NumBus}`,
+    field: (row) =>
+      `${row.Transporte_id.NumBus}-${row.Transporte_id.Vehiculo}-${row.Transporte_id.NumAsientos}`,
   },
   {
     name: "estado",
@@ -222,13 +239,11 @@ async function obtenerCliente() {
   try {
     await clienteStore.obtenerInfoCliente();
     optionsCliente.value = clienteStore.clientes.map((cliente) => ({
-      label: `${cliente.nombre} - ${cliente.CC_cliente} - ${cliente.Telefono_cliente}`,
+      label: `${cliente.Nombre_cliente} - ${cliente.CC_cliente} - ${cliente.Telefono_cliente}`,
       value: String(cliente._id),
     }));
   } catch (error) {
     console.log(error);
-
-
   }
 }
 async function obtenerBuses() {
@@ -240,7 +255,7 @@ async function obtenerBuses() {
       ruta_ids.includes(String(bus.ruta_id._id))
     );
     optionsBus.value = busesFiltrados.map((bus) => ({
-      label: `${bus.NumBus}`,
+      label: `${bus.NumBus}-${bus.Vehiculo}-${bus.NumAsientos}`,
       value: String(bus._id),
     }));
   } catch (error) {
@@ -248,20 +263,109 @@ async function obtenerBuses() {
   }
 }
 
+let greatMessage = ref("");
+let badMessage = ref("");
+
+// Notificacion Buena
+const showGreat = () => {
+  notification = $q.notify({
+    spinner: false,
+    message: greatMessage,
+    timeout: 2000,
+    type: "positive",
+  });
+};
+
+// Notificacion Mala
+const showBad = () => {
+  notification = $q.notify({
+    spinner: false,
+    message: badMessage,
+    timeout: 2000,
+    type: "negative",
+  });
+};
+// Notificacion de Carga
+const showDefault = () => {
+  notification = $q.notify({
+    spinner: true,
+    message: "Please wait...",
+    timeout: 0,
+  });
+};
+
+// Cancelar Notificacion
+const cancelShow = () => {
+  if (notification) {
+    notification();
+  }
+};
+let notification = ref(null);
+
+let validacion = ref(false);
+
+function validar() {
+  if (
+    !Vendedor_id.value &&
+    !Cliente_id.value &&
+    !Ruta_id.value &&
+    !Transporte_id.value &&
+    !Nmro_ticket.value &&
+    !fecha_venta.value
+  ) {
+    badMessage.value = "Por favor rellene los campos";
+    showBad();
+  } else if (!Vendedor_id.value) {
+    badMessage.value = "Seleccione el Vendedor";
+    showBad();
+  } else if (!Cliente_id.value) {
+    badMessage.value = "Seleccione el Cliente";
+    showBad();
+  } else if (!Ruta_id.value) {
+    badMessage.value = "Seleccione la ruta";
+    showBad();
+  } else if (!bus.value) {
+    badMessage.value = "Seleccione el bus";
+    showBad();
+  } else if (!Nmro_ticket.value) {
+    badMessage.value = "Especifique el numero de ticket";
+    showBad();
+  } else if (!fecha_venta.value) {
+    badMessage.value = "Seleccione la fecha de venta";
+    showBad();
+  } else {
+    validacion.value = true;
+  }
+}
 async function editarTicket() {
   let id = idTicket.value;
   if (id) {
-    await TicketStore.putEditarTicket(id, {
-      Vendedor_id: Vendedor_id._rawValue.value,
-      Cliente_id: Cliente_id._rawValue.value,
-      Transporte_id: Transporte_id._rawValue.value,
-      Ruta_id: Ruta_id._rawValue.value,
-      Nmro_ticket: Nmro_ticket.value,
-      fecha_venta: fecha_venta.value,
-    });
-    limpiar();
-    obtenerInfo();
-    fixed.value = false;
+    validar();
+    if (validacion.value === true) {
+      try {
+        showDefault();
+        await TicketStore.putEditarTicket(id, {
+          Vendedor_id: Vendedor_id._rawValue.value,
+          Cliente_id: Cliente_id._rawValue.value,
+          Transporte_id: Transporte_id._rawValue.value,
+          Ruta_id: Ruta_id._rawValue.value,
+          Nmro_ticket: Nmro_ticket.value,
+          fecha_venta: fecha_venta.value,
+        });
+        cancelShow();
+        limpiar();
+        greatMessage.value = "Ticket Actualizado";
+        showGreat();
+        obtenerInfo();
+        fixed.value = false;
+      } catch (error) {
+        cancelShow();
+        badMessage.value = error.response.data.error.errors[0].msg;
+        showBad();
+      }
+    }
+
+    
   }
 }
 
@@ -295,7 +399,7 @@ async function EditarTicket(id) {
     idTicket.value = String(TicketSeleccionado._id);
     fixed.value = true;
     text.value = "Editar Bus";
-
+    Nmro_ticket.value = Nmro_ticket.value;
     Vendedor_id.value = {
       label: `${TicketSeleccionado.Vendedor_id.Nombre}`,
       value: String(TicketSeleccionado.Vendedor_id._id),
@@ -307,11 +411,9 @@ async function EditarTicket(id) {
     };
 
     Transporte_id.value = {
-      label: ` N°${TicketSeleccionado.Transporte_id.NumBus}`,
+      label: ` N°${TicketSeleccionado.Transporte_id.NumBus}-${TicketSeleccionado.Transporte_id.Vehiculo}-${TicketSeleccionado.Transporte_id.NumAsientos}`,
       value: String(TicketSeleccionado.Transporte_id._id),
     };
-
-    Nmro_ticket.value = Nmro_ticket.value;
 
     const date = new Date(TicketSeleccionado.fecha_venta);
     const formattedDate = date.toISOString().split("T")[0];
@@ -354,21 +456,56 @@ async function EditarTicket(id) {
 }
  */
 async function InactivarTicket(id) {
-  await busStore.putInactivarTicket(id);
-  obtenerInfo();
+  try {
+    showDefault();
+    await TicketStore.putInactivarTicket(id);
+    cancelShow();
+    greatMessage.value = "Ticket Inactivado";
+    showGreat();
+    obtenerInfo();
+  } catch (error) {
+    cancelShow();
+    badMessage.value = error.response.data.error.errors[0].msg;
+    showBad();
+  }
 }
 
 async function ActivarTicket(id) {
-  await busStore.putActivarTicket(id);
-  obtenerInfo();
+  try {
+    showDefault();
+    await TicketStore.putActivarTicket(id);
+    cancelShow();
+    greatMessage.value = "Ticket Activado";
+    showGreat();
+    obtenerInfo();
+  } catch (error) {
+    cancelShow();
+    badMessage.value = error.response.data.error.errors[0].msg;
+    showBad();
+  }
 }
 </script>
 
 <style scoped>
 .modal-content {
-  width: 400px;
+  width: 480px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+  border-radius: 3%;
 }
-
+.contorno {
+  background-color: white;
+  height: 90%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .botones button {
   margin: 2px;
 }
@@ -387,6 +524,10 @@ async function ActivarTicket(id) {
   flex-direction: column;
   align-items: center;
 }
+.text-h6 {
+  font-size: 28px;
+  font-family: "Letra";
+}
 
 .t div h1 {
   font-family: "Letra";
@@ -403,7 +544,7 @@ async function ActivarTicket(id) {
   border: none;
   width: 450px;
 }
-th{
+th {
   text-align: center;
 }
 </style>

@@ -57,6 +57,7 @@ async function Login() {
     setTimeout(() => {
       mostrarError.value = false;
     }, 2200);
+    showBad();
     return
   } else {
     try {
@@ -89,6 +90,34 @@ async function Login() {
  
   return validation
 } */
+
+let greatMessage = ref("");
+let badMessage = ref("");
+
+const showGreat = () => {
+  notification = $q.notify({
+    spinner: false,
+    message: greatMessage,
+    timeout: 2000,
+    type: "positive",
+  });
+};
+
+const showBad = () => {
+  notification = $q.notify({
+    spinner: false,
+    message: badMessage,
+    timeout: 2000,
+    type: "negative",
+  });
+};
+const showDefault = () => {
+  notification = $q.notify({
+    spinner: true,
+    message: "Please wait...",
+    timeout: 0,
+  });
+};
 
 </script>
 <style scoped>
