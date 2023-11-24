@@ -324,7 +324,7 @@ function validar() {
   } else if (!Ruta_id.value) {
     badMessage.value = "Seleccione la ruta";
     showBad();
-  } else if (!bus.value) {
+  } else if (!Transporte_id.value) {
     badMessage.value = "Seleccione el bus";
     showBad();
   } else if (!Nmro_ticket.value) {
@@ -364,8 +364,6 @@ async function editarTicket() {
         showBad();
       }
     }
-
-    
   }
 }
 
@@ -399,22 +397,26 @@ async function EditarTicket(id) {
     idTicket.value = String(TicketSeleccionado._id);
     fixed.value = true;
     text.value = "Editar Bus";
-    Nmro_ticket.value = Nmro_ticket.value;
+    Nmro_ticket.value = TicketSeleccionado.Nmro_ticket; // Asigna el valor del Nmro_ticket del ticket seleccionado
+
     Vendedor_id.value = {
       label: `${TicketSeleccionado.Vendedor_id.Nombre}`,
       value: String(TicketSeleccionado.Vendedor_id._id),
     };
 
     Cliente_id.value = {
-      label: `${TicketSeleccionado.cliente_id.Nombre_cliente}-${TicketSeleccionado.cliente_id.CC_cliente}- ${TicketSeleccionado.cliente_id.Telefono_cliente}`,
-      value: String(TicketSeleccionado.cliente_id._id),
+      label: `${TicketSeleccionado.Cliente_id.Nombre_cliente}-${TicketSeleccionado.Cliente_id.CC_cliente}- ${TicketSeleccionado.Cliente_id.Telefono_cliente}`,
+      value: String(TicketSeleccionado.Cliente_id._id),
     };
 
     Transporte_id.value = {
       label: ` N°${TicketSeleccionado.Transporte_id.NumBus}-${TicketSeleccionado.Transporte_id.Vehiculo}-${TicketSeleccionado.Transporte_id.NumAsientos}`,
       value: String(TicketSeleccionado.Transporte_id._id),
     };
-
+    Ruta_id.value = {
+      label: ` ${TicketSeleccionado.Ruta_id.Origen}-${TicketSeleccionado.Ruta_id.Destino}`,
+      value: String(TicketSeleccionado.Ruta_id._id),
+    };
     const date = new Date(TicketSeleccionado.fecha_venta);
     const formattedDate = date.toISOString().split("T")[0];
 
@@ -438,7 +440,7 @@ async function EditarTicket(id) {
     };
 
     cliente.value = {
-      label: `${ticketSelect.cliente_id.nombre} - ${ticketSelect.cliente_id.cedula} - ${ticketSelect.cliente_id.telefono}`,
+      label: `${ticketSelect.Cliente_id.nombre} - ${ticketSelect.cliente_id.cedula} - ${ticketSelect.cliente_id.telefono}`,
       value: String(ticketSelect.cliente_id._id),
     };
 
