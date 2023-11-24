@@ -246,10 +246,14 @@ async function obtenerCliente() {
     console.log(error);
   }
 }
-async function obtenerBuses() {
+/* async function obtenerBuses() {
   try {
     await rutaStore.obtenerInfoRutas();
     const ruta_ids = rutaStore.rutas.map((ruta) => String(ruta._id));
+    optionsRutas.value = ruta_ids.map((bus) => ({
+      label: `${bus.NumBus}-${bus.Vehiculo}-${bus.NumAsientos}`,
+      value: String(bus._id),
+    }))
     await busStore.obtenerInfoBuses();
     const busesFiltrados = busStore.buses.filter((bus) =>
       ruta_ids.includes(String(bus.ruta_id._id))
@@ -262,7 +266,31 @@ async function obtenerBuses() {
     console.log(error);
   }
 }
+ */
 
+ async function obtenerBuses() {
+  try {
+    await busStore.obtenerInfoBuses();
+    optionsBus .value = busStore.buses.map((bus) => ({
+      label: `${bus.NumBus} - ${bus.Vehiculo}`,
+      value: String(bus._id),
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function obtenerRutas() {
+  try {
+    await rutaStore.obtenerInfoRutas();
+    optionsRutas.value = rutaStore.rutas.map((ruta) => ({
+      label: `${ruta.Origen} - ${ruta.Destino}`,
+      value: String(ruta._id),
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+}
 let greatMessage = ref("");
 let badMessage = ref("");
 
@@ -392,6 +420,7 @@ async function EditarTicket(id) {
   await obtenerCliente();
   await obtenerVendedor();
   await obtenerBuses();
+  await obtenerRutas();
   const TicketSeleccionado = ticketes.value.find((ticket) => ticket._id === id);
   if (TicketSeleccionado) {
     idTicket.value = String(TicketSeleccionado._id);

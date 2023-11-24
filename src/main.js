@@ -8,6 +8,8 @@ import '@quasar/extras/material-icons/material-icons.css'
 import 'quasar/src/css/index.sass'
 import { router } from './Routes/Routes.js'
 import axios from 'axios'
+
+
 const app = createApp(App)
 const pinia = createPinia()
 
