@@ -123,6 +123,9 @@ import { useRutaStore } from "../stores/Ruta.js";
 import { useClienteStore } from "../stores/Cliente.js";
 import { useTicketStore } from "../stores/Tickete.js";
 import {useVendedorStore} from "../stores/Vendedor.js";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
 /* import { useLoginStore } from "../stores/Login.js"; */
 
 const busStore = useBusStore();
@@ -131,6 +134,16 @@ const clienteStrore = useClienteStore();
 const ticketStore = useTicketStore();
 const VendedoresStore = useVendedorStore();
 /* const loginStore = useLoginStore(); */
+
+const successNotification = () => {
+  notification = $q.notify({
+    spinner: false,
+    message: "ticket Creado",
+    timeout: 2000,
+    type: "positive"
+  });
+};
+
 
 let fixed = ref(false);
 let text = ref("");
@@ -232,6 +245,8 @@ async function CrearTicket() {
   // const token = loginStore.token;
   // console.log(token);
 
+  console.log("esta monda sirve");
+
   await ticketStore.postticket({
     Vendedor_id: String(vendedor.value._id),
     Nmro_ticket: Nmro_ticket.value,
@@ -241,7 +256,10 @@ async function CrearTicket() {
     NumAsientos: NumAsientos.value,
     fecha_venta: fecha_departida.value,
   });
+  successNotification();
 }
+
+let notification = ref()
 
 async function obtenerVendedor() {
   vendedor.value=VendedoresStore.vendedor
