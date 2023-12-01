@@ -38,6 +38,10 @@
 import { ref } from "vue";
 import { useVendedorStore } from "../stores/Vendedor";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
+
 let mostrarError = ref(false);
 let MostrarData = ref(true);
 let error2 = ref(false);
@@ -57,18 +61,23 @@ async function Login() {
     setTimeout(() => {
       mostrarError.value = false;
     }, 2200);
-    showBad();
+    // showBad();
     return
   } else {
     try {
+      showDefault();
       const res = await useVendedor.login(data.value);
       console.log(res);
+      if(notification){
+        notification();
+      }
       if (res != 200) {
         error2.value = true;
         msj.value=res.msg
         setTimeout(() => {
           error2.value = false;
         }, 2200);
+        
       } else {
         router.push("./home");
       }
@@ -91,6 +100,7 @@ async function Login() {
   return validation
 } */
 
+let notification = ref()
 let greatMessage = ref("");
 let badMessage = ref("");
 
