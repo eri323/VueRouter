@@ -10,6 +10,7 @@
           </q-avatar>
           Transporte
         </q-toolbar-title>
+        <q-btn dense flat round icon = "logout" @click="cerrarSesion" />
       </q-toolbar>
     </q-header>
 
@@ -136,8 +137,12 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+const router=useRouter();
 
-
+function cerrarSesion(){
+  router.push('/');
+}
 const leftDrawerOpen = ref(false);
 let mostrar = ref(false);
 const toggleLeftDrawer = () => {
@@ -155,6 +160,7 @@ function mostrarta() {
 onMounted(async() => {
   mostrarta();
 })
+
 </script>
 
 <style scoped>
