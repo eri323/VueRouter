@@ -79,7 +79,7 @@ async function Login() {
         }, 2200);
         
       } else {
-        router.push("./home");
+        router.push("./main");
       }
 
 

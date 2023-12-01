@@ -35,7 +35,7 @@
             <i class="fa-solid fa-house"></i>
             Menu
           </button></router-link> -->
-        <router-link class="link" to="/home">
+        <router-link class="link" to="/main">
           <button @click="mostrarta()">
             <i class="fa-solid fa-house"></i>
             Home
@@ -85,7 +85,10 @@
       </div>
     </q-drawer>
 
-    <q-page-container class="container">
+    <q-page-container style="padding-top:50px;">
+      <router-view />
+    </q-page-container>
+    <!-- <q-page-container class="container">
       <div class="tarjetas" v-if="mostrar">
         <router-link to="./Vendedores" class="a">
           <div @click="mostrart()">
@@ -131,7 +134,7 @@
             </router-link>
       </div>
       <router-view />
-    </q-page-container>
+    </q-page-container> -->
   </q-layout>
 </template>
 

@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
     <div class="container" >
          <q-page-container class="contenedor2" v-for="(item, index) in content" :key="index">
             <router-link :to="item.ruta" >
@@ -29,14 +29,13 @@
 import { ref } from "vue"
 
 let content = ref([
-    {ruta: "/vendedor", titulo: "Vendedores", img: "https://i.pinimg.com/originals/4b/7e/25/4b7e2507375f65d1ca84654fa2db6e80.png"},
+    {ruta: "/Vendedores", titulo: "Vendedores", img: "https://i.pinimg.com/originals/4b/7e/25/4b7e2507375f65d1ca84654fa2db6e80.png"},
     {ruta: "/bus", titulo: "Buses", img: "https://cdn-icons-png.flaticon.com/128/416/416597.png"},
     {ruta: "/cliente", titulo: "Clientes", img: "https://cdn-icons-png.flaticon.com/512/1138/1138021.png"},
-    {ruta: "/horario", titulo: "Horarios", img: "https://cdn-icons-png.flaticon.com/512/3094/3094927.png"},
-    {ruta: "/conductor", titulo: "Conductores", img: "https://cdn-icons-png.flaticon.com/512/2481/2481723.png"},
+    {ruta: "/Conductores", titulo: "Conductores", img: "https://cdn-icons-png.flaticon.com/512/2481/2481723.png"},
     {ruta: "/ruta", titulo: "Rutas", img:"https://cdn-icons-png.flaticon.com/512/8136/8136650.png" },
     {ruta: "/venta", titulo: "Venta", img:"https://cdn-icons-png.flaticon.com/512/8993/8993131.png " },
-    {ruta: "/ticket", titulo: "Tickets", img:"https://cdn-icons-png.flaticon.com/512/389/389801.png " },
+    {ruta: "/tickete", titulo: "Tickets", img:"https://cdn-icons-png.flaticon.com/512/389/389801.png " },
 ])
 
 </script>
@@ -117,4 +116,4 @@ let content = ref([
     font-family: 'Roboto Slab', serif;
 }
 
-</style> -->
+</style>
