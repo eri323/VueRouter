@@ -29,11 +29,11 @@
       </div>
 
       <div class="btns">
-        <router-link class="link" to="/main">
+        <!-- <router-link class="link" to="/main">
           <button @click="mostrarta()">
             <i class="fa-solid fa-house"></i>
             Menu
-          </button></router-link>
+          </button></router-link> -->
         <router-link class="link" to="/home">
           <button @click="mostrarta()">
             <i class="fa-solid fa-house"></i>

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="container" >
          <q-page-container class="contenedor2" v-for="(item, index) in content" :key="index">
             <router-link :to="item.ruta" >
@@ -117,4 +117,4 @@ let content = ref([
     font-family: 'Roboto Slab', serif;
 }
 
-</style>
+</style> -->
