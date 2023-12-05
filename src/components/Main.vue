@@ -46,12 +46,10 @@ let content = ref([
 .contenedor2 {
     display: flex;
     gap: 40px;
-    width: 400px;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    flex-direction: column;
-    padding: 15px;
+    padding: 0px 105px;
 }
 
 .contenedor2 a {
@@ -72,12 +70,12 @@ let content = ref([
 }
 
 .card {
-    width: 290px;
-    height: 330px;
-    margin: 0 auto;
+    /* width: 290px;
+    height: 330px; */
+    margin: 0;
     background-color: #F8FBFE;
     border-radius: 8px;
-    z-index: 1;
+/*     z-index: 1; */
     padding: 45px ;
 }
 
@@ -104,9 +102,11 @@ let content = ref([
     justify-content: center;
     align-items: center;
     font-family: 'Roboto Slab', serif;
+    gap: 15px;
+    
 }
 
-.i{
+/* .i{
     display: flex;
     align-content: center;
     justify-content: center;
@@ -114,6 +114,8 @@ let content = ref([
     height: 100%;
     font-size: 100px;
     margin-top: 55px;
+} */
+.i i{
+    font-size: 105px;
 }
-
 </style>
