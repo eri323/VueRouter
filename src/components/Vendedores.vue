@@ -105,6 +105,10 @@ const columns = [
   },
 ];
 
+/* if (!columns.some((column) => column.name === "password")) {
+  columns.push({ name: "password", label: "Contraseña", field: "password", visible: false });
+} */
+
 function agregarVendedor() {
   text.value = "Agregar Vendedor";
   fixed.value = true;
@@ -122,7 +126,7 @@ const showDefault = () => {
 let validacion = ref(false);
 let notification = ref(null);
 function validar() {
-  if (Nombre.value == "") {
+  if (Nombre.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite un nombre porfavor"
@@ -131,7 +135,7 @@ function validar() {
       mostrarError.value = false;
       error.value = ""
     }, 2200);
-  } else if (Cedula.value == "") {
+  } else if (Cedula.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite la cedula porfavor"
@@ -140,7 +144,7 @@ function validar() {
       mostrarError.value = false;
       error.value = ""
     }, 2200);
-  } else if (Telefono.value == "") {
+  } else if (Telefono.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el numero de telefono porfavor"
@@ -164,6 +168,7 @@ async function AgregarVendedor() {
           Nombre: Nombre.value,
           Cedula: Cedula.value,
           Telefono: Telefono.value,
+          password: password.value,
         });
         if (notification) {
           notification();
@@ -171,7 +176,7 @@ async function AgregarVendedor() {
         limpiar();
         $q.notify({
           spinner: false,
-          message: "Bus Agregado",
+          message: "Vendedor Agregado",
           timeout: 2000,
           type: "positive",
         });
@@ -182,7 +187,7 @@ async function AgregarVendedor() {
         }
         $q.notify({
           spinner: false,
-          message: `${error.response.data.error.errors[0].msg}`,
+         /*  message: `${error.response.data.error.errors[0].msg}`, */
           timeout: 2000,
           type: "negative",
         });
@@ -196,7 +201,7 @@ async function AgregarVendedor() {
           showDefault();
           await vendedorStore.putEditarVendedor(id, {
             Nombre: Nombre.value,
-
+            password: password.value,
             Cedula: Cedula.value,
             Telefono: Telefono.value,
           });
@@ -206,19 +211,20 @@ async function AgregarVendedor() {
           limpiar();
           $q.notify({
             spinner: false,
-            message: "Bus Actualizado",
+            message: "Vendedor Actualizado",
             timeout: 2000,
             type: "positive",
           });
           obtenerInfo();
           fixed.value = false;
         } catch (error) {
+          console.log(error);
           if (notification) {
             notification();
           }
           $q.notify({
             spinner: false,
-            message: `${error.response.data.error.errors[0].msg}`,
+            /* message: `${error.response.data.error.errors[0].msg}`, */
             timeout: 2000,
             type: "negative",
           });
@@ -252,7 +258,9 @@ async function EditarVendedor(id) {
     Nombre.value = vendedorSeleccionado.Nombre;
     Cedula.value = vendedorSeleccionado.Cedula;
     Telefono.value = vendedorSeleccionado.Telefono;
-    console.log(password);
+
+    // Imprime la contraseña en la consola para depuración
+    console.log(vendedorSeleccionado.password);
   }
 }
 
@@ -265,7 +273,7 @@ async function InactivarVendedor(id) {
     }
     $q.notify({
       spinner: false,
-      message: "Bus Inactivo",
+      message: "Vendedor Inactivo",
       timeout: 2000,
       type: "positive",
     });

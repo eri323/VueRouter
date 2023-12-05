@@ -218,7 +218,7 @@ async function EditarCliente(id) {
 }
 let validacion = ref(false);
 function validar() {
-  if (Nombre.value == "") {
+  if (Nombre.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el nombre porfavor";
@@ -227,7 +227,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (cedula.value == "") {
+  } else if (cedula.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el numero de cedula porfavor";
@@ -236,7 +236,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (telefono.value == "") {
+  } else if (telefono.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el numero telfonico porfavor";

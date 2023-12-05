@@ -129,7 +129,7 @@ function agregarRuta() {
   limpiar();
 }
 function validar() {
-  if (Origen.value == "") {
+  if (Origen.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el origen de la ruta porfavor";
@@ -139,7 +139,7 @@ function validar() {
       error.value = "";
     }, 2200);
 
-  } else if (Destino.value == "") {
+  } else if (Destino.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Especifique el destino de la ruta porfavor";
@@ -148,7 +148,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (hora_salida.value == "") {
+  } else if (hora_salida.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Seleccione la hora de salida porfavor";

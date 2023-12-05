@@ -162,7 +162,7 @@ function agregarBus() {
   titleDialog.value = "Agregar Bus";
 }
 function validar() {
-  if (Vehiculo.value == "") {
+  if (Vehiculo.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite la placa del vehiculo porfavor";
@@ -171,7 +171,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (NumAsientos.value == "") {
+  } else if (NumAsientos.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Especifique el numero de asientos porfavor";
@@ -180,7 +180,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (conductor_id.value == "") {
+  } else if (conductor_id.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Seleccione el conductor porfavor";
@@ -189,7 +189,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (Soat.value == "") {
+  } else if (Soat.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Seleccione la fecha de vencimiento del seguro SOAT";

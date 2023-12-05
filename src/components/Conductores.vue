@@ -162,7 +162,7 @@ let validacion = ref(false);
 let notification = ref(null);
 
 function validar() {
-  if (Nombre.value == "") {
+  if (Nombre.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el nombre del conductor porfavor";
@@ -171,7 +171,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (cedula.value == "") {
+  } else if (cedula.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el numero de cedula del conductor porfavor";
