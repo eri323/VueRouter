@@ -99,6 +99,12 @@
               <q-btn
                 color="white"
                 text-color="black"
+                label="📋"
+                @click="imprimirticket(props.row)"
+              />
+              <q-btn
+                color="white"
+                text-color="black"
                 label="🖋️"
                 @click="EditarTicket(props.row._id)"
               />
@@ -132,6 +138,7 @@ import { useClienteStore } from "../stores/Cliente.js";
 import { useRutaStore } from "../stores/Ruta.js";
 import { useBusStore } from "../stores/Bus.js";
 import { useQuasar } from "quasar";
+import {jsPDF} from 'jspdf';
 const $q = useQuasar();
 const TicketStore = useTicketStore();
 const VendedorStore = useVendedorStore();
@@ -268,10 +275,10 @@ async function obtenerCliente() {
 }
  */
 
- async function obtenerBuses() {
+async function obtenerBuses() {
   try {
     await busStore.obtenerInfoBuses();
-    optionsBus .value = busStore.buses.map((bus) => ({
+    optionsBus.value = busStore.buses.map((bus) => ({
       label: `${bus.NumBus} - ${bus.Vehiculo}`,
       value: String(bus._id),
     }));
@@ -365,6 +372,28 @@ function validar() {
     validacion.value = true;
   }
 }
+async function imprimirticket(ticket) {
+  const pdf = new jsPDF();
+  console.log(Cliente_id.value,Ruta_id.value , Transporte_id.value );
+  const ticketData = {
+    NumeroTicket: ticket.Nmro_ticket,
+    FechaVenta: ticket.fecha_venta,
+    Vendedor: ticket.Vendedor_id.Nombre,
+    Cliente: ticket.Cliente_id.Nombre_cliente,
+    Origen: ticket.Ruta_id.Origen, 
+    Destino: ticket.Ruta_id.Destino,
+    Bus: ticket.Transporte_id.NumBus,
+  };
+
+  pdf.text('Detalle del ticket ', 10,10);
+  let y = 30;
+  Object.entries(ticketData).forEach(([key, value]) => {
+    pdf.text(`${key}: ${value}`, 10, y);
+    y += 10;
+  });
+  pdf.save('ticket.pdf');
+}
+
 async function editarTicket() {
   let id = idTicket.value;
   if (id) {
