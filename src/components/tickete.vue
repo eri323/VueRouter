@@ -139,6 +139,8 @@ import { useRutaStore } from "../stores/Ruta.js";
 import { useBusStore } from "../stores/Bus.js";
 import { useQuasar } from "quasar";
 import {jsPDF} from 'jspdf';
+import images from '../assets/autobus.png';
+
 const $q = useQuasar();
 const TicketStore = useTicketStore();
 const VendedorStore = useVendedorStore();
@@ -373,25 +375,87 @@ function validar() {
   }
 }
 async function imprimirticket(ticket) {
-  const pdf = new jsPDF();
-  console.log(Cliente_id.value,Ruta_id.value , Transporte_id.value );
-  const ticketData = {
-    NumeroTicket: ticket.Nmro_ticket,
-    FechaVenta: ticket.fecha_venta,
-    Vendedor: ticket.Vendedor_id.Nombre,
-    Cliente: ticket.Cliente_id.Nombre_cliente,
-    Origen: ticket.Ruta_id.Origen, 
-    Destino: ticket.Ruta_id.Destino,
-    Bus: ticket.Transporte_id.NumBus,
-  };
+  
+  const doc = new jsPDF(); 
+  doc.addImage(images, 'PNG', 120, 0, 80, 80);
+  
+  // Título
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(25);
+  doc.setTextColor(0, 105, 217);
+  doc.text('TransporteLEF', 18, 19);
 
-  pdf.text('Detalle del ticket ', 10,10);
-  let y = 30;
-  Object.entries(ticketData).forEach(([key, value]) => {
-    pdf.text(`${key}: ${value}`, 10, y);
-    y += 10;
-  });
-  pdf.save('ticket.pdf');
+  // Títulos
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.setTextColor(30, 30, 30);
+  doc.text('Información del Cliente:', 20, 30);
+  // NumeroTicket: ticket.Nmro_ticket,
+  //   Fecha_Venta: ticket.fecha_venta,
+  
+  //   Vendedor: ticket.Vendedor_id.Nombre,
+  //   Cliente: ticket.Cliente_id.Nombre_cliente,
+  //   Origen: ticket.Ruta_id.Origen, 
+  //   Destino: ticket.Ruta_id.Destino,
+  //   Bus: ticket.Transporte_id.NumBus,
+
+  // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(14);
+  doc.text(`- Nombre: ${ticket.Cliente_id.Nombre_cliente}`, 20, 38);
+  doc.text(`- C.C: ${ticket.Cliente_id.CC_cliente}`, 20, 46);
+  doc.text(`- Teléfono: ${ticket.Cliente_id.Telefono_cliente}`, 20, 54);
+  doc.text(`- N° Asiento: ${ticket.NumAsientos}`, 20, 63);
+  
+  // Títulos
+  doc.setTextColor(30, 30, 30);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.text('Información sobre el Vendedor:', 22, 81);
+  
+  // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(14);
+  doc.text(`- Nombre: ${ticket.Vendedor_id.Nombre}`, 20, 89);
+  doc.text(`- Teléfono: ${ticket.Vendedor_id.Telefono}`, 20, 97);
+
+  // Títulos
+  doc.setTextColor(30, 30, 30);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.text('Información del Conductor:', 22, 110);
+
+  // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(14);
+  doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 118);
+  doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 126);
+  
+  // Títulos
+  doc.setTextColor(30, 30, 30);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.text('Información del bus:', 22, 139);
+
+  // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(14);
+  doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`, 20, 155);
+  doc.text(`- N° de bus: ${ticket.Transporte_id.NumBus}}`, 20, 163);
+  doc.text(`- Ruta del bus: ${ticket.Ruta_id.Origen} - ${ticket.Ruta_id.Destino}`, 20, 171);
+/*   doc.text(`- Horario salida: ${ticket.Ruta_id.horario_id.hora_partida}`, 20, 179); */
+  doc.text(`- Fecha de Partida: ${format(new Date(ticket.fecha_venta), "yyyy-MM-dd")}`, 20, 187);
+
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(25);
+  doc.setTextColor(0, 105, 217);
+  doc.text('¡Gracias por tu confianza!', 50, 225);
+
+  doc.save('ticket.pdf');
 }
 
 async function editarTicket() {
