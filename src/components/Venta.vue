@@ -62,6 +62,7 @@
         <div v-if="asientos.length" class="container-bus">
           <div v-for="i in asientos" :key="i" class="container-asientos">
             <button
+            id="numerazo"
               type="button"
               :value="i"
               @click="NumAsientos = i"
@@ -69,7 +70,7 @@
                 backgroundColor: NumAsientos === i ? 'red' : 'initial',
               }"
             >
-              {{ i }} <i class="fi fi-sr-chair-office"></i>
+              {{ i }} <img src="../assets/seat.png" alt="">
             </button>
           </div>
         </div>
@@ -311,7 +312,7 @@ onMounted(async () => {
   border-radius: 3%;
 }
 .container {
-  width: 100%;
+/*   width: 100%; */
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -331,7 +332,8 @@ onMounted(async () => {
   width: 100%;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
+  flex-direction: row;
 }
 
 .container-bus {
@@ -353,8 +355,8 @@ onMounted(async () => {
 }
 
 .container-asientos button {
-  width: 90px;
-  height: 70px;
+  width: 100px;
+  height: 90px;
   margin: 5px;
   font-size: 6mm;
   border-radius: 5px;
@@ -390,4 +392,17 @@ onMounted(async () => {
   border: solid rgb(124, 119, 119) 1px;
   margin: 1px;
 }
+
+#numerazo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column-reverse;
+  font-size: 15px;
+}
+
+#numerazo img{
+  width: 50px ;
+  }
+  
 </style>
