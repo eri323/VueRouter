@@ -14,10 +14,10 @@
           <q-separator />
           <div class="containerData" v-if="mostrarData">
             <q-card-section style="max-height: 50vh" class="scroll">
-              <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
-
+              <q-input v-model="Nombre" label="Nombre" style="width: 300px"/>
               <q-input v-model="Cedula" label="Cedula" style="width: 300px" type="number" />
               <q-input v-model="Telefono" label="Telefono" type="number" style="width: 300px" />
+              <q-input v-model="password" label="Contraseña" type="password" style="width: 300px" />
             </q-card-section>
           </div>
 
@@ -33,6 +33,38 @@
         </div>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="fixed">
+      <q-card class="modal-content">
+        <div class="contorno">
+          <q-card-section class="row items-center q-pb" style="color: black">
+            <div class="text-h6">{{ text }}</div>
+            <q-space />
+          </q-card-section>
+          <q-separator />
+          <div class="containerData" v-if="mostrarData">
+            <q-card-section style="max-height: 50vh" class="scroll">
+              <q-input v-model="Nombre" label="Nombre" style="width: 300px"/>
+              <q-input v-model="Cedula" label="Cedula" style="width: 300px" type="number" />
+              <q-input v-model="Telefono" label="Telefono" type="number" style="width: 300px" />
+              
+            </q-card-section>
+          </div>
+
+          <div class="containerError" v-if="mostrarError">
+            <h4>{{ error }} </h4>
+          </div>
+          <q-separator />
+
+          <q-card-actions align="right" style="gap: 30px; margin-top: 10px">
+            <q-btn flat label="Cancelar" color="primary" v-close-popup />
+            <q-btn flat label="Aceptar" color="primary" @click="EditarVendedorExistente()" />
+          </q-card-actions>
+        </div>
+      </q-card>
+    </q-dialog>
+
+
     <div>
       <div class="btn-agregar">
         <q-btn class="bg-secondary" label="Agregar Vendedores" @click="agregarVendedor()" />
@@ -135,7 +167,7 @@ function validar() {
       mostrarError.value = false;
       error.value = ""
     }, 2200);
-  } else if (Cedula.value.trim() == "") {
+  } else if (Cedula.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite la cedula porfavor"
@@ -144,7 +176,7 @@ function validar() {
       mostrarError.value = false;
       error.value = ""
     }, 2200);
-  } else if (Telefono.value.trim() == "") {
+  } else if (Telefono.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el numero de telefono porfavor"
@@ -169,6 +201,12 @@ async function AgregarVendedor() {
           Cedula: Cedula.value,
           Telefono: Telefono.value,
           password: password.value,
+        });
+        rows.value.push({
+          Nombre: Nombre.value,
+          Cedula: Cedula.value,
+          Telefono: Telefono.value,
+          estado: 1, // Puedes ajustar el estado según tus necesidades
         });
         if (notification) {
           notification();
@@ -201,7 +239,6 @@ async function AgregarVendedor() {
           showDefault();
           await vendedorStore.putEditarVendedor(id, {
             Nombre: Nombre.value,
-            password: password.value,
             Cedula: Cedula.value,
             Telefono: Telefono.value,
           });
@@ -237,10 +274,46 @@ async function AgregarVendedor() {
 
 
 }
+async function EditarVendedorExistente() {
+  let id = idVendedor.value;
+  if (id) {
+    try {
+      showDefault();
+      await vendedorStore.putEditarVendedor(id, {
+        Nombre: Nombre.value,
+        Cedula: Cedula.value,
+        Telefono: Telefono.value,
+      });
+      if (notification) {
+        notification();
+      }
+      limpiar();
+      $q.notify({
+        spinner: false,
+        message: "Vendedor Actualizado",
+        timeout: 2000,
+        type: "positive",
+      });
+      obtenerInfo();
+      fixed.value = false;
+    } catch (error) {
+      console.log(error);
+      if (notification) {
+        notification();
+      }
+      $q.notify({
+        spinner: false,
+        message: `${error.response.data.error.errors[0].msg}`,
+        timeout: 2000,
+        type: "negative",
+      });
+    }
+  }
+}
 
 function limpiar() {
   Nombre.value = "";
-
+  password.value="";
   Cedula.value = "";
   Telefono.value = "";
 }
@@ -258,7 +331,6 @@ async function EditarVendedor(id) {
     Nombre.value = vendedorSeleccionado.Nombre;
     Cedula.value = vendedorSeleccionado.Cedula;
     Telefono.value = vendedorSeleccionado.Telefono;
-
     // Imprime la contraseña en la consola para depuración
     console.log(vendedorSeleccionado.password);
   }
