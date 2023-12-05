@@ -263,7 +263,5 @@ onMounted(async() => {
   margin: 0;
   height: auto;
 }
-.container {
-width: 90%;
-}
+
 </style>

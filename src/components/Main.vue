@@ -3,20 +3,12 @@
          <q-page-container class="contenedor2" v-for="(item, index) in content" :key="index">
             <router-link :to="item.ruta" >
                 <div class="card">
-                    <div class="tools">
-                        <div class="circle">
-                            <span class="blue box"></span>
-                        </div>
-                        <div class="circle">
-                            <span class="blue box"></span>
-                        </div>
-                        <div class="circle">
-                            <span class="blue box"></span>
-                        </div>
-                    </div>
                     <div class="card__content">
                         {{item.titulo}}
-                        <img :src="item.img" alt="" class="img">
+                        <div class="i">
+                            <i :class="item.icono"></i>                
+                        </div>
+                        
                     </div>
                 </div>
             </router-link>
@@ -29,13 +21,13 @@
 import { ref } from "vue"
 
 let content = ref([
-    {ruta: "/Vendedores", titulo: "Vendedores", img: "https://i.pinimg.com/originals/4b/7e/25/4b7e2507375f65d1ca84654fa2db6e80.png"},
-    {ruta: "/bus", titulo: "Buses", img: "https://cdn-icons-png.flaticon.com/128/416/416597.png"},
-    {ruta: "/cliente", titulo: "Clientes", img: "https://cdn-icons-png.flaticon.com/512/1138/1138021.png"},
-    {ruta: "/Conductores", titulo: "Conductores", img: "https://cdn-icons-png.flaticon.com/512/2481/2481723.png"},
-    {ruta: "/ruta", titulo: "Rutas", img:"https://cdn-icons-png.flaticon.com/512/8136/8136650.png" },
-    {ruta: "/venta", titulo: "Venta", img:"https://cdn-icons-png.flaticon.com/512/8993/8993131.png " },
-    {ruta: "/tickete", titulo: "Tickets", img:"https://cdn-icons-png.flaticon.com/512/389/389801.png " },
+    {ruta: "/Vendedores", titulo: "Vendedores", icono: "fa-solid fa-clipboard-user"},
+    {ruta: "/bus", titulo: "Buses", icono: "fa-solid fa-bus-simple"},
+    {ruta: "/cliente", titulo: "Clientes", icono: "fa-solid fa-user-tie"},
+    {ruta: "/Conductores", titulo: "Conductores", icono: "fa-solid fa-users-line"},
+    {ruta: "/ruta", titulo: "Rutas", icono:"fa-solid fa-road" },
+    {ruta: "/venta", titulo: "Venta", icono:"fa-solid fa-cart-shopping" },
+    {ruta: "/tickete", titulo: "Tickets", icono:"fa-solid fa-ticket" },
 ])
 
 </script>
@@ -47,16 +39,19 @@ let content = ref([
 .container{
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-evenly;
+    min-height: 86%;
 }
 
 .contenedor2 {
     display: flex;
-    gap: 30px;
+    gap: 40px;
+    width: 400px;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     flex-direction: column;
+    padding: 15px;
 }
 
 .contenedor2 a {
@@ -64,7 +59,7 @@ let content = ref([
     width: 250px;
     height: 250px;
     color: rgb(0, 0, 0);
-    gap: 30px;
+    gap: 40px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 2em;
     border-radius: 50px;
@@ -77,20 +72,15 @@ let content = ref([
 }
 
 .card {
-    width: 190px;
-    height: 260px;
+    width: 290px;
+    height: 330px;
     margin: 0 auto;
     background-color: #F8FBFE;
     border-radius: 8px;
     z-index: 1;
+    padding: 45px ;
 }
-   
-.tools {
-    display: flex;
-    align-items: center;
-    padding: 5px;
-}
-   
+
 .circle {
     padding: 0 4px;
 }
@@ -114,6 +104,16 @@ let content = ref([
     justify-content: center;
     align-items: center;
     font-family: 'Roboto Slab', serif;
+}
+
+.i{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 100px;
+    margin-top: 55px;
 }
 
 </style>
