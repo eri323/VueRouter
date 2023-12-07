@@ -75,7 +75,7 @@ let content = ref([
   margin: 0;
   background-color: #f8fbfe;
   border-radius: 18px;
-  width: 250px;
+  width: 300px;
   padding: 45px 0px;
 }
 .card:hover {
