@@ -30,8 +30,8 @@
           <q-separator />
 
           <q-card-actions align="right" style="gap: 30px; margin-top: 10px">
-            <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn flat label="Aceptar" color="primary" @click="editarAgregarBus()" />
+            <button class="btn" v-close-popup>Cancelar</button>
+            <button @click="editarAgregarBus()" class="btn">Aceptar</button>
           </q-card-actions>
         </div>
       </q-card>
@@ -184,7 +184,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (NumAsientos.value.trim() == "") {
+  } else if (NumAsientos.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Especifique el numero de asientos porfavor";
@@ -512,7 +512,7 @@ hr {
   margin-bottom: 5px;
   display: flex;
   justify-content: right;
-  color: black;
+  color: rgb(255, 255, 255);
 }
 
 .botones .edi {
@@ -553,5 +553,16 @@ hr {
 .inac i {
   font-size: 25px;
   color: red;
+}
+
+.btn {
+  font-family: "Letra";
+  width: 100px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
 }
 </style>
