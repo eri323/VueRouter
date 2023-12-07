@@ -193,7 +193,7 @@ const showDefault = () => {
 }
 
 #submit-btn {
-  background: -webkit-linear-gradient(right, #a6f77b, #2dbd6e);
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
   border: none;
   border-radius: 10px;
 

@@ -1,14 +1,14 @@
 <template>
   <q-layout view="hHh lpR fFf" class="body">
-    <q-header reveal elevated class="bg-primary text-white">
+    <q-header reveal elevated class="bg-secondary text-white ">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>
-          <q-avatar>
+        <q-toolbar-title style="text-align: center;">
+        <!--   <q-avatar>
             <i class="fa-solid fa-bus"></i>
-          </q-avatar>
-          Transporte
+          </q-avatar> -->
+          TransporteLEF
         </q-toolbar-title>
         <q-btn dense flat round icon = "logout" @click="cerrarSesion" />
       </q-toolbar>
@@ -197,7 +197,7 @@ onMounted(async() => {
   display: flex;
   justify-content: center;
   padding: 15px;
-  background-color: #0088ff;
+  background-color: #00923f;
 }
 .btns {
   display: flex;
@@ -206,6 +206,7 @@ onMounted(async() => {
 
 }
 .btns button {
+  background-color: white;
   border: none;
   font-family: "Letra";
   width: 100%;
