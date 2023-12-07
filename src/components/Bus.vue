@@ -44,8 +44,10 @@
       <div class="btn-agregar">
         <q-btn class="bg-secondary" label="Agregar Bus" @click="agregarBus()" />
       </div>
-      <div class="tbus">
-        <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
+      <div class="q-pa-md">
+        <q-table class="my-sticky-virtscroll-table" virtual-scroll flat bordered v-model:pagination="pagination"
+          :rows-per-page-options="[0]" :virtual-scroll-sticky-size-start="48" row-key="index" :rows="rows"
+          :columns="columns">
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
               <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
@@ -56,24 +58,21 @@
             <q-td :props="props" class="botones">
               <button @click="EditarBus(props.row._id)" class="edi">
                 <i class="fa-solid fa-pencil"></i>
-              </button>              
-              <button 
-              @click="InactivarBus(props.row._id)"
-              v-if="props.row.estado == 1"
-              class="inac"
-            >
-              <i class="fa-solid fa-xmark"></i>
-            </button>              
-            <button
-              @click="ActivarBus(props.row._id)"
-              v-else
-              class="act"
-            >
-              <i class="fa-solid fa-check"></i>
-            </button>            </q-td>
+              </button>
+              <button @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1" class="inac">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <button @click="ActivarBus(props.row._id)" v-else class="act">
+                <i class="fa-solid fa-check"></i>
+              </button> </q-td>
           </template>
         </q-table>
       </div>
+     <!--  <div class="tbus">
+        <q-table title="Buses" :rows="rows" :columns="columns" row-key="name">
+
+        </q-table>
+      </div> -->
     </div>
   </div>
 </template>
@@ -102,6 +101,7 @@ let cambio = ref(0);
 let titleDialog = ref("");
 let mostrarData = ref(true);
 let mostrarError = ref(false);
+let pagination = ref({ rowsPerPage: 0 })
 let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 async function obtenerInfo() {
   try {
@@ -120,27 +120,30 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "NumBus", label: "Numero de bus", field: "NumBus", sortable: true },
-  { name: "Vehiculo", label: "Placa", field: "Vehiculo", sortable: true },
+  { name: "NumBus", label: "Numero de bus", field: "NumBus", sortable: true, align: "left" },
+  { name: "Vehiculo", label: "Placa", field: "Vehiculo", sortable: true, align: "left" },
   {
     name: "NumAsientos",
     label: "Numero De Asientos",
     field: "NumAsientos",
     sortable: true,
+   align: "left"
   },
   {
 
-    
+
     name: "conductor_id",
     label: "Conductor",
     field: (row) => row.conductor_id.nombre,
     sortable: true,
+    align: "left"
   },
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
+    align: "left",
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
@@ -148,6 +151,7 @@ const columns = [
     label: "Soat",
     field: "Soat",
     sortable: true,
+    align: "left",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   {
@@ -155,6 +159,7 @@ const columns = [
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align: "center"
   },
 ];
 async function obtenerConductor() {
@@ -228,7 +233,7 @@ async function editarAgregarBus() {
           conductor_id: conductor_id._rawValue.value,
           Soat: Soat.value,
         });
-        if(notification){
+        if (notification) {
           notification();
         }
         $q.notify({
@@ -237,7 +242,7 @@ async function editarAgregarBus() {
           timeout: 2000,
           type: "positive",
         })
-       obtenerInfo()
+        obtenerInfo()
         fixed.value = false;
         limpiar();
       } catch (error) {
@@ -263,7 +268,7 @@ async function editarAgregarBus() {
             conductor_id: conductor_id._rawValue.value,
             Soat: Soat.value,
 
-            
+
           });
           if (notification) {
             notification();
@@ -522,36 +527,67 @@ hr {
   padding: 7px;
   background-color: transparent;
 }
+
 .botones .edi:hover {
   transform: scale(1.05);
   transition: all 0.5s;
-} 
-.botones .act{
+}
+
+.botones .act {
   border: none;
   border-radius: 5px;
   cursor: pointer;
   padding: 7px;
- background-color: transparent;
+  background-color: transparent;
 }
-.act i{
+
+.act i {
   font-size: 22px;
   color: green;
 }
-.inac{
-/*   display: flex;
+
+.inac {
+  /*   display: flex;
   align-items: center; */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   padding: 5px;
   margin: 0;
- background-color: transparent;
+  background-color: transparent;
 }
+
 .botones .edi i {
   font-size: 20px;
 }
+
 .inac i {
   font-size: 25px;
   color: red;
 }
+</style>
+<style lang="sass">
+.my-sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 410px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #00926f
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>

@@ -4,28 +4,21 @@
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <div class="contorno">
-          <q-card-section
-            class="row items-center q-pb-none"
-            style="color: black"
-          >
+          <q-card-section class="row items-center q-pb-none" style="color: black">
             <div class="text-h6">{{ text }}</div>
             <q-space />
           </q-card-section>
           <q-separator />
           <q-card-section style="max-height: 50vh" class="scroll">
             <div class="q-pa" style="width: 300px">
-              <q-input
+              <!--   <q-input
                 v-model="Nmro_ticket"
                 label="Numero de tickete"
                 type="number"
                 style="width: 300px"
-              />
+              /> -->
               <div class="q-gutter">
-                <q-select
-                  v-model="ruta"
-                  :options="optionsRutas"
-                  label="Rutas"
-                />
+                <q-select v-model="ruta" :options="optionsRutas" label="Rutas" />
               </div>
             </div>
             <div class="q-pa" style="width: 300px">
@@ -33,22 +26,12 @@
                 <q-select v-model="bus" :options="optionsBuses" label="Buses" />
               </div>
             </div>
-            <q-input
-              v-model="fecha_departida"
-              filled
-              type="date"
-              style="width: 300px"
-            />
+            <q-input v-model="fecha_departida" filled type="date" style="width: 300px" />
           </q-card-section>
           <q-separator />
-          <q-card-actions align="right">
-            <q-btn flat label="Cerrar" color="green" v-close-popup />
-            <q-btn
-              flat
-              label="Aceptar"
-              color="green"
-              @click="generarTicketInfo()"
-            />
+          <q-card-actions align="right" class="btns">
+            <button class="btn" v-close-popup>Cancelar</button>
+            <button @click="generarTicketInfo()" class="btn">Aceptar</button>
           </q-card-actions>
         </div>
       </q-card>
@@ -61,56 +44,22 @@
       <div class="container-info">
         <div v-if="asientos.length" class="container-bus">
           <div v-for="i in asientos" :key="i" class="container-asientos">
-            <button
-            id="numerazo"
-              type="button"
-              :value="i"
-              @click="NumAsientos = i"
-              :style="{
-                backgroundColor: NumAsientos === i ? 'red' : 'initial',
-              }"
-            >
+            <button id="numerazo" type="button" :value="i" @click="NumAsientos = i" :style="{
+              backgroundColor: NumAsientos === i ? 'red' : 'initial',
+            }">
               {{ i }} <img src="../assets/seat.png" alt="">
             </button>
           </div>
         </div>
         <div v-if="showClienteDiv" class="cliente">
-          <q-btn
-            class="bnt-bc"
-            color="green"
-            label="Buscar Cliente"
-            @click="buscarCliente()"
-          />
-          <q-input
-            class="label"
-            standout
-            v-model="cedula"
-            label="Cedula"
-            placeholder="Cedula del cliente"
-            style="width: 300px"
-          />
-          <q-input
-            class="label"
-            standout
-            v-model="nombre"
-            label="Nombre"
-            placeholder="Nombre del cliente"
-            style="width: 300px"
-          />
-          <q-input
-            class="label"
-            standout
-            v-model="telefono"
-            label="Telefono"
-            placeholder="Telefono del cliente"
-            style="width: 300px"
-          />
-          <q-btn
-            class="btn-c"
-            color="green"
-            label="Generar Ticket"
-            @click="CrearTicket()"
-          />
+          <q-btn class="bnt-bc" color="green" label="Buscar Cliente" @click="buscarCliente()" />
+          <q-input class="label" standout v-model="cedula" label="Cedula" placeholder="Cedula del cliente"
+            style="width: 300px" />
+          <q-input class="label" standout v-model="nombre" label="Nombre" placeholder="Nombre del cliente"
+            style="width: 300px" />
+          <q-input class="label" standout v-model="telefono" label="Telefono" placeholder="Telefono del cliente"
+            style="width: 300px" />
+          <q-btn class="btn-c" color="green" label="Generar Ticket" @click="CrearTicket()" />
         </div>
       </div>
     </div>
@@ -123,7 +72,7 @@ import { useBusStore } from "../stores/Bus.js";
 import { useRutaStore } from "../stores/Ruta.js";
 import { useClienteStore } from "../stores/Cliente.js";
 import { useTicketStore } from "../stores/Tickete.js";
-import {useVendedorStore} from "../stores/Vendedor.js";
+import { useVendedorStore } from "../stores/Vendedor.js";
 import { useQuasar } from "quasar";
 
 const $q = useQuasar();
@@ -236,9 +185,15 @@ async function generarTicket() {
   fixed.value = true;
   text.value = "Generar Ticket";
 }
-
+let proximoNumeroTicket = ref(1);
 async function generarTicketInfo() {
   fixed.value = false;
+
+  // Asigna el próximo número del ticket al campo Nmro_ticket
+  Nmro_ticket.value = String(proximoNumeroTicket.value).padStart(6, '0');
+
+  // Incrementa el número para el próximo ticket
+  proximoNumeroTicket.value += 1;
   generarListaAsientos();
 }
 
@@ -246,11 +201,11 @@ async function CrearTicket() {
   // const token = loginStore.token;
   // console.log(token);
 
-  console.log("esta monda sirve");
+  console.log("Este código funciona");
 
   await ticketStore.postticket({
     Vendedor_id: String(vendedor.value._id),
-    Nmro_ticket: Nmro_ticket.value,
+    Nmro_ticket: Nmro_ticket.value++,
     Cliente_id: cliente_id.value,
     Transporte_id: bus._rawValue.value,
     Ruta_id: ruta._rawValue.value,
@@ -263,7 +218,7 @@ async function CrearTicket() {
 let notification = ref()
 
 async function obtenerVendedor() {
-  vendedor.value=VendedoresStore.vendedor
+  vendedor.value = VendedoresStore.vendedor
 }
 
 let tickets = ref([]);
@@ -287,11 +242,13 @@ onMounted(async () => {
   font-family: "Letra";
   src: url("../fonts/Anta-Regular.ttf");
 }
+
 .container-all {
   margin: 0;
   padding: 0;
   width: 100%;
 }
+
 .contorno {
   background-color: white;
   height: 90%;
@@ -301,6 +258,7 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
 }
+
 .modal-content {
   width: 480px;
   height: 500px;
@@ -311,8 +269,9 @@ onMounted(async () => {
   background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
   border-radius: 3%;
 }
+
 .container {
-/*   width: 100%; */
+  /*   width: 100%; */
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -363,9 +322,32 @@ onMounted(async () => {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   border: solid rgb(80, 252, 0);
 }
+
 .container-asientos button:hover {
   background-color: rgb(105, 105, 198);
 }
+
+.btn {
+  font-family: "Letra";
+  width: 100px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+}
+
+.btns {
+  display: flex;
+  gap: 15px;
+}
+
+.btn:hover {
+  transition: ease-in-out 0.5s;
+  transform: scale(1.1);
+}
+
 .cliente {
   display: flex;
   flex-wrap: wrap;
@@ -393,7 +375,7 @@ onMounted(async () => {
   margin: 1px;
 }
 
-#numerazo{
+#numerazo {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -401,8 +383,12 @@ onMounted(async () => {
   font-size: 15px;
 }
 
-#numerazo img{
-  width: 50px ;
-  }
-  
+#numerazo img {
+  width: 50px;
+}
+
+.text-h6 {
+  font-family: "Letra";
+  font-size: 30px;
+}
 </style>
