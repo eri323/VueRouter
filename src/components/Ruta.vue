@@ -230,7 +230,7 @@ async function editarAgregarRuta() {
           limpiar();
           $q.notify({
             spinner: false,
-            message: "Bus Actualizado",
+            message: "Ruta Actualizada",
             timeout: 2000,
             type: "positive",
           });
