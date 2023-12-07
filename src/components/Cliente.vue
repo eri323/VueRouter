@@ -27,8 +27,8 @@
           <q-separator />
 
           <q-card-actions align="right">
-            <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn flat label="Aceptar" color="primary" @click="AgregarCliente()" />
+            <button class="btn" v-close-popup>Cancelar</button>
+            <button @click="AgregarCliente()" class="btn">Aceptar</button>
           </q-card-actions>
         </div>
       </q-card>
@@ -351,7 +351,7 @@ onMounted(async () => {
   margin-bottom: 15px;
   display: flex;
   justify-content: right;
-  color: black;
+  color: rgb(255, 255, 255);
 }
 
 .containerError {
@@ -445,5 +445,17 @@ h1 {
 .inac i {
   font-size: 25px;
   color: red;
+}
+
+.btn {
+  font-family: "Letra";
+  width: 100px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  margin-left: 15px;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
 }
 </style>

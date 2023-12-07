@@ -140,7 +140,7 @@ import { useBusStore } from "../stores/Bus.js";
 import { useQuasar } from "quasar";
 import {jsPDF} from 'jspdf';
 import images from '../assets/autobus.png';
-import images2 from '../assets/mora.jpg'
+import images2 from '../assets/mora.jpeg'
 
 const $q = useQuasar();
 const TicketStore = useTicketStore();
