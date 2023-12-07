@@ -140,6 +140,7 @@ import { useBusStore } from "../stores/Bus.js";
 import { useQuasar } from "quasar";
 import {jsPDF} from 'jspdf';
 import images from '../assets/autobus.png';
+import images2 from '../assets/mora.jpg'
 
 const $q = useQuasar();
 const TicketStore = useTicketStore();
@@ -377,19 +378,19 @@ function validar() {
 async function imprimirticket(ticket) {
   
   const doc = new jsPDF(); 
-  doc.addImage(images, 'PNG', 120, 0, 80, 80);
+  doc.addImage(images, 'PNG', 20, 20, 60, 50);
   
   // Título
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(25);
   doc.setTextColor(0, 105, 217);
-  doc.text('TransporteLEF', 18, 19);
+  doc.text('TransporteLEF', 110 , 50);
 
   // Títulos
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
   doc.setTextColor(30, 30, 30);
-  doc.text('Información del Cliente:', 20, 30);
+  doc.text('Información del Cliente:', 20, 90);
   // NumeroTicket: ticket.Nmro_ticket,
   //   Fecha_Venta: ticket.fecha_venta,
   
@@ -403,57 +404,60 @@ async function imprimirticket(ticket) {
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
-  doc.text(`- Nombre: ${ticket.Cliente_id.Nombre_cliente}`, 20, 38);
-  doc.text(`- C.C: ${ticket.Cliente_id.CC_cliente}`, 20, 46);
-  doc.text(`- Teléfono: ${ticket.Cliente_id.Telefono_cliente}`, 20, 54);
-  doc.text(`- N° Asiento: ${ticket.NumAsientos}`, 20, 63);
+  doc.text(`- Nombre: ${ticket.Cliente_id.Nombre_cliente}`, 20, 98);
+  doc.text(`- C.C: ${ticket.Cliente_id.CC_cliente}`, 20, 104);
+  doc.text(`- Teléfono: ${ticket.Cliente_id.Telefono_cliente}`, 20, 110);
+  doc.text(`- N° Asiento: ${ticket.NumAsientos}`, 20, 116);
   
-  // Títulos
+//   // Títulos
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
-  doc.text('Información sobre el Vendedor:', 22, 81);
+  doc.text('Información del Vendedor:', 20, 125);
   
-  // Normal
+//   // Normal
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
-  doc.text(`- Nombre: ${ticket.Vendedor_id.Nombre}`, 20, 89);
-  doc.text(`- Teléfono: ${ticket.Vendedor_id.Telefono}`, 20, 97);
+  doc.text(`- Nombre: ${ticket.Vendedor_id.Nombre}`, 20, 130);
+  doc.text(`- Teléfono: ${ticket.Vendedor_id.Telefono}`, 20, 136);
 
   // Títulos
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
-  doc.text('Información del Conductor:', 22, 110);
+  doc.text('Información del Conductor:', 20, 145);
 
-  // Normal
+//   // Normal
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
-  doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 118);
-  doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 126);
+  doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 152);
+  doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 158);
   
-  // Títulos
+//   // Títulos
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
-  doc.text('Información del bus:', 22, 139);
+  doc.text('Información del bus:', 130, 90);
 
-  // Normal
+//   // Normal
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
-  doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`, 20, 155);
-  doc.text(`- N° de bus: ${ticket.Transporte_id.NumBus}}`, 20, 163);
-  doc.text(`- Ruta del bus: ${ticket.Ruta_id.Origen} - ${ticket.Ruta_id.Destino}`, 20, 171);
+  doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`,   130, 98);
+  doc.text(`- N° de bus: ${ticket.Transporte_id.NumBus}`, 130, 104);
+  doc.text(`- Ruta del bus: ${ticket.Ruta_id.Origen} - ${ticket.Ruta_id.Destino}`, 130, 110);
 /*   doc.text(`- Horario salida: ${ticket.Ruta_id.horario_id.hora_partida}`, 20, 179); */
-  doc.text(`- Fecha de Partida: ${format(new Date(ticket.fecha_venta), "yyyy-MM-dd")}`, 20, 187);
+  doc.text(`- Fecha de Partida: ${format(new Date(ticket.fecha_venta), "yyyy-MM-dd")}`, 130, 116);
 
-  doc.setFont('Helvetica', 'bold');
-  doc.setFontSize(25);
-  doc.setTextColor(0, 105, 217);
-  doc.text('¡Gracias por tu confianza!', 50, 225);
+  doc.addImage(images2, 'PNG', 148, 120, 40, 40);
+
+
+//   doc.setFont('Helvetica', 'bold');
+//   doc.setFontSize(25);
+//   doc.setTextColor(0, 105, 217);
+//   doc.text('¡Gracias por tu confianza!', 50, 225);
 
   doc.save('ticket.pdf');
 }

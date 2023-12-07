@@ -512,7 +512,8 @@ hr {
   margin-bottom: 5px;
   display: flex;
   justify-content: right;
-  color: black;
+  color: rgb(255, 255, 255);
+  
 }
 
 .botones .edi {
