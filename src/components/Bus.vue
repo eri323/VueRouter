@@ -36,7 +36,7 @@
         </div>
       </q-card>
     </q-dialog>
-    <div class="tbus">
+    <div class="tbus" style="width: 1600px;">
       <div>
         <h1>Buses</h1>
         <hr />
@@ -54,10 +54,23 @@
           </template>
           <template v-slot:body-cell-opciones="props">
             <q-td :props="props" class="botones">
-              <q-btn color="white" text-color="black" label="🖋️" @click="EditarBus(props.row._id)" />
-              <q-btn glossy label="❌" @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1" />
-              <q-btn glossy label="✔️" @click="ActivarBus(props.row._id)" v-else />
-            </q-td>
+              <button @click="EditarBus(props.row._id)" class="edi">
+                <i class="fa-solid fa-pencil"></i>
+              </button>              
+              <button 
+              @click="InactivarBus(props.row._id)"
+              v-if="props.row.estado == 1"
+              class="inac"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>              
+            <button
+              @click="ActivarBus(props.row._id)"
+              v-else
+              class="act"
+            >
+              <i class="fa-solid fa-check"></i>
+            </button>            </q-td>
           </template>
         </q-table>
       </div>
@@ -500,5 +513,45 @@ hr {
   display: flex;
   justify-content: right;
   color: black;
+}
+
+.botones .edi {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+.botones .edi:hover {
+  transform: scale(1.05);
+  transition: all 0.5s;
+} 
+.botones .act{
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+ background-color: transparent;
+}
+.act i{
+  font-size: 22px;
+  color: green;
+}
+.inac{
+/*   display: flex;
+  align-items: center; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0;
+ background-color: transparent;
+}
+.botones .edi i {
+  font-size: 20px;
+}
+.inac i {
+  font-size: 25px;
+  color: red;
 }
 </style>

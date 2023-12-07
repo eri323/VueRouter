@@ -18,6 +18,7 @@
               <q-input
                 v-model="Cedula"
                 label="Cedula"
+                
                 style="width: 300px"
                 type="number"
               />
@@ -90,7 +91,7 @@
       </q-card>
     </q-dialog>
 
-    <div>
+    <div style="width: 1600px;">
       <div class="btn-agregar">
         <q-btn
           class="bg-secondary text-white"
