@@ -378,13 +378,14 @@ function validar() {
 async function imprimirticket(ticket) {
   
   const doc = new jsPDF(); 
-  doc.addImage(images, 'PNG', 20, 20, 60, 50);
+  
+  doc.addImage(images, 'PNG', 30, 30, 40, 40);
   
   // Título
   doc.setFont('Helvetica', 'bold');
-  doc.setFontSize(25);
+  doc.setFontSize(30);
   doc.setTextColor(0, 105, 217);
-  doc.text('TransporteLEF', 110 , 50);
+  doc.text('TRANSPORTE  LEF', 95 , 50);
 
   // Títulos
   doc.setFont('Helvetica', 'bold');
