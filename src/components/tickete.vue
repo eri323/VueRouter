@@ -379,8 +379,23 @@ async function imprimirticket(ticket) {
   
   const doc = new jsPDF(); 
   
-  doc.addImage(images, 'PNG', 30, 30, 40, 40);
-  
+ const imgX = 30;
+  const imgY = 30;
+  const imgWidth = 40;
+  const imgHeight = 40;
+
+  // Definir as coordenadas do centro do círculo e o raio
+  const centerX = imgX + imgWidth / 2;
+  const centerY = imgY + imgHeight / 2;
+  const radius = imgWidth / 2 + 5; // Adiciona uma margem de 5 para o círculo ao redor da imagem
+
+  // Desenhar o círculo
+  doc.setLineWidth(1); // Define a largura da linha do círculo
+  doc.setDrawColor(0); // Define a cor do círculo como preto
+  doc.circle(centerX, centerY, radius); // Desenha um círculo ao redor da imagem
+
+  // Adicionar a imagem dentro do círculo
+  doc.addImage(images, 'PNG', imgX, imgY, imgWidth, imgHeight);  
   // Título
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(30);
@@ -390,7 +405,7 @@ async function imprimirticket(ticket) {
   // Títulos
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
-  doc.setTextColor(30, 30, 30);
+  doc.setTextColor(0, 105, 217);
   doc.text('Información del Cliente:', 20, 90);
   // NumeroTicket: ticket.Nmro_ticket,
   //   Fecha_Venta: ticket.fecha_venta,
@@ -402,7 +417,7 @@ async function imprimirticket(ticket) {
   //   Bus: ticket.Transporte_id.NumBus,
 
   // Normal
-  doc.setTextColor(30, 30, 30);
+  doc.setTextColor(30,30,30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
   doc.text(`- Nombre: ${ticket.Cliente_id.Nombre_cliente}`, 20, 98);
@@ -411,39 +426,39 @@ async function imprimirticket(ticket) {
   doc.text(`- N° Asiento: ${ticket.NumAsientos}`, 20, 116);
   
 //   // Títulos
-  doc.setTextColor(30, 30, 30);
+  doc.setTextColor(0, 105, 217);
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
-  doc.text('Información del Vendedor:', 20, 125);
+  doc.text('Información del Vendedor:', 20, 130);
   
 //   // Normal
-  doc.setTextColor(30, 30, 30);
+  doc.setTextColor(30,30,30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
-  doc.text(`- Nombre: ${ticket.Vendedor_id.Nombre}`, 20, 130);
-  doc.text(`- Teléfono: ${ticket.Vendedor_id.Telefono}`, 20, 136);
+  doc.text(`- Nombre: ${ticket.Vendedor_id.Nombre}`, 20, 138);
+  doc.text(`- Teléfono: ${ticket.Vendedor_id.Telefono}`, 20, 146);
 
   // Títulos
-  doc.setTextColor(30, 30, 30);
+  doc.setTextColor(0, 105, 217);
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
-  doc.text('Información del Conductor:', 20, 145);
+  doc.text('Información del Conductor:', 20, 160);
 
 //   // Normal
-  doc.setTextColor(30, 30, 30);
+  doc.setTextColor(30,30,30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
-  doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 152);
-  doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 158);
+  doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 168);
+  doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 176);
   
 //   // Títulos
-  doc.setTextColor(30, 30, 30);
+  doc.setTextColor(0, 105, 217);
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
   doc.text('Información del bus:', 130, 90);
 
 //   // Normal
-  doc.setTextColor(30, 30, 30);
+  doc.setTextColor(30,30,30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
   doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`,   130, 98);
@@ -455,10 +470,10 @@ async function imprimirticket(ticket) {
   doc.addImage(images2, 'PNG', 148, 120, 40, 40);
 
 
-//   doc.setFont('Helvetica', 'bold');
-//   doc.setFontSize(25);
-//   doc.setTextColor(0, 105, 217);
-//   doc.text('¡Gracias por tu confianza!', 50, 225);
+  // doc.setFont('Helvetica', 'bold');
+  // doc.setFontSize(25);
+  // doc.setTextColor(0, 105, 217);
+  // doc.text('¡Valido para un viaje en autobús durante 60 minutos en caso de un problema!', 50, 225);
 
   doc.save('ticket.pdf');
 }
