@@ -123,14 +123,14 @@
               v-if="props.row.estado == 1"
               class="inac"
             >
-            <i class="fa-regular fa-circle-xmark"></i>
+            <i class="fa-solid fa-xmark"></i>
             </button>
             <button
               @click="putActivarVendedor(props.row._id)"
               v-else
               class="act"
             >
-              <i class="fa-regular fa-circle-check "></i>
+              <i class="fa-solid fa-check"></i>
             </button>
           </q-td>
         </template>
@@ -496,7 +496,7 @@ h1 {
   border-radius: 5px;
   cursor: pointer;
   padding: 7px;
-  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+  background-color: transparent;
 }
 .botones .edi:hover {
   transform: scale(1.05);
@@ -507,19 +507,27 @@ h1 {
   border-radius: 5px;
   cursor: pointer;
   padding: 7px;
- 
+ background-color: transparent;
 }
-.botones .inac{
+.act i{
+  font-size: 22px;
+  color: green;
+}
+.inac{
+/*   display: flex;
+  align-items: center; */
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  padding: 7px;
- background-color: rgb(237, 0, 0);
+  padding: 5px;
+  margin: 0;
+ background-color: transparent;
 }
-.botones button i {
+.botones .edi i {
   font-size: 20px;
 }
-.botones .inac i {
-  font-size: 20px;
+.inac i {
+  font-size: 25px;
+  color: red;
 }
 </style>
