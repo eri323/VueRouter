@@ -180,7 +180,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (conductor_id.value.trim() == "") {
+  } else if (conductor_id.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Seleccione el conductor porfavor";
