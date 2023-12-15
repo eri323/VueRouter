@@ -38,6 +38,7 @@
               filled
               type="date"
               style="width: 300px"
+              :min="getTodayDate()"
             />
           </q-card-section>
           <q-separator />
@@ -171,6 +172,7 @@ let no_asiento = ref(0);
 
 let optionsRutas = ref([]);
 let optionsBuses = ref([]);
+
 
 async function obtenerInfo() {
   await busStore.obtenerInfoBuses();
@@ -312,6 +314,16 @@ onMounted(async () => {
   obtenerInfo();
   obtenerVendedor();
 });
+
+
+
+function getTodayDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0');
+  const day = today.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 </script>
 
 <style scoped>
