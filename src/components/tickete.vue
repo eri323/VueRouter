@@ -29,6 +29,7 @@
                   label="Vendedor"
                 />
               </div>
+              
             </div>
             <div class="q-pa" style="width: 300px">
               <div class="q-gutter">
@@ -45,6 +46,13 @@
                   v-model="Ruta_id"
                   :options="optionsRutas"
                   label="Rutas"
+                />
+              </div>
+              <div class="q-gutter">
+                <q-select
+                  v-model="puesto_id"
+                  :options="optionspuesto"
+                  label="Puesto"
                 />
               </div>
             </div>
@@ -160,6 +168,7 @@ const busStore = useBusStore();
 let Nmro_ticket = ref("");
 let fecha_venta = ref("");
 let Vendedor_id = ref("");
+let puesto_id= ref ("");
 let Cliente_id = ref("");
 let Ruta_id = ref("");
 let text = ref("");
@@ -211,6 +220,10 @@ const columns = [
   {
     name: "Vendedor_id",
     label: "Vendedor",
+    field: (row) => `${row.Vendedor_id.Nombre}`,
+  }, {
+    name: "puesto_id",
+    label: "Puesto",
     field: (row) => `${row.Vendedor_id.Nombre}`,
   },
   {
