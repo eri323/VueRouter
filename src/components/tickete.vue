@@ -469,17 +469,17 @@ async function imprimirticket(ticket) {
   doc.text(`- Teléfono: ${ticket.Vendedor_id.Telefono}`, 20, 146);
 
   // Títulos
-  doc.setTextColor(0, 105, 217);
-  doc.setFont("Helvetica", "bold");
-  doc.setFontSize(15);
-  doc.text("Información del Conductor:", 20, 160);
+  // doc.setTextColor(0, 105, 217);
+  // doc.setFont("Helvetica", "bold");
+  // doc.setFontSize(15);
+  // doc.text("Información del Conductor:", 20, 160);
 
   //   // Normal
-  doc.setTextColor(30, 30, 30);
-  doc.setFont("Helvetica", "normal");
-  doc.setFontSize(14);
-  doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 168);
-  doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 176);
+  // doc.setTextColor(30, 30, 30);
+  // doc.setFont("Helvetica", "normal");
+  // doc.setFontSize(14);
+  // doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 168);
+  // doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 176);
 
   //   // Títulos
   doc.setTextColor(0, 105, 217);
