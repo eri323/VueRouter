@@ -202,6 +202,12 @@ const columns = [
     sortable: true,
   },
   {
+    name: "N_asiento",
+    label: "Numero de asiento",
+    field: "N_asiento",
+    sortable: true,
+  },
+  {
     name: "fecha_venta",
     label: "Fecha de venta",
     field: "fecha_venta",

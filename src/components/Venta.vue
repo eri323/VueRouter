@@ -4,7 +4,10 @@
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <div class="contorno">
-          <q-card-section class="row items-center q-pb-none" style="color: black">
+          <q-card-section
+            class="row items-center q-pb-none"
+            style="color: black"
+          >
             <div class="text-h6">{{ text }}</div>
             <q-space />
           </q-card-section>
@@ -18,7 +21,11 @@
                 style="width: 300px"
               /> -->
               <div class="q-gutter">
-                <q-select v-model="ruta" :options="optionsRutas" label="Rutas" />
+                <q-select
+                  v-model="ruta"
+                  :options="optionsRutas"
+                  label="Rutas"
+                />
               </div>
             </div>
             <div class="q-pa" style="width: 300px">
@@ -26,7 +33,12 @@
                 <q-select v-model="bus" :options="optionsBuses" label="Buses" />
               </div>
             </div>
-            <q-input v-model="fecha_departida" filled type="date" style="width: 300px" />
+            <q-input
+              v-model="fecha_departida"
+              filled
+              type="date"
+              style="width: 300px"
+            />
           </q-card-section>
           <q-separator />
           <q-card-actions align="right" class="btns">
@@ -42,24 +54,60 @@
         <q-btn color="green" label="Generar Ticket" @click="generarTicket()" />
       </div>
       <div class="container-info">
-        <div v-if="asientos.length" class="container-bus">
+        <div v-if="asientos.length" class="container-bus"  >
           <div v-for="i in asientos" :key="i" class="container-asientos">
-            <button id="numerazo" type="button" :value="i" @click="NumAsientos = i" :style="{
-              backgroundColor: NumAsientos === i ? 'red' : 'initial',
-            }">
-              {{ i }} <img src="../assets/seat.png" alt="">
+            <button 
+              id="numerazo"
+              type="button"
+              :value="i"
+              @click="no_asiento = i"
+              :style="{
+                backgroundColor: NumAsientos === i ? 'red' : 'initial',
+              }"
+              
+            >
+
+              {{ i }} <img src="../assets/seat.png" alt="" />
             </button>
           </div>
         </div>
         <div v-if="showClienteDiv" class="cliente">
-          <q-btn class="bnt-bc" color="green" label="Buscar Cliente" @click="buscarCliente()" />
-          <q-input class="label" standout v-model="cedula" label="Cedula" placeholder="Cedula del cliente"
-            style="width: 300px" />
-          <q-input class="label" standout v-model="nombre" label="Nombre" placeholder="Nombre del cliente"
-            style="width: 300px" />
-          <q-input class="label" standout v-model="telefono" label="Telefono" placeholder="Telefono del cliente"
-            style="width: 300px" />
-          <q-btn class="btn-c" color="green" label="Generar Ticket" @click="CrearTicket()" />
+          <q-btn
+            class="bnt-bc"
+            color="green"
+            label="Buscar Cliente"
+            @click="buscarCliente()"
+          />
+          <q-input
+            class="label"
+            standout
+            v-model="cedula"
+            label="Cedula"
+            placeholder="Cedula del cliente"
+            style="width: 300px"
+          />
+          <q-input
+            class="label"
+            standout
+            v-model="nombre"
+            label="Nombre"
+            placeholder="Nombre del cliente"
+            style="width: 300px"
+          />
+          <q-input
+            class="label"
+            standout
+            v-model="telefono"
+            label="Telefono"
+            placeholder="Telefono del cliente"
+            style="width: 300px"
+          />
+          <q-btn
+            class="btn-c"
+            color="green"
+            label="Generar Ticket"
+            @click="CrearTicket()"
+          />
         </div>
       </div>
     </div>
@@ -90,11 +138,19 @@ const successNotification = () => {
     spinner: false,
     message: "ticket Creado",
     timeout: 2000,
-    type: "positive"
+    type: "positive",
   });
 };
 
-
+let badMessage = ref()
+const badNotification = () => {
+  notification = $q.notify({
+    spinner: false,
+    message: badMessage,
+    timeout: 2000,
+    type: "negative",
+  });
+};
 let fixed = ref(false);
 let text = ref("");
 let ruta = ref("");
@@ -111,6 +167,7 @@ let rutas = ref([]);
 let clientes = ref([]);
 let asientos = ref([]);
 let vendedor = ref([]);
+let no_asiento = ref(0);
 
 let optionsRutas = ref([]);
 let optionsBuses = ref([]);
@@ -177,6 +234,12 @@ async function buscarCliente() {
     nombre.value = clienteEncontrado.Nombre_cliente;
     telefono.value = clienteEncontrado.Telefono_cliente;
     cliente_id.value = clienteEncontrado._id;
+  } else {
+    // Cliente no encontrado, puedes mostrar un mensaje de error o realizar alguna acción
+    $q.notify({
+      message: "Cliente no encontrado",
+      type: "negative",
+    });
   }
 }
 
@@ -188,9 +251,16 @@ async function generarTicket() {
 let proximoNumeroTicket = ref(1);
 async function generarTicketInfo() {
   fixed.value = false;
-
+  if (asientos.value.includes(NumAsientos.value)) {
+    // Mostrar mensaje de error o realizar alguna acción
+    $q.notify({
+      message: "El asiento seleccionado ya está ocupado en otro ticket",
+      type: "negative",
+    });
+    return;
+  }
   // Asigna el próximo número del ticket al campo Nmro_ticket
-  Nmro_ticket.value = String(proximoNumeroTicket.value).padStart(6, '0');
+  Nmro_ticket.value = String(proximoNumeroTicket.value).padStart(6, "0");
 
   // Incrementa el número para el próximo ticket
   proximoNumeroTicket.value += 1;
@@ -200,8 +270,8 @@ async function generarTicketInfo() {
 async function CrearTicket() {
   // const token = loginStore.token;
   // console.log(token);
-
-  console.log("Este código funciona");
+  try {
+   console.log("Este código funciona");
 
   await ticketStore.postticket({
     Vendedor_id: String(vendedor.value._id),
@@ -209,16 +279,23 @@ async function CrearTicket() {
     Cliente_id: cliente_id.value,
     Transporte_id: bus._rawValue.value,
     Ruta_id: ruta._rawValue.value,
-    NumAsientos: NumAsientos.value,
+    N_asiento: no_asiento.value,
     fecha_venta: fecha_departida.value,
   });
-  successNotification();
+  successNotification(); 
+  } catch (error) {
+    console.log(error.response.data.error.errors[0].msg);
+    badMessage.value = error.response.data.error.errors[0].msg;
+    badNotification();
+
+  }
+  
 }
 
-let notification = ref()
+let notification = ref();
 
 async function obtenerVendedor() {
-  vendedor.value = VendedoresStore.vendedor
+  vendedor.value = VendedoresStore.vendedor;
 }
 
 let tickets = ref([]);
