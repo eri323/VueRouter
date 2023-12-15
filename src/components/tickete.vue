@@ -410,7 +410,7 @@ async function imprimirticket(ticket) {
   doc.addImage(fondo, "JPG", 0, 0, 210, 230);
 
   const imgX = 30;
-  const imgY = 10;
+  const imgY = 25;
   const imgWidth = 40;
   const imgHeight = 40;
 
@@ -485,27 +485,27 @@ async function imprimirticket(ticket) {
   doc.setTextColor(0, 105, 217);
   doc.setFont("Helvetica", "bold");
   doc.setFontSize(15);
-  doc.text("Información del bus:", 130, 90);
+  doc.text("Información del bus:", 120, 90);
 
   //   // Normal
   doc.setTextColor(30, 30, 30);
   doc.setFont("Helvetica", "normal");
   doc.setFontSize(14);
-  doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`, 130, 98);
-  doc.text(`- N° de bus: ${ticket.Transporte_id.NumBus}`, 130, 104);
+  doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`, 120, 98);
+  doc.text(`- N° de bus: ${ticket.Transporte_id.NumBus}`, 120, 104);
   doc.text(
     `- Ruta del bus: ${ticket.Ruta_id.Origen} - ${ticket.Ruta_id.Destino}`,
-    130,
+    120,
     110
   );
   /*   doc.text(`- Horario salida: ${ticket.Ruta_id.horario_id.hora_partida}`, 20, 179); */
   doc.text(
     `- Fecha de Partida: ${format(new Date(ticket.fecha_venta), "yyyy-MM-dd")}`,
-    130,
+    120,
     116
   );
 
-  doc.addImage(images2, "PNG", 148, 120, 40, 40);
+  doc.addImage(images2, "PNG", 128, 125, 55, 55);
 
   const text =
     "¡Valido para un viaje en autobús posterior a 60 minutos de la hora asignada, en caso de un problema!";
@@ -514,7 +514,7 @@ async function imprimirticket(ticket) {
   doc.setFontSize(20);
   doc.setTextColor(0, 105, 217);
   textLines.forEach((line, i) => {
-    doc.text(line, 20, 205 + i * 10); // Ajusta la posición Y para cada línea
+    doc.text(line, 20, 200 + i * 10); // Ajusta la posición Y para cada línea
   });
 
   doc.save("ticket.pdf");

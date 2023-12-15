@@ -48,11 +48,20 @@ export const useTicketStore = defineStore('ticket', () => {
             console.log(error, "Error al cambiar el estado de el Ticket");
         }
     }
+    const getAsientosOcupados = async (Transporte_id, Ruta_id,  fecha_venta) => {
+        try {
+            let responseTicket = await axios.get(`pasaje/asientosOcupados/${Transporte_id}/${fecha_venta}/${Ruta_id}`);
+            console.log(responseTicket);
+            return responseTicket.data
+        } catch (error) {
+            throw error
+        }
+    };
    
 
     return {
         ticketes,
-        obtenerInfoTicket,  postticket, putEditarTicket, putInactivarTicket, putActivarTicket
+        obtenerInfoTicket,  postticket, putEditarTicket, putInactivarTicket, putActivarTicket,getAsientosOcupados
     };
 });
 
