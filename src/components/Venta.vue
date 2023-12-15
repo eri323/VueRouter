@@ -300,7 +300,7 @@ async function CrearTicket() {
   successNotification(); 
   ocupados.value.push(no_asiento.value)
   } catch (error) {
-    console.log(error.response.data.error.errors[0].msg);
+    console.log(error);
     badMessage.value = error.response.data.error.errors[0].msg;
     badNotification();
 
