@@ -103,6 +103,14 @@
             placeholder="Telefono del cliente"
             style="width: 300px"
           />
+          <q-input
+            class="label"
+            standout
+            v-model="valor"
+            label="Valor"
+            placeholder="Valor del ticket"
+            style="width: 300px"
+          />
           <q-btn
             class="btn-c"
             color="green"
@@ -169,6 +177,7 @@ let clientes = ref([]);
 let asientos = ref([]);
 let vendedor = ref([]);
 let no_asiento = ref(0);
+let valor = ref("");
 
 let optionsRutas = ref([]);
 let optionsBuses = ref([]);
