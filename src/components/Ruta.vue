@@ -183,6 +183,17 @@ async function editarAgregarRuta() {
   validar();
   if (validacion.value === true) {
     if (cambio.value === 0) {
+      if (codigo.value.trim() === '' || isNaN(codigo.value) || parseInt(codigo.value) <= 0) {
+        mostrarData.value = false;
+        mostrarError.value = true;
+        error.value = "El código debe ser un número mayor a 0";
+        setTimeout(() => {
+          mostrarData.value = true;
+          mostrarError.value = false;
+          error.value = "";
+        }, 2200);
+        return;
+      }
       try {
         showDefault();
         await rutaStore.postRuta({
