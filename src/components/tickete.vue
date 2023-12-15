@@ -118,12 +118,9 @@
           </template>
           <template v-slot:body-cell-opciones="props">
             <q-td :props="props" class="botones">
-              <q-btn
-                color="white"
-                text-color="black"
-                label="📋"
-                @click="imprimirticket(props.row)"
-              />
+              <button @click="imprimirticket(props.row)" class="edi">
+                <i class="fa-solid fa-print"></i>
+              </button>
               <button @click="EditarTicket(props.row._id)" class="edi">
                 <i class="fa-solid fa-pencil"></i>
               </button>

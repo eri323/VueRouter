@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h1 style="text-align: center">Vendedores</h1>
+      <h1 style="text-align: center; margin-top: 50px;">Vendedores</h1>
       <hr />
     </div>
     <q-dialog v-model="fixedagregar">
@@ -91,7 +91,7 @@
       </q-card>
     </q-dialog>
 
-    <div style="width: 1600px;">
+    <div style="width: 1000px; ">
       <div class="btn-agregar">
         <q-btn
           class="bg-secondary text-white"
@@ -180,21 +180,23 @@ async function obtenerInfo() {
 }
 let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 const columns = [
-  { name: "Nombre", label: "Nombre", field: "Nombre", sortable: true },
-  { name: "Cedula", label: "Cedula", field: "Cedula" },
-  { name: "Telefono", label: "Telefono", field: "Telefono" },
+  { name: "Nombre", label: "Nombre", field: "Nombre", sortable: true, align: "left" },
+  { name: "Cedula", label: "Cedula", field: "Cedula", align: "left" },
+  { name: "Telefono", label: "Telefono", field: "Telefono", align: "left" },
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
     format: (val) => (val ? "Activo" : "Inactivo"),
+    align: "left"
   },
   {
     name: "opciones",
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align: "left"
   },
 ];
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h1 style="text-align: center">Clientes</h1>
+      <h1 style="text-align: center; margin-top: 50px;">Clientes</h1>
       <hr />
     </div>
     <!-- Modal -->
@@ -33,7 +33,7 @@
         </div>
       </q-card>
     </q-dialog>
-    <div style="width: 1600px;">
+    <div style="width: 1100px;">
       <div class="btn-agregar">
         <q-btn class="bg-secondary" label="Agregar cliente" @click="agregarCliente()" />
       </div>
