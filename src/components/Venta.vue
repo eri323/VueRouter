@@ -55,24 +55,24 @@
         <q-btn color="green" label="Generar Ticket" @click="generarTicket()" />
       </div>
       <div class="container-info">
-        <div v-if="asientos.length" class="container-bus"  >
+        <div v-if="asientos.length" class="container-bus">
           <div v-for="i in asientos" :key="i" class="container-asientos">
-            <button 
+            <button
               id="numerazo"
               type="button"
               :value="i"
               @click="no_asiento = i"
               :style="{
-                backgroundColor: no_asiento === i || ocupados.includes(i) ? 'red' : 'initial',
+                backgroundColor:
+                  no_asiento === i || ocupados.includes(i) ? 'red' : 'initial',
               }"
               :disabled="ocupados.includes(i)"
             >
-
               {{ i }} <img src="../assets/seat.png" alt="" />
             </button>
           </div>
         </div>
-        <div v-if="no_asiento!=0" class="cliente">
+        <div v-if="no_asiento != 0" class="cliente">
           <q-btn
             class="bnt-bc"
             color="green"
@@ -143,7 +143,7 @@ const successNotification = () => {
   });
 };
 
-let badMessage = ref()
+let badMessage = ref();
 const badNotification = () => {
   notification = $q.notify({
     spinner: false,
@@ -172,7 +172,6 @@ let no_asiento = ref(0);
 
 let optionsRutas = ref([]);
 let optionsBuses = ref([]);
-
 
 async function obtenerInfo() {
   await busStore.obtenerInfoBuses();
@@ -220,22 +219,24 @@ function generarListaAsientos() {
       listaAsientos.push(Number(i));
     }
     asientos.value = listaAsientos;
-    aOcupados()
+    aOcupados();
   }
 }
 
-const ocupados=ref([])
+const ocupados = ref([]);
 
-async function aOcupados(){
+async function aOcupados() {
+  const id_bus = bus._rawValue.value;
+  const ruta_id = ruta._rawValue.value;
+  const fecha_de_partida = fecha_departida.value;
 
-  const id_bus = bus._rawValue.value
-  const ruta_id = ruta._rawValue.value
-  const fecha_de_partida = fecha_departida.value
-
-
-  const res = await ticketStore.getAsientosOcupados(id_bus, ruta_id, fecha_de_partida)
+  const res = await ticketStore.getAsientosOcupados(
+    id_bus,
+    ruta_id,
+    fecha_de_partida
+  );
   console.log(res);
-  ocupados.value = res.map(t=>t.N_asiento)
+  ocupados.value = res.map((t) => t.N_asiento);
 }
 
 let cliente_id = ref("");
@@ -283,31 +284,35 @@ async function generarTicketInfo() {
   proximoNumeroTicket.value += 1;
   generarListaAsientos();
 }
-
+function Limpiar() {
+  cedula.value = "";
+  nombre.value = "";
+  telefono.value = "";
+}
 async function CrearTicket() {
   // const token = loginStore.token;
   // console.log(token);
   try {
-   console.log("Este código funciona");
-
-  await ticketStore.postticket({
-    Vendedor_id: String(vendedor.value._id),
-    Nmro_ticket: Nmro_ticket.value++,
-    Cliente_id: cliente_id.value,
-    Transporte_id: bus._rawValue.value,
-    Ruta_id: ruta._rawValue.value,
-    N_asiento: no_asiento.value,
-    fecha_venta: fecha_departida.value,
-  });
-  successNotification(); 
-  ocupados.value.push(no_asiento.value)
+    console.log("Este código funciona");
+   
+    await ticketStore.postticket({
+      
+      Vendedor_id: String(vendedor.value._id),
+      Nmro_ticket: Nmro_ticket.value++,
+      Cliente_id: cliente_id.value,
+      Transporte_id: bus._rawValue.value,
+      Ruta_id: ruta._rawValue.value,
+      N_asiento: no_asiento.value,
+      fecha_venta: fecha_departida.value,
+    });
+    successNotification();
+    Limpiar();
+    ocupados.value.push(no_asiento.value);
   } catch (error) {
     console.log(error);
     badMessage.value = error.response.data.error.errors[0].msg;
     badNotification();
-
   }
-  
 }
 
 let notification = ref();
@@ -331,13 +336,11 @@ onMounted(async () => {
   obtenerVendedor();
 });
 
-
-
 function getTodayDate() {
   const today = new Date();
   const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0');
-  const day = today.getDate().toString().padStart(2, '0');
+  const month = (today.getMonth() + 1).toString().padStart(2, "0");
+  const day = today.getDate().toString().padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 </script>
@@ -377,7 +380,7 @@ function getTodayDate() {
 
 .container {
   /*   width: 100%; */
- 
+
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -402,14 +405,14 @@ function getTodayDate() {
 }
 
 .container-bus {
- /*  height: 250px;
+  /*  height: 250px;
   width: 100%; */
   display: flex;
   width: 50%;
   flex-wrap: wrap;
   align-content: center;
   justify-content: center;
-/*   margin-top: 70px; */
+  /*   margin-top: 70px; */
 }
 
 .container-asientos {
