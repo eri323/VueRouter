@@ -20,7 +20,7 @@
               <div class="q-gutter-y-md column" style="max-width: 300px">
                 <q-select clearable filled color="primary" v-model="conductor_id" :options="options" label="Conductor" />
               </div>
-              <q-input v-model="Soat" label="Soat" type="date" style="width: 300px" />
+              <q-input v-model="Soat" label="Soat" type="date" style="width: 300px" :min="todayDate" />
             </q-card-section>
           </div>
 
@@ -86,6 +86,7 @@ import { useBusStore } from "../stores/Bus.js";
 import { useQuasar } from "quasar";
 import { useConductorStore } from "../stores/Conductores.js";
 
+const todayDate = new Date().toISOString().split('T')[0]; // Obtiene la fecha actual en formato ISO
 const busStore = useBusStore();
 const conductorStore = useConductorStore();
 const $q = useQuasar();
