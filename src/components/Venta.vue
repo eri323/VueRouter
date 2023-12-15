@@ -349,6 +349,7 @@ onMounted(async () => {
 
 .container {
   /*   width: 100%; */
+ 
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -368,19 +369,19 @@ onMounted(async () => {
   width: 100%;
   justify-content: center;
   align-items: center;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
   flex-direction: row;
 }
 
 .container-bus {
-  height: 250px;
-  width: 100%;
+ /*  height: 250px;
+  width: 100%; */
   display: flex;
-  flex-direction: column;
+  width: 50%;
   flex-wrap: wrap;
   align-content: center;
   justify-content: center;
-  margin-top: 70px;
+/*   margin-top: 70px; */
 }
 
 .container-asientos {

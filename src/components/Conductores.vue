@@ -35,9 +35,9 @@
         </div>
       </q-card>
     </q-dialog>
-    <div style="width: 1600px">
+    <div style="width: 1000px">
       <div class="containerheader">
-        <div>
+        <div style="margin-top: 50px;">
           <h1>Conductores</h1>
           <hr />
         </div>

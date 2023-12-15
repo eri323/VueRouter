@@ -36,7 +36,7 @@
         </div>
       </q-card>
     </q-dialog>
-    <div class="tbus" style="width: 1600px;">
+    <div class="tbus" style="width: 1000px;">
       <div>
         <h1>Buses</h1>
         <hr />
