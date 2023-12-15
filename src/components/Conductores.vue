@@ -132,20 +132,22 @@ async function obtenerInfo() {
 }
 
 const columns = [
-  { name: "nombre", label: "Nombre", field: "nombre", sortable: true },
-  { name: "cedula", label: "Cedula", field: "cedula" },
+  { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "left" },
+  { name: "cedula", label: "Cedula", field: "cedula", align: "left" },
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
     format: (val) => (val ? "Activo" : "Inactivo"),
+    align: "left"
   },
   {
     name: "opciones",
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align: "left"
   },
 ];
 

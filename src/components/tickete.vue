@@ -206,12 +206,14 @@ const columns = [
     label: "Numero de ticket",
     field: "Nmro_ticket",
     sortable: true,
+    align: "left"
   },
   {
     name: "N_asiento",
     label: "Numero de asiento",
     field: "N_asiento",
     sortable: true,
+    align: "left"
   },
   {
     name: "fecha_venta",
@@ -219,32 +221,38 @@ const columns = [
     field: "fecha_venta",
     sortable: true,
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
+    align: "left"
   },
   {
     name: "Vendedor_id",
     label: "Vendedor",
     field: (row) => `${row.Vendedor_id.Nombre}`,
+    align: "left"
   }, {
     name: "puesto_id",
     label: "Puesto",
     field: (row) => `${row.Vendedor_id.Nombre}`,
+    align: "left"
   },
   {
     name: "Cliente_id",
     label: "Cliente",
     field: (row) =>
       `${row.Cliente_id.Nombre_cliente} - ${row.Cliente_id.CC_cliente}- ${row.Cliente_id.Telefono_cliente}`,
+      align: "left"
   },
   {
     name: "Ruta_id",
     label: "Ruta",
     field: (row) => `${row.Ruta_id.Origen}-${row.Ruta_id.Destino}`,
+    align: "left"
   },
   {
     name: "Transporte_id",
     label: "Bus",
     field: (row) =>
       `${row.Transporte_id.NumBus}-${row.Transporte_id.Vehiculo}-${row.Transporte_id.NumAsientos}`,
+      align: "left"
   },
   {
     name: "estado",
@@ -252,12 +260,14 @@ const columns = [
     field: "estado",
     sortable: true,
     format: (val) => (val ? "Activo" : "Inactivo"),
+    align: "left"
   },
   {
     name: "opciones",
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align: "left"
   },
 ];
 async function obtenerVendedor() {
