@@ -62,16 +62,16 @@
               :value="i"
               @click="no_asiento = i"
               :style="{
-                backgroundColor: NumAsientos === i ? 'red' : 'initial',
+                backgroundColor: no_asiento === i || ocupados.includes(i) ? 'red' : 'initial',
               }"
-              
+              :disabled="ocupados.includes(i)"
             >
 
               {{ i }} <img src="../assets/seat.png" alt="" />
             </button>
           </div>
         </div>
-        <div v-if="showClienteDiv" class="cliente">
+        <div v-if="no_asiento!=0" class="cliente">
           <q-btn
             class="bnt-bc"
             color="green"
@@ -218,7 +218,22 @@ function generarListaAsientos() {
       listaAsientos.push(Number(i));
     }
     asientos.value = listaAsientos;
+    aOcupados()
   }
+}
+
+const ocupados=ref([])
+
+async function aOcupados(){
+
+  const id_bus = bus._rawValue.value
+  const ruta_id = ruta._rawValue.value
+  const fecha_de_partida = fecha_departida.value
+
+
+  const res = await ticketStore.getAsientosOcupados(id_bus, ruta_id, fecha_de_partida)
+  console.log(res);
+  ocupados.value = res.map(t=>t.N_asiento)
 }
 
 let cliente_id = ref("");
@@ -283,6 +298,7 @@ async function CrearTicket() {
     fecha_venta: fecha_departida.value,
   });
   successNotification(); 
+  ocupados.value.push(no_asiento.value)
   } catch (error) {
     console.log(error.response.data.error.errors[0].msg);
     badMessage.value = error.response.data.error.errors[0].msg;
@@ -304,7 +320,7 @@ watch(ruta, () => {
   obtenerBuses();
 });
 
-watch(NumAsientos, () => {
+watch(no_asiento, () => {
   showClienteDiv = true;
 });
 
@@ -389,6 +405,7 @@ onMounted(async () => {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  cursor: pointer;
 }
 
 .container-asientos button {
@@ -399,6 +416,7 @@ onMounted(async () => {
   border-radius: 5px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   border: solid rgb(80, 252, 0);
+  cursor: pointer;
 }
 
 .container-asientos button:hover {
