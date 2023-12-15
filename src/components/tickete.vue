@@ -85,8 +85,22 @@
         <hr />
       </div>
       <div class="t">
-        <q-table title="Ticket" :rows="rows" :columns="columns" row-key="name">
-          <template v-slot:body-cell-estado="props">
+        <q-table
+          class="my-sticky-dynamic"
+          flat
+          bordered
+          :rows="rows"
+          :columns="columns"
+          :loading="loading"
+          row-key="index"
+          virtual-scroll
+          :virtual-scroll-item-size="48"
+          :virtual-scroll-sticky-size-start="48"
+          :pagination="pagination"
+          :rows-per-page-options="[0]"
+          @virtual-scroll="onScroll"
+          style="margin-top: 50px; height: 600px; width: 100%;"
+          ><template v-slot:body-cell-estado="props">
             <q-td :props="props">
               <label for="" v-if="props.row.estado == 1" style="color: green"
                 >Activo</label
@@ -102,27 +116,21 @@
                 label="📋"
                 @click="imprimirticket(props.row)"
               />
-              <q-btn
-                color="white"
-                text-color="black"
-                label="🖋️"
-                @click="EditarTicket(props.row._id)"
-              />
-              <q-btn
-                glossy
-                label="❌"
+              <button @click="EditarTicket(props.row._id)" class="edi">
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <button
                 @click="InactivarTicket(props.row._id)"
                 v-if="props.row.estado == 1"
-              />
-              <q-btn
-                glossy
-                label="✔️"
-                @click="ActivarTicket(props.row._id)"
-                v-else
-              />
-            </q-td>
-          </template>
-        </q-table>
+                class="inac"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <button @click="ActivarTicket(props.row._id)" v-else class="act">
+                <i class="fa-solid fa-check"></i>
+              </button>
+            </q-td> </template
+        ></q-table>
       </div>
     </div>
   </div>
@@ -138,10 +146,10 @@ import { useClienteStore } from "../stores/Cliente.js";
 import { useRutaStore } from "../stores/Ruta.js";
 import { useBusStore } from "../stores/Bus.js";
 import { useQuasar } from "quasar";
-import {jsPDF} from 'jspdf';
-import images from '../assets/autobus.png';
-import images2 from '../assets/mora.png'
-import fondo from '../assets/fondo.jpg'
+import { jsPDF } from "jspdf";
+import images from "../assets/autobus.png";
+import images2 from "../assets/mora.png";
+import fondo from "../assets/fondo.jpg";
 
 const $q = useQuasar();
 const TicketStore = useTicketStore();
@@ -155,6 +163,7 @@ let Vendedor_id = ref("");
 let Cliente_id = ref("");
 let Ruta_id = ref("");
 let text = ref("");
+let pagination = ref({ rowsPerPage: 0 })
 let Transporte_id = ref("");
 let optionsVendedor = ref([]);
 let optionsCliente = ref([]);
@@ -377,17 +386,14 @@ function validar() {
   }
 }
 async function imprimirticket(ticket) {
-
-  
   const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
+    orientation: "portrait",
+    unit: "mm",
     format: [200, 220], // A4 vertical: ancho 210mm x alto 297mm
   });
-  doc.addImage(fondo, 'JPG', 0, 0, 210, 230);
+  doc.addImage(fondo, "JPG", 0, 0, 210, 230);
 
-
- const imgX = 30;
+  const imgX = 30;
   const imgY = 10;
   const imgWidth = 40;
   const imgHeight = 40;
@@ -403,90 +409,99 @@ async function imprimirticket(ticket) {
   doc.circle(centerX, centerY, radius); // Desenha um círculo ao redor da imagem
 
   // Adicionar a imagem dentro do círculo
-  doc.addImage(images, 'PNG', imgX, imgY, imgWidth, imgHeight);  
+  doc.addImage(images, "PNG", imgX, imgY, imgWidth, imgHeight);
   // Título
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont("Helvetica", "bold");
   doc.setFontSize(30);
   doc.setTextColor(0, 105, 217);
-  doc.text('TRANSPORTE  LEF', 95 , 50);
+  doc.text("TRANSPORTE  LEF", 95, 50);
 
   // Títulos
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont("Helvetica", "bold");
   doc.setFontSize(15);
   doc.setTextColor(0, 105, 217);
-  doc.text('Información del Cliente:', 20, 90);
+  doc.text("Información del Cliente:", 20, 90);
   // NumeroTicket: ticket.Nmro_ticket,
   //   Fecha_Venta: ticket.fecha_venta,
-  
+
   //   Vendedor: ticket.Vendedor_id.Nombre,
   //   Cliente: ticket.Cliente_id.Nombre_cliente,
-  //   Origen: ticket.Ruta_id.Origen, 
+  //   Origen: ticket.Ruta_id.Origen,
   //   Destino: ticket.Ruta_id.Destino,
   //   Bus: ticket.Transporte_id.NumBus,
 
   // Normal
-  doc.setTextColor(30,30,30);
-  doc.setFont('Helvetica', 'normal');
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("Helvetica", "normal");
   doc.setFontSize(14);
   doc.text(`- Nombre: ${ticket.Cliente_id.Nombre_cliente}`, 20, 98);
   doc.text(`- C.C: ${ticket.Cliente_id.CC_cliente}`, 20, 104);
   doc.text(`- Teléfono: ${ticket.Cliente_id.Telefono_cliente}`, 20, 110);
   doc.text(`- N° Asiento: ${ticket.NumAsientos}`, 20, 116);
-  
-//   // Títulos
+
+  //   // Títulos
   doc.setTextColor(0, 105, 217);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont("Helvetica", "bold");
   doc.setFontSize(15);
-  doc.text('Información del Vendedor:', 20, 130);
-  
-//   // Normal
-  doc.setTextColor(30,30,30);
-  doc.setFont('Helvetica', 'normal');
+  doc.text("Información del Vendedor:", 20, 130);
+
+  //   // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("Helvetica", "normal");
   doc.setFontSize(14);
   doc.text(`- Nombre: ${ticket.Vendedor_id.Nombre}`, 20, 138);
   doc.text(`- Teléfono: ${ticket.Vendedor_id.Telefono}`, 20, 146);
 
   // Títulos
   doc.setTextColor(0, 105, 217);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont("Helvetica", "bold");
   doc.setFontSize(15);
-  doc.text('Información del Conductor:', 20, 160);
+  doc.text("Información del Conductor:", 20, 160);
 
-//   // Normal
-  doc.setTextColor(30,30,30);
-  doc.setFont('Helvetica', 'normal');
+  //   // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("Helvetica", "normal");
   doc.setFontSize(14);
   doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 168);
   doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 176);
-  
-//   // Títulos
+
+  //   // Títulos
   doc.setTextColor(0, 105, 217);
-  doc.setFont('Helvetica', 'bold');
+  doc.setFont("Helvetica", "bold");
   doc.setFontSize(15);
-  doc.text('Información del bus:', 130, 90);
+  doc.text("Información del bus:", 130, 90);
 
-//   // Normal
-  doc.setTextColor(30,30,30);
-  doc.setFont('Helvetica', 'normal');
+  //   // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("Helvetica", "normal");
   doc.setFontSize(14);
-  doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`,   130, 98);
+  doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`, 130, 98);
   doc.text(`- N° de bus: ${ticket.Transporte_id.NumBus}`, 130, 104);
-  doc.text(`- Ruta del bus: ${ticket.Ruta_id.Origen} - ${ticket.Ruta_id.Destino}`, 130, 110);
-/*   doc.text(`- Horario salida: ${ticket.Ruta_id.horario_id.hora_partida}`, 20, 179); */
-  doc.text(`- Fecha de Partida: ${format(new Date(ticket.fecha_venta), "yyyy-MM-dd")}`, 130, 116);
+  doc.text(
+    `- Ruta del bus: ${ticket.Ruta_id.Origen} - ${ticket.Ruta_id.Destino}`,
+    130,
+    110
+  );
+  /*   doc.text(`- Horario salida: ${ticket.Ruta_id.horario_id.hora_partida}`, 20, 179); */
+  doc.text(
+    `- Fecha de Partida: ${format(new Date(ticket.fecha_venta), "yyyy-MM-dd")}`,
+    130,
+    116
+  );
 
-  doc.addImage(images2, 'PNG', 148, 120, 40, 40);
+  doc.addImage(images2, "PNG", 148, 120, 40, 40);
 
-const text= '¡Valido para un viaje en autobús posterior a 60 minutos de la hora asignada, en caso de un problema!'
-const maxWidth= 120;
-const textLines = doc.splitTextToSize(text, maxWidth);
-doc.setFontSize(20); 
-doc.setTextColor(0, 105, 217);
-textLines.forEach((line, i) => {
-  doc.text(line, 20, 205 + (i * 10)); // Ajusta la posición Y para cada línea
-});
+  const text =
+    "¡Valido para un viaje en autobús posterior a 60 minutos de la hora asignada, en caso de un problema!";
+  const maxWidth = 120;
+  const textLines = doc.splitTextToSize(text, maxWidth);
+  doc.setFontSize(20);
+  doc.setTextColor(0, 105, 217);
+  textLines.forEach((line, i) => {
+    doc.text(line, 20, 205 + i * 10); // Ajusta la posición Y para cada línea
+  });
 
-  doc.save('ticket.pdf');
+  doc.save("ticket.pdf");
 }
 
 async function editarTicket() {
@@ -702,4 +717,74 @@ async function ActivarTicket(id) {
 th {
   text-align: center;
 }
+.botones .edi {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+
+.botones .edi:hover {
+  transform: scale(1.05);
+  transition: all 0.5s;
+}
+
+.botones .act {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+
+.act i {
+  font-size: 22px;
+  color: green;
+}
+
+.inac {
+  /*   display: flex;
+  align-items: center; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0;
+  background-color: transparent;
+}
+
+.botones .edi i {
+  font-size: 20px;
+}
+
+.inac i {
+  font-size: 25px;
+  color: red;
+}
+</style>
+<style lang="sass">
+.my-sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 410px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #00926f
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>
