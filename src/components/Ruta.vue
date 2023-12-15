@@ -42,7 +42,7 @@
       <div class="q-pa-md">
         <q-table class="my-sticky-virtscroll-table" virtual-scroll flat bordered v-model:pagination="pagination"
           :rows-per-page-options="[0]" :virtual-scroll-sticky-size-start="48" row-key="index"  :rows="rows"
-          :columns="columns">
+          :columns="columns" style="height: 600px;">
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
               <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
@@ -376,11 +376,11 @@ onMounted(async () => {
 
 .btn-agregar {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   display: flex;
-  justify-content: center;
-  justify-content: flex-end;
+  justify-content: left;
   color: white;
+  margin-left: 19px;
 }
 
 .body {

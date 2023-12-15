@@ -99,14 +99,22 @@
           @click="agregarVendedor()"
         />
       </div>
-
-      <q-table
-        title="Vendedores"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-      >
-        <template v-slot:body-cell-estado="props">
+      <div class="q-pa-md" style="padding: 0;">
+    <q-table
+      class="my-sticky-dynamic"
+      flat bordered
+      :rows="rows"
+      :columns="columns"
+      :loading="loading"
+      row-key="index"
+      virtual-scroll
+      :virtual-scroll-item-size="48"
+      :virtual-scroll-sticky-size-start="48"
+      :pagination="pagination"
+      :rows-per-page-options="[0]"
+      @virtual-scroll="onScroll"
+        style="height: 600px;"
+      ><template v-slot:body-cell-estado="props">
           <q-td :props="props">
             <label for="" v-if="props.row.estado == 1" style="color: green"
               >Activo</label
@@ -134,8 +142,8 @@
               <i class="fa-solid fa-check"></i>
             </button>
           </q-td>
-        </template>
-      </q-table>
+        </template></q-table>
+  </div>
     </div>
   </div>
 </template>
@@ -158,6 +166,7 @@ let Cedula = ref("");
 let Telefono = ref("");
 let password = ref();
 let cambio = ref(0);
+let pagination = ref({ rowsPerPage: 0 })
 let mostrarData = ref(true);
 let mostrarError = ref(false);
 async function obtenerInfo() {
@@ -457,9 +466,10 @@ onMounted(async () => {
   width: 100%;
   margin-bottom: 15px;
   display: flex;
-  justify-content: right;
+  justify-content: left;
   color: black;
   text-transform: capitalize;
+  margin-bottom: 15px;
 }
 
 hr {
@@ -531,4 +541,29 @@ h1 {
   font-size: 25px;
   color: red;
 }
+</style>
+<style lang="sass">
+.my-sticky-dynamic
+  /* height or max-height is important */
+  height: 410px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #00926f
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>

@@ -44,10 +44,10 @@
       <div class="btn-agregar">
         <q-btn class="bg-secondary" label="Agregar Bus" @click="agregarBus()" />
       </div>
-      <div class="q-pa-md">
+      <div class="q-pa-md" style="padding: 0;">
         <q-table class="my-sticky-virtscroll-table" virtual-scroll flat bordered v-model:pagination="pagination"
           :rows-per-page-options="[0]" :virtual-scroll-sticky-size-start="48" row-key="index" :rows="rows"
-          :columns="columns">
+          :columns="columns" style="height: 600px;">
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
               <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
@@ -516,8 +516,9 @@ hr {
   width: 100%;
   margin-bottom: 5px;
   display: flex;
-  justify-content: right;
-  color: black;
+  justify-content: left;
+  color: white;
+  margin-bottom: 15px;
 }
 
 .botones .edi {

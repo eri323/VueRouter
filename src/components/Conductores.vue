@@ -35,7 +35,7 @@
         </div>
       </q-card>
     </q-dialog>
-    <div style="width: 1600px;">
+    <div style="width: 1600px">
       <div class="containerheader">
         <div>
           <h1>Conductores</h1>
@@ -52,10 +52,20 @@
       </div>
       <div class="containerheader">
         <q-table
+          class="my-sticky-dynamic"
+          flat
+          bordered
           :rows="rows"
           :columns="columns"
-          row-key="name"
-          title="Conductores"
+          :loading="loading"
+          row-key="index"
+          virtual-scroll
+          :virtual-scroll-item-size="48"
+          :virtual-scroll-sticky-size-start="48"
+          :pagination="pagination"
+          :rows-per-page-options="[0]"
+          @virtual-scroll="onScroll"
+          style="height: 600px;"
         >
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
@@ -68,22 +78,22 @@
           <template v-slot:body-cell-opciones="props">
             <q-td :props="props" class="botones">
               <button @click="EditarConductor(props.row._id)" class="edi">
-              <i class="fa-solid fa-pencil"></i>
-            </button>
-            <button
-              @click="InactivarConductor(props.row._id)"
-              v-if="props.row.estado == 1"
-              class="inac"
-            >
-            <i class="fa-solid fa-xmark"></i>
-            </button>
-            <button
-              @click="putActivarConductor(props.row._id)"
-              v-else
-              class="act"
-            >
-              <i class="fa-solid fa-check"></i>
-            </button>
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <button
+                @click="InactivarConductor(props.row._id)"
+                v-if="props.row.estado == 1"
+                class="inac"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <button
+                @click="putActivarConductor(props.row._id)"
+                v-else
+                class="act"
+              >
+                <i class="fa-solid fa-check"></i>
+              </button>
             </q-td>
           </template>
         </q-table>
@@ -108,6 +118,7 @@ let cedula = ref();
 let cambio = ref(0);
 let mostrarData = ref(true);
 let mostrarError = ref(false);
+let pagination = ref({ rowsPerPage: 0 });
 const $q = useQuasar();
 let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 async function obtenerInfo() {
@@ -354,8 +365,9 @@ onMounted(async () => {
   width: 100%;
   margin-bottom: 5px;
   display: flex;
-  justify-content: right;
-  color: rgb(255, 255, 255);
+  justify-content: left;
+  color: white;
+  margin-bottom: 15px;
 }
 
 .containerheader {
@@ -412,27 +424,27 @@ hr {
 .botones .edi:hover {
   transform: scale(1.05);
   transition: all 0.5s;
-} 
-.botones .act{
+}
+.botones .act {
   border: none;
   border-radius: 5px;
   cursor: pointer;
   padding: 7px;
- background-color: transparent;
+  background-color: transparent;
 }
-.act i{
+.act i {
   font-size: 22px;
   color: green;
 }
-.inac{
-/*   display: flex;
+.inac {
+  /*   display: flex;
   align-items: center; */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   padding: 5px;
   margin: 0;
- background-color: transparent;
+  background-color: transparent;
 }
 .botones .edi i {
   font-size: 20px;
@@ -452,4 +464,29 @@ hr {
   cursor: pointer;
   background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
 }
+</style>
+<style lang="sass">
+.my-sticky-dynamic
+  /* height or max-height is important */
+  height: 410px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #00926f
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>
