@@ -458,7 +458,7 @@ onMounted(async () => {
   margin-bottom: 15px;
   display: flex;
   justify-content: right;
-  color: black;
+  color: rgb(68, 255, 27);
   text-transform: capitalize;
 }
 

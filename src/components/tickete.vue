@@ -141,6 +141,7 @@ import { useQuasar } from "quasar";
 import {jsPDF} from 'jspdf';
 import images from '../assets/autobus.png';
 import images2 from '../assets/mora.png'
+import fondo from '../assets/fondo.jpg'
 
 const $q = useQuasar();
 const TicketStore = useTicketStore();
@@ -376,11 +377,18 @@ function validar() {
   }
 }
 async function imprimirticket(ticket) {
+
   
-  const doc = new jsPDF(); 
-  
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: [200, 220], // A4 vertical: ancho 210mm x alto 297mm
+  });
+  doc.addImage(fondo, 'JPG', 0, 0, 210, 230);
+
+
  const imgX = 30;
-  const imgY = 30;
+  const imgY = 10;
   const imgWidth = 40;
   const imgHeight = 40;
 
@@ -469,11 +477,14 @@ async function imprimirticket(ticket) {
 
   doc.addImage(images2, 'PNG', 148, 120, 40, 40);
 
-
-  // doc.setFont('Helvetica', 'bold');
-  // doc.setFontSize(25);
-  // doc.setTextColor(0, 105, 217);
-  // doc.text('¡Valido para un viaje en autobús durante 60 minutos en caso de un problema!', 50, 225);
+const text= '¡Valido para un viaje en autobús posterior a 60 minutos de la hora asignada, en caso de un problema!'
+const maxWidth= 120;
+const textLines = doc.splitTextToSize(text, maxWidth);
+doc.setFontSize(20); 
+doc.setTextColor(0, 105, 217);
+textLines.forEach((line, i) => {
+  doc.text(line, 20, 205 + (i * 10)); // Ajusta la posición Y para cada línea
+});
 
   doc.save('ticket.pdf');
 }
