@@ -187,8 +187,6 @@ async function AgregarVendedor() {
           type: "negative",
         });
       }
-
-
     } else {
       let id = idVendedor.value;
       if (id) {
@@ -196,7 +194,6 @@ async function AgregarVendedor() {
           showDefault();
           await vendedorStore.putEditarVendedor(id, {
             Nombre: Nombre.value,
-
             Cedula: Cedula.value,
             Telefono: Telefono.value,
           });
