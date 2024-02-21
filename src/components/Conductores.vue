@@ -29,20 +29,15 @@
           <q-separator />
 
           <q-card-actions align="right" style="gap: 30px; margin-top: 10px">
-            <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn
-              flat
-              label="Aceptar"
-              color="primary"
-              @click="AgregarConductor()"
-            />
+            <button class="btn" v-close-popup>Cancelar</button>
+            <button @click="AgregarConductor()" class="btn">Aceptar</button>
           </q-card-actions>
         </div>
       </q-card>
     </q-dialog>
-    <div>
+    <div style="width: 1000px">
       <div class="containerheader">
-        <div>
+        <div style="margin-top: 50px;">
           <h1>Conductores</h1>
           <hr />
         </div>
@@ -57,10 +52,20 @@
       </div>
       <div class="containerheader">
         <q-table
+          class="my-sticky-dynamic"
+          flat
+          bordered
           :rows="rows"
           :columns="columns"
-          row-key="name"
-          title="Conductores"
+          :loading="loading"
+          row-key="index"
+          virtual-scroll
+          :virtual-scroll-item-size="48"
+          :virtual-scroll-sticky-size-start="48"
+          :pagination="pagination"
+          :rows-per-page-options="[0]"
+          @virtual-scroll="onScroll"
+          style="height: 600px;"
         >
           <template v-slot:body-cell-estado="props">
             <q-td :props="props">
@@ -72,24 +77,23 @@
           </template>
           <template v-slot:body-cell-opciones="props">
             <q-td :props="props" class="botones">
-              <q-btn
-                color="white"
-                text-color="black"
-                label="🖋️"
-                @click="EditarConductor(props.row._id)"
-              />
-              <q-btn
-                glossy
-                label="❌"
+              <button @click="EditarConductor(props.row._id)" class="edi">
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <button
                 @click="InactivarConductor(props.row._id)"
                 v-if="props.row.estado == 1"
-              />
-              <q-btn
-                glossy
-                label="✔️"
+                class="inac"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <button
                 @click="putActivarConductor(props.row._id)"
                 v-else
-              />
+                class="act"
+              >
+                <i class="fa-solid fa-check"></i>
+              </button>
             </q-td>
           </template>
         </q-table>
@@ -114,6 +118,7 @@ let cedula = ref();
 let cambio = ref(0);
 let mostrarData = ref(true);
 let mostrarError = ref(false);
+let pagination = ref({ rowsPerPage: 0 });
 const $q = useQuasar();
 let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 async function obtenerInfo() {
@@ -127,20 +132,22 @@ async function obtenerInfo() {
 }
 
 const columns = [
-  { name: "nombre", label: "Nombre", field: "nombre", sortable: true },
-  { name: "cedula", label: "Cedula", field: "cedula" },
+  { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "left" },
+  { name: "cedula", label: "Cedula", field: "cedula", align: "left" },
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
     format: (val) => (val ? "Activo" : "Inactivo"),
+    align: "left"
   },
   {
     name: "opciones",
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align: "left"
   },
 ];
 
@@ -162,7 +169,7 @@ let validacion = ref(false);
 let notification = ref(null);
 
 function validar() {
-  if (Nombre.value == "") {
+  if (Nombre.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el nombre del conductor porfavor";
@@ -171,7 +178,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (cedula.value == "") {
+  } else if (cedula.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el numero de cedula del conductor porfavor";
@@ -360,8 +367,9 @@ onMounted(async () => {
   width: 100%;
   margin-bottom: 5px;
   display: flex;
-  justify-content: right;
-  color: black;
+  justify-content: left;
+  color: white;
+  margin-bottom: 15px;
 }
 
 .containerheader {
@@ -407,4 +415,81 @@ hr {
   margin: 0;
   padding: 0;
 }
+
+.botones .edi {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+.botones .edi:hover {
+  transform: scale(1.05);
+  transition: all 0.5s;
+}
+.botones .act {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+.act i {
+  font-size: 22px;
+  color: green;
+}
+.inac {
+  /*   display: flex;
+  align-items: center; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0;
+  background-color: transparent;
+}
+.botones .edi i {
+  font-size: 20px;
+}
+.inac i {
+  font-size: 25px;
+  color: red;
+}
+
+.btn {
+  font-family: "Letra";
+  width: 100px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+}
 </style>
+<style lang="sass">
+.my-sticky-dynamic
+  /* height or max-height is important */
+  height: 410px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #00926f
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+</style>
+

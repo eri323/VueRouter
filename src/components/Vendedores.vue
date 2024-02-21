@@ -1,9 +1,55 @@
 <template>
   <div>
     <div>
-      <h1 style="text-align: center">Vendedores</h1>
+      <h1 style="text-align: center; margin-top: 50px;">Vendedores</h1>
       <hr />
     </div>
+    <q-dialog v-model="fixedagregar">
+      <q-card class="modal-content">
+        <div class="contorno">
+          <q-card-section class="row items-center q-pb" style="color: black">
+            <div class="text-h6">{{ text }}</div>
+            <q-space />
+          </q-card-section>
+          <q-separator />
+          <div class="containerData" v-if="mostrarData">
+            <q-card-section style="max-height: 50vh" class="scroll">
+              <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
+              <q-input
+                v-model="Cedula"
+                label="Cedula"
+                
+                style="width: 300px"
+                type="number"
+              />
+              <q-input
+                v-model="Telefono"
+                label="Telefono"
+                type="number"
+                style="width: 300px"
+              />
+              <q-input
+                v-model="password"
+                label="Contraseña"
+                type="password"
+                style="width: 300px"
+              />
+            </q-card-section>
+          </div>
+
+          <div class="containerError" v-if="mostrarError">
+            <h4>{{ error }}</h4>
+          </div>
+          <q-separator />
+
+          <q-card-actions align="right" style="gap: 30px; margin-top: 10px">
+            <button class="btn" v-close-popup>Cancelar</button>
+            <button @click="AgregarVendedor()" class="btn">Aceptar</button>
+          </q-card-actions>
+        </div>
+      </q-card>
+    </q-dialog>
+
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <div class="contorno">
@@ -15,44 +61,89 @@
           <div class="containerData" v-if="mostrarData">
             <q-card-section style="max-height: 50vh" class="scroll">
               <q-input v-model="Nombre" label="Nombre" style="width: 300px" />
-
-              <q-input v-model="Cedula" label="Cedula" style="width: 300px" type="number" />
-              <q-input v-model="Telefono" label="Telefono" type="number" style="width: 300px" />
+              <q-input
+                v-model="Cedula"
+                label="Cedula"
+                style="width: 300px"
+                type="number"
+              />
+              <q-input
+                v-model="Telefono"
+                label="Telefono"
+                type="number"
+                style="width: 300px"
+              />
             </q-card-section>
           </div>
 
           <div class="containerError" v-if="mostrarError">
-            <h4>{{ error }} </h4>
+            <h4>{{ error }}</h4>
           </div>
           <q-separator />
 
           <q-card-actions align="right" style="gap: 30px; margin-top: 10px">
-            <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn flat label="Aceptar" color="primary" @click="AgregarVendedor()" />
+            <button class="btn" v-close-popup>Cancelar</button>
+            <button @click="EditarVendedorExistente()" class="btn">
+              Aceptar
+            </button>
           </q-card-actions>
         </div>
       </q-card>
     </q-dialog>
-    <div>
-      <div class="btn-agregar">
-        <q-btn class="bg-secondary" label="Agregar Vendedores" @click="agregarVendedor()" />
-      </div>
 
-      <q-table title="Vendedores" :rows="rows" :columns="columns" row-key="name">
-        <template v-slot:body-cell-estado="props">
+    <div style="width: 1000px; ">
+      <div class="btn-agregar">
+        <q-btn
+          class="bg-secondary text-white"
+          label="Agregar Vendedores"
+          @click="agregarVendedor()"
+        />
+      </div>
+      <div class="q-pa-md" style="padding: 0;">
+    <q-table
+      class="my-sticky-dynamic"
+      flat bordered
+      :rows="rows"
+      :columns="columns"
+      :loading="loading"
+      row-key="index"
+      virtual-scroll
+      :virtual-scroll-item-size="48"
+      :virtual-scroll-sticky-size-start="48"
+      :pagination="pagination"
+      :rows-per-page-options="[0]"
+      @virtual-scroll="onScroll"
+        style="height: 600px;"
+      ><template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
+            <label for="" v-if="props.row.estado == 1" style="color: green"
+              >Activo</label
+            >
             <label for="" v-else style="color: red">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn color="white" text-color="black" label="🖋️" @click="EditarVendedor(props.row._id)" />
-            <q-btn glossy label="❌" @click="InactivarVendedor(props.row._id)" v-if="props.row.estado == 1" />
-            <q-btn glossy label="✔️" @click="putActivarVendedor(props.row._id)" v-else />
+            <button @click="EditarVendedor(props.row._id)" class="edi">
+              <i class="fa-solid fa-pencil"></i>
+            </button>
+            <button
+              @click="InactivarVendedor(props.row._id)"
+              v-if="props.row.estado == 1"
+              class="inac"
+            >
+            <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button
+              @click="putActivarVendedor(props.row._id)"
+              v-else
+              class="act"
+            >
+              <i class="fa-solid fa-check"></i>
+            </button>
           </q-td>
-        </template>
-      </q-table>
+        </template></q-table>
+  </div>
     </div>
   </div>
 </template>
@@ -69,11 +160,13 @@ let text = ref("");
 let vendedor = ref([]);
 let rows = ref([]);
 let fixed = ref(false);
+let fixedagregar = ref(false);
 let Nombre = ref("");
 let Cedula = ref("");
 let Telefono = ref("");
 let password = ref();
 let cambio = ref(0);
+let pagination = ref({ rowsPerPage: 0 })
 let mostrarData = ref(true);
 let mostrarError = ref(false);
 async function obtenerInfo() {
@@ -85,29 +178,35 @@ async function obtenerInfo() {
     console.log(error);
   }
 }
-let error = ref("Ingrese todos los datos para la creacion de un vendedor")
+let error = ref("Ingrese todos los datos para la creacion de un vendedor");
 const columns = [
-  { name: "Nombre", label: "Nombre", field: "Nombre", sortable: true },
-  { name: "Cedula", label: "Cedula", field: "Cedula" },
-  { name: "Telefono", label: "Telefono", field: "Telefono" },
+  { name: "Nombre", label: "Nombre", field: "Nombre", sortable: true, align: "left" },
+  { name: "Cedula", label: "Cedula", field: "Cedula", align: "left" },
+  { name: "Telefono", label: "Telefono", field: "Telefono", align: "left" },
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
     format: (val) => (val ? "Activo" : "Inactivo"),
+    align: "left"
   },
   {
     name: "opciones",
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align: "left"
   },
 ];
 
+/* if (!columns.some((column) => column.name === "password")) {
+  columns.push({ name: "password", label: "Contraseña", field: "password", visible: false });
+} */
+
 function agregarVendedor() {
   text.value = "Agregar Vendedor";
-  fixed.value = true;
+  fixedagregar.value = true;
   cambio.value = 0;
   limpiar();
 }
@@ -122,32 +221,32 @@ const showDefault = () => {
 let validacion = ref(false);
 let notification = ref(null);
 function validar() {
-  if (Nombre.value == "") {
+  if (Nombre.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
-    error.value = "Digite un nombre porfavor"
+    error.value = "Digite un nombre porfavor";
     setTimeout(() => {
       mostrarData.value = true;
       mostrarError.value = false;
-      error.value = ""
+      error.value = "";
     }, 2200);
   } else if (Cedula.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
-    error.value = "Digite la cedula porfavor"
+    error.value = "Digite la cedula porfavor";
     setTimeout(() => {
       mostrarData.value = true;
       mostrarError.value = false;
-      error.value = ""
+      error.value = "";
     }, 2200);
   } else if (Telefono.value == "") {
     mostrarData.value = false;
     mostrarError.value = true;
-    error.value = "Digite el numero de telefono porfavor"
+    error.value = "Digite el numero de telefono porfavor";
     setTimeout(() => {
       mostrarData.value = true;
       mostrarError.value = false;
-      error.value = ""
+      error.value = "";
     }, 2200);
   } else {
     validacion.value = true;
@@ -156,7 +255,6 @@ function validar() {
 async function AgregarVendedor() {
   validar();
   if (validacion.value == true) {
-
     if (cambio.value === 0) {
       try {
         showDefault();
@@ -164,6 +262,13 @@ async function AgregarVendedor() {
           Nombre: Nombre.value,
           Cedula: Cedula.value,
           Telefono: Telefono.value,
+          password: password.value,
+        });
+        rows.value.push({
+          Nombre: Nombre.value,
+          Cedula: Cedula.value,
+          Telefono: Telefono.value,
+          estado: 1, // Puedes ajustar el estado según tus necesidades
         });
         if (notification) {
           notification();
@@ -171,7 +276,7 @@ async function AgregarVendedor() {
         limpiar();
         $q.notify({
           spinner: false,
-          message: "Bus Agregado",
+          message: "Vendedor Agregado",
           timeout: 2000,
           type: "positive",
         });
@@ -187,6 +292,7 @@ async function AgregarVendedor() {
           type: "negative",
         });
       }
+
     } else {
       let id = idVendedor.value;
       if (id) {
@@ -222,16 +328,50 @@ async function AgregarVendedor() {
         }
 
       }
+
     }
-    validacion.value = false;
   }
-
-
+}
+async function EditarVendedorExistente() {
+  let id = idVendedor.value;
+  if (id) {
+    try {
+      showDefault();
+      await vendedorStore.putEditarVendedor(id, {
+        Nombre: Nombre.value,
+        Cedula: Cedula.value,
+        Telefono: Telefono.value,
+      });
+      if (notification) {
+        notification();
+      }
+      limpiar();
+      $q.notify({
+        spinner: false,
+        message: "Vendedor Actualizado",
+        timeout: 2000,
+        type: "positive",
+      });
+      obtenerInfo();
+      fixed.value = false;
+    } catch (error) {
+      console.log(error);
+      if (notification) {
+        notification();
+      }
+      $q.notify({
+        spinner: false,
+        message: `${error.response.data.error.errors[0].msg}`,
+        timeout: 2000,
+        type: "negative",
+      });
+    }
+  }
 }
 
 function limpiar() {
   Nombre.value = "";
-
+  password.value = "";
   Cedula.value = "";
   Telefono.value = "";
 }
@@ -249,7 +389,8 @@ async function EditarVendedor(id) {
     Nombre.value = vendedorSeleccionado.Nombre;
     Cedula.value = vendedorSeleccionado.Cedula;
     Telefono.value = vendedorSeleccionado.Telefono;
-    console.log(password);
+    // Imprime la contraseña en la consola para depuración
+    console.log(vendedorSeleccionado.password);
   }
 }
 
@@ -262,7 +403,7 @@ async function InactivarVendedor(id) {
     }
     $q.notify({
       spinner: false,
-      message: "Bus Inactivo",
+      message: "Vendedor Inactivo",
       timeout: 2000,
       type: "positive",
     });
@@ -281,7 +422,7 @@ async function InactivarVendedor(id) {
 }
 
 async function putActivarVendedor(id) {
- try {
+  try {
     showDefault();
     await vendedorStore.putActivarVendedor(id);
     if (notification) {
@@ -344,13 +485,30 @@ onMounted(async () => {
 .botones button {
   margin: 2px;
 }
+.btn {
+  font-family: "Letra";
+  width: 100px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+}
+
+.btn:hover {
+  transition: ease-in-out 0.5s;
+  transform: scale(1.1);
+}
 
 .btn-agregar {
   width: 100%;
   margin-bottom: 15px;
   display: flex;
-  justify-content: right;
+  justify-content: left;
   color: black;
+  text-transform: capitalize;
+  margin-bottom: 15px;
 }
 
 hr {
@@ -371,6 +529,7 @@ h1 {
 
 .text-h6 {
   font-size: 28px;
+  font-family: "Letra";
 }
 
 .contorno {
@@ -382,4 +541,68 @@ h1 {
   justify-content: center;
   align-items: center;
 }
+.botones .edi {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+.botones .edi:hover {
+  transform: scale(1.05);
+  transition: all 0.5s;
+} 
+.botones .act{
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+ background-color: transparent;
+}
+.act i{
+  font-size: 22px;
+  color: green;
+}
+.inac{
+/*   display: flex;
+  align-items: center; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0;
+ background-color: transparent;
+}
+.botones .edi i {
+  font-size: 20px;
+}
+.inac i {
+  font-size: 25px;
+  color: red;
+}
+</style>
+<style lang="sass">
+.my-sticky-dynamic
+  /* height or max-height is important */
+  height: 410px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #00926f
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>

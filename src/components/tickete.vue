@@ -29,6 +29,7 @@
                   label="Vendedor"
                 />
               </div>
+              
             </div>
             <div class="q-pa" style="width: 300px">
               <div class="q-gutter">
@@ -45,6 +46,13 @@
                   v-model="Ruta_id"
                   :options="optionsRutas"
                   label="Rutas"
+                />
+              </div>
+              <div class="q-gutter">
+                <q-select
+                  v-model="puesto_id"
+                  :options="optionspuesto"
+                  label="Puesto"
                 />
               </div>
             </div>
@@ -85,8 +93,22 @@
         <hr />
       </div>
       <div class="t">
-        <q-table title="Ticket" :rows="rows" :columns="columns" row-key="name">
-          <template v-slot:body-cell-estado="props">
+        <q-table
+          class="my-sticky-dynamic"
+          flat
+          bordered
+          :rows="rows"
+          :columns="columns"
+          :loading="loading"
+          row-key="index"
+          virtual-scroll
+          :virtual-scroll-item-size="48"
+          :virtual-scroll-sticky-size-start="48"
+          :pagination="pagination"
+          :rows-per-page-options="[0]"
+          @virtual-scroll="onScroll"
+          style="margin-top: 50px; height: 600px; width: 100%;"
+          ><template v-slot:body-cell-estado="props">
             <q-td :props="props">
               <label for="" v-if="props.row.estado == 1" style="color: green"
                 >Activo</label
@@ -96,27 +118,24 @@
           </template>
           <template v-slot:body-cell-opciones="props">
             <q-td :props="props" class="botones">
-              <q-btn
-                color="white"
-                text-color="black"
-                label="🖋️"
-                @click="EditarTicket(props.row._id)"
-              />
-              <q-btn
-                glossy
-                label="❌"
+              <button @click="imprimirticket(props.row)" class="edi">
+                <i class="fa-solid fa-print"></i>
+              </button>
+              <button @click="EditarTicket(props.row._id)" class="edi">
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <button
                 @click="InactivarTicket(props.row._id)"
                 v-if="props.row.estado == 1"
-              />
-              <q-btn
-                glossy
-                label="✔️"
-                @click="ActivarTicket(props.row._id)"
-                v-else
-              />
-            </q-td>
-          </template>
-        </q-table>
+                class="inac"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <button @click="ActivarTicket(props.row._id)" v-else class="act">
+                <i class="fa-solid fa-check"></i>
+              </button>
+            </q-td> </template
+        ></q-table>
       </div>
     </div>
   </div>
@@ -132,6 +151,11 @@ import { useClienteStore } from "../stores/Cliente.js";
 import { useRutaStore } from "../stores/Ruta.js";
 import { useBusStore } from "../stores/Bus.js";
 import { useQuasar } from "quasar";
+// import { jsPDF } from "jspdf";
+// import images from "../assets/autobus.png";
+// import images2 from "../assets/mora.png";
+// import fondo from "../assets/fondo.jpg";
+
 const $q = useQuasar();
 const TicketStore = useTicketStore();
 const VendedorStore = useVendedorStore();
@@ -141,9 +165,11 @@ const busStore = useBusStore();
 let Nmro_ticket = ref("");
 let fecha_venta = ref("");
 let Vendedor_id = ref("");
+let puesto_id= ref ("");
 let Cliente_id = ref("");
 let Ruta_id = ref("");
 let text = ref("");
+let pagination = ref({ rowsPerPage: 0 })
 let Transporte_id = ref("");
 let optionsVendedor = ref([]);
 let optionsCliente = ref([]);
@@ -180,6 +206,14 @@ const columns = [
     label: "Numero de ticket",
     field: "Nmro_ticket",
     sortable: true,
+    align: "left"
+  },
+  {
+    name: "N_asiento",
+    label: "Numero de asiento",
+    field: "N_asiento",
+    sortable: true,
+    align: "left"
   },
   {
     name: "fecha_venta",
@@ -187,28 +221,38 @@ const columns = [
     field: "fecha_venta",
     sortable: true,
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
+    align: "left"
   },
   {
     name: "Vendedor_id",
     label: "Vendedor",
     field: (row) => `${row.Vendedor_id.Nombre}`,
+    align: "left"
+  }, {
+    name: "puesto_id",
+    label: "Puesto",
+    field: (row) => `${row.Vendedor_id.Nombre}`,
+    align: "left"
   },
   {
     name: "Cliente_id",
     label: "Cliente",
     field: (row) =>
       `${row.Cliente_id.Nombre_cliente} - ${row.Cliente_id.CC_cliente}- ${row.Cliente_id.Telefono_cliente}`,
+      align: "left"
   },
   {
     name: "Ruta_id",
     label: "Ruta",
     field: (row) => `${row.Ruta_id.Origen}-${row.Ruta_id.Destino}`,
+    align: "left"
   },
   {
     name: "Transporte_id",
     label: "Bus",
     field: (row) =>
       `${row.Transporte_id.NumBus}-${row.Transporte_id.Vehiculo}-${row.Transporte_id.NumAsientos}`,
+      align: "left"
   },
   {
     name: "estado",
@@ -216,12 +260,14 @@ const columns = [
     field: "estado",
     sortable: true,
     format: (val) => (val ? "Activo" : "Inactivo"),
+    align: "left"
   },
   {
     name: "opciones",
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align: "left"
   },
 ];
 async function obtenerVendedor() {
@@ -246,10 +292,14 @@ async function obtenerCliente() {
     console.log(error);
   }
 }
-async function obtenerBuses() {
+/* async function obtenerBuses() {
   try {
     await rutaStore.obtenerInfoRutas();
     const ruta_ids = rutaStore.rutas.map((ruta) => String(ruta._id));
+    optionsRutas.value = ruta_ids.map((bus) => ({
+      label: `${bus.NumBus}-${bus.Vehiculo}-${bus.NumAsientos}`,
+      value: String(bus._id),
+    }))
     await busStore.obtenerInfoBuses();
     const busesFiltrados = busStore.buses.filter((bus) =>
       ruta_ids.includes(String(bus.ruta_id._id))
@@ -262,7 +312,31 @@ async function obtenerBuses() {
     console.log(error);
   }
 }
+ */
 
+async function obtenerBuses() {
+  try {
+    await busStore.obtenerInfoBuses();
+    optionsBus.value = busStore.buses.map((bus) => ({
+      label: `${bus.NumBus} - ${bus.Vehiculo}`,
+      value: String(bus._id),
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function obtenerRutas() {
+  try {
+    await rutaStore.obtenerInfoRutas();
+    optionsRutas.value = rutaStore.rutas.map((ruta) => ({
+      label: `${ruta.Origen} - ${ruta.Destino}`,
+      value: String(ruta._id),
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+}
 let greatMessage = ref("");
 let badMessage = ref("");
 
@@ -337,6 +411,125 @@ function validar() {
     validacion.value = true;
   }
 }
+async function imprimirticket(ticket) {
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: [200, 220], // A4 vertical: ancho 210mm x alto 297mm
+  });
+  doc.addImage(fondo, "JPG", 0, 0, 210, 230);
+
+  const imgX = 30;
+  const imgY = 25;
+  const imgWidth = 40;
+  const imgHeight = 40;
+
+  // Definir as coordenadas do centro do círculo e o raio
+  const centerX = imgX + imgWidth / 2;
+  const centerY = imgY + imgHeight / 2;
+  const radius = imgWidth / 2 + 5; // Adiciona uma margem de 5 para o círculo ao redor da imagem
+
+  // Desenhar o círculo
+  doc.setLineWidth(1); // Define a largura da linha do círculo
+  doc.setDrawColor(0); // Define a cor do círculo como preto
+  doc.circle(centerX, centerY, radius); // Desenha um círculo ao redor da imagem
+
+  // Adicionar a imagem dentro do círculo
+  doc.addImage(images, "PNG", imgX, imgY, imgWidth, imgHeight);
+  // Título
+  doc.setFont("Helvetica", "bold");
+  doc.setFontSize(30);
+  doc.setTextColor(0, 105, 217);
+  doc.text("TRANSPORTE  LEF", 95, 50);
+
+  // Títulos
+  doc.setFont("Helvetica", "bold");
+  doc.setFontSize(15);
+  doc.setTextColor(0, 105, 217);
+  doc.text("Información del Cliente:", 20, 90);
+  // NumeroTicket: ticket.Nmro_ticket,
+  //   Fecha_Venta: ticket.fecha_venta,
+
+  //   Vendedor: ticket.Vendedor_id.Nombre,
+  //   Cliente: ticket.Cliente_id.Nombre_cliente,
+  //   Origen: ticket.Ruta_id.Origen,
+  //   Destino: ticket.Ruta_id.Destino,
+  //   Bus: ticket.Transporte_id.NumBus,
+
+  // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("Helvetica", "normal");
+  doc.setFontSize(14);
+  doc.text(`- Nombre: ${ticket.Cliente_id.Nombre_cliente}`, 20, 98);
+  doc.text(`- C.C: ${ticket.Cliente_id.CC_cliente}`, 20, 104);
+  doc.text(`- Teléfono: ${ticket.Cliente_id.Telefono_cliente}`, 20, 110);
+  doc.text(`- N° Asiento: ${ticket.NumAsientos}`, 20, 116);
+
+  //   // Títulos
+  doc.setTextColor(0, 105, 217);
+  doc.setFont("Helvetica", "bold");
+  doc.setFontSize(15);
+  doc.text("Información del Vendedor:", 20, 130);
+
+  //   // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("Helvetica", "normal");
+  doc.setFontSize(14);
+  doc.text(`- Nombre: ${ticket.Vendedor_id.Nombre}`, 20, 138);
+  doc.text(`- Teléfono: ${ticket.Vendedor_id.Telefono}`, 20, 146);
+
+  // Títulos
+  doc.setTextColor(0, 105, 217);
+  doc.setFont("Helvetica", "bold");
+  doc.setFontSize(15);
+  doc.text("Información del Conductor:", 20, 160);
+
+  //   // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("Helvetica", "normal");
+  doc.setFontSize(14);
+  doc.text(`- Nombre: ${ticket.Transporte_id.conductor_id.nombre}`, 20, 168);
+  doc.text(`- Cedula: ${ticket.Transporte_id.conductor_id.cedula}`, 20, 176);
+
+  //   // Títulos
+  doc.setTextColor(0, 105, 217);
+  doc.setFont("Helvetica", "bold");
+  doc.setFontSize(15);
+  doc.text("Información del bus:", 120, 90);
+
+  //   // Normal
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("Helvetica", "normal");
+  doc.setFontSize(14);
+  doc.text(`- Placa: ${ticket.Transporte_id.Vehiculo}`, 120, 98);
+  doc.text(`- N° de bus: ${ticket.Transporte_id.NumBus}`, 120, 104);
+  doc.text(
+    `- Ruta del bus: ${ticket.Ruta_id.Origen} - ${ticket.Ruta_id.Destino}`,
+    120,
+    110
+  );
+  /*   doc.text(`- Horario salida: ${ticket.Ruta_id.horario_id.hora_partida}`, 20, 179); */
+  doc.text(
+    `- Fecha de Partida: ${format(new Date(ticket.fecha_venta), "yyyy-MM-dd")}`,
+    120,
+    116
+  );
+
+  doc.addImage(images2, "PNG", 128, 125, 55, 55);
+
+  const text =
+    "¡Valido para un viaje en autobús posterior a 60 minutos de la hora asignada, en caso de un problema!";
+  const maxWidth = 120;
+  const textLines = doc.splitTextToSize(text, maxWidth);
+  doc.setFontSize(20);
+  doc.setTextColor(0, 105, 217);
+  textLines.forEach((line, i) => {
+    doc.text(line, 20, 200 + i * 10); // Ajusta la posición Y para cada línea
+  });
+
+  doc.save("ticket.pdf");
+}
+
 async function editarTicket() {
   let id = idTicket.value;
   if (id) {
@@ -392,6 +585,7 @@ async function EditarTicket(id) {
   await obtenerCliente();
   await obtenerVendedor();
   await obtenerBuses();
+  await obtenerRutas();
   const TicketSeleccionado = ticketes.value.find((ticket) => ticket._id === id);
   if (TicketSeleccionado) {
     idTicket.value = String(TicketSeleccionado._id);
@@ -549,4 +743,74 @@ async function ActivarTicket(id) {
 th {
   text-align: center;
 }
+.botones .edi {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+
+.botones .edi:hover {
+  transform: scale(1.05);
+  transition: all 0.5s;
+}
+
+.botones .act {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+
+.act i {
+  font-size: 22px;
+  color: green;
+}
+
+.inac {
+  /*   display: flex;
+  align-items: center; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0;
+  background-color: transparent;
+}
+
+.botones .edi i {
+  font-size: 20px;
+}
+
+.inac i {
+  font-size: 25px;
+  color: red;
+}
+</style>
+<style lang="sass">
+.my-sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 410px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #00926f
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>

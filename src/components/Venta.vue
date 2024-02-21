@@ -14,12 +14,12 @@
           <q-separator />
           <q-card-section style="max-height: 50vh" class="scroll">
             <div class="q-pa" style="width: 300px">
-              <q-input
+              <!--   <q-input
                 v-model="Nmro_ticket"
                 label="Numero de tickete"
                 type="number"
                 style="width: 300px"
-              />
+              /> -->
               <div class="q-gutter">
                 <q-select
                   v-model="ruta"
@@ -38,17 +38,13 @@
               filled
               type="date"
               style="width: 300px"
+              :min="getTodayDate()"
             />
           </q-card-section>
           <q-separator />
-          <q-card-actions align="right">
-            <q-btn flat label="Cerrar" color="green" v-close-popup />
-            <q-btn
-              flat
-              label="Aceptar"
-              color="green"
-              @click="generarTicketInfo()"
-            />
+          <q-card-actions align="right" class="btns">
+            <button class="btn" v-close-popup>Cancelar</button>
+            <button @click="generarTicketInfo()" class="btn">Aceptar</button>
           </q-card-actions>
         </div>
       </q-card>
@@ -62,18 +58,21 @@
         <div v-if="asientos.length" class="container-bus">
           <div v-for="i in asientos" :key="i" class="container-asientos">
             <button
+              id="numerazo"
               type="button"
               :value="i"
-              @click="NumAsientos = i"
+              @click="no_asiento = i"
               :style="{
-                backgroundColor: NumAsientos === i ? 'red' : 'initial',
+                backgroundColor:
+                  no_asiento === i || ocupados.includes(i) ? 'red' : 'initial',
               }"
+              :disabled="ocupados.includes(i)"
             >
-              {{ i }} <i class="fi fi-sr-chair-office"></i>
+              {{ i }} <img src="../assets/seat.png" alt="" />
             </button>
           </div>
         </div>
-        <div v-if="showClienteDiv" class="cliente">
+        <div v-if="no_asiento != 0" class="cliente">
           <q-btn
             class="bnt-bc"
             color="green"
@@ -104,6 +103,14 @@
             placeholder="Telefono del cliente"
             style="width: 300px"
           />
+          <q-input
+            class="label"
+            standout
+            v-model="valor"
+            label="Valor"
+            placeholder="Valor del ticket"
+            style="width: 300px"
+          />
           <q-btn
             class="btn-c"
             color="green"
@@ -122,7 +129,10 @@ import { useBusStore } from "../stores/Bus.js";
 import { useRutaStore } from "../stores/Ruta.js";
 import { useClienteStore } from "../stores/Cliente.js";
 import { useTicketStore } from "../stores/Tickete.js";
-import {useVendedorStore} from "../stores/Vendedor.js";
+import { useVendedorStore } from "../stores/Vendedor.js";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
 /* import { useLoginStore } from "../stores/Login.js"; */
 
 const busStore = useBusStore();
@@ -132,6 +142,24 @@ const ticketStore = useTicketStore();
 const VendedoresStore = useVendedorStore();
 /* const loginStore = useLoginStore(); */
 
+const successNotification = () => {
+  notification = $q.notify({
+    spinner: false,
+    message: "ticket Creado",
+    timeout: 2000,
+    type: "positive",
+  });
+};
+
+let badMessage = ref();
+const badNotification = () => {
+  notification = $q.notify({
+    spinner: false,
+    message: badMessage,
+    timeout: 2000,
+    type: "negative",
+  });
+};
 let fixed = ref(false);
 let text = ref("");
 let ruta = ref("");
@@ -148,6 +176,8 @@ let rutas = ref([]);
 let clientes = ref([]);
 let asientos = ref([]);
 let vendedor = ref([]);
+let no_asiento = ref(0);
+let valor = ref("");
 
 let optionsRutas = ref([]);
 let optionsBuses = ref([]);
@@ -198,7 +228,24 @@ function generarListaAsientos() {
       listaAsientos.push(Number(i));
     }
     asientos.value = listaAsientos;
+    aOcupados();
   }
+}
+
+const ocupados = ref([]);
+
+async function aOcupados() {
+  const id_bus = bus._rawValue.value;
+  const ruta_id = ruta._rawValue.value;
+  const fecha_de_partida = fecha_departida.value;
+
+  const res = await ticketStore.getAsientosOcupados(
+    id_bus,
+    ruta_id,
+    fecha_de_partida
+  );
+  console.log(res);
+  ocupados.value = res.map((t) => t.N_asiento);
 }
 
 let cliente_id = ref("");
@@ -214,6 +261,12 @@ async function buscarCliente() {
     nombre.value = clienteEncontrado.Nombre_cliente;
     telefono.value = clienteEncontrado.Telefono_cliente;
     cliente_id.value = clienteEncontrado._id;
+  } else {
+    // Cliente no encontrado, puedes mostrar un mensaje de error o realizar alguna acción
+    $q.notify({
+      message: "Cliente no encontrado",
+      type: "negative",
+    });
   }
 }
 
@@ -222,29 +275,59 @@ async function generarTicket() {
   fixed.value = true;
   text.value = "Generar Ticket";
 }
-
+let proximoNumeroTicket = ref(1);
 async function generarTicketInfo() {
   fixed.value = false;
+  if (asientos.value.includes(NumAsientos.value)) {
+    // Mostrar mensaje de error o realizar alguna acción
+    $q.notify({
+      message: "El asiento seleccionado ya está ocupado en otro ticket",
+      type: "negative",
+    });
+    return;
+  }
+  // Asigna el próximo número del ticket al campo Nmro_ticket
+  Nmro_ticket.value = String(proximoNumeroTicket.value).padStart(6, "0");
+
+  // Incrementa el número para el próximo ticket
+  proximoNumeroTicket.value += 1;
   generarListaAsientos();
 }
-
+function Limpiar() {
+  cedula.value = "";
+  nombre.value = "";
+  telefono.value = "";
+}
 async function CrearTicket() {
   // const token = loginStore.token;
   // console.log(token);
-
-  await ticketStore.postticket({
-    Vendedor_id: String(vendedor.value._id),
-    Nmro_ticket: Nmro_ticket.value,
-    Cliente_id: cliente_id.value,
-    Transporte_id: bus._rawValue.value,
-    Ruta_id: ruta._rawValue.value,
-    NumAsientos: NumAsientos.value,
-    fecha_venta: fecha_departida.value,
-  });
+  try {
+    console.log("Este código funciona");
+   
+    await ticketStore.postticket({
+      
+      Vendedor_id: String(vendedor.value._id),
+      Nmro_ticket: Nmro_ticket.value++,
+      Cliente_id: cliente_id.value,
+      Transporte_id: bus._rawValue.value,
+      Ruta_id: ruta._rawValue.value,
+      N_asiento: no_asiento.value,
+      fecha_venta: fecha_departida.value,
+    });
+    successNotification();
+    Limpiar();
+    ocupados.value.push(no_asiento.value);
+  } catch (error) {
+    console.log(error);
+    badMessage.value = error.response.data.error.errors[0].msg;
+    badNotification();
+  }
 }
 
+let notification = ref();
+
 async function obtenerVendedor() {
-  vendedor.value=VendedoresStore.vendedor
+  vendedor.value = VendedoresStore.vendedor;
 }
 
 let tickets = ref([]);
@@ -253,7 +336,7 @@ watch(ruta, () => {
   obtenerBuses();
 });
 
-watch(NumAsientos, () => {
+watch(no_asiento, () => {
   showClienteDiv = true;
 });
 
@@ -261,6 +344,14 @@ onMounted(async () => {
   obtenerInfo();
   obtenerVendedor();
 });
+
+function getTodayDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, "0");
+  const day = today.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 </script>
 
 <style scoped>
@@ -268,11 +359,13 @@ onMounted(async () => {
   font-family: "Letra";
   src: url("../fonts/Anta-Regular.ttf");
 }
+
 .container-all {
   margin: 0;
   padding: 0;
   width: 100%;
 }
+
 .contorno {
   background-color: white;
   height: 90%;
@@ -282,6 +375,7 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
 }
+
 .modal-content {
   width: 480px;
   height: 500px;
@@ -292,8 +386,10 @@ onMounted(async () => {
   background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
   border-radius: 3%;
 }
+
 .container {
-  width: 100%;
+  /*   width: 100%; */
+
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -314,17 +410,18 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  flex-direction: row;
 }
 
 .container-bus {
-  height: 250px;
-  width: 100%;
+  /*  height: 250px;
+  width: 100%; */
   display: flex;
-  flex-direction: column;
+  width: 50%;
   flex-wrap: wrap;
   align-content: center;
   justify-content: center;
-  margin-top: 70px;
+  /*   margin-top: 70px; */
 }
 
 .container-asientos {
@@ -332,20 +429,45 @@ onMounted(async () => {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  cursor: pointer;
 }
 
 .container-asientos button {
-  width: 90px;
-  height: 70px;
+  width: 100px;
+  height: 90px;
   margin: 5px;
   font-size: 6mm;
   border-radius: 5px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   border: solid rgb(80, 252, 0);
+  cursor: pointer;
 }
+
 .container-asientos button:hover {
   background-color: rgb(105, 105, 198);
 }
+
+.btn {
+  font-family: "Letra";
+  width: 100px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+}
+
+.btns {
+  display: flex;
+  gap: 15px;
+}
+
+.btn:hover {
+  transition: ease-in-out 0.5s;
+  transform: scale(1.1);
+}
+
 .cliente {
   display: flex;
   flex-wrap: wrap;
@@ -371,5 +493,22 @@ onMounted(async () => {
   border-radius: 5px;
   border: solid rgb(124, 119, 119) 1px;
   margin: 1px;
+}
+
+#numerazo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column-reverse;
+  font-size: 15px;
+}
+
+#numerazo img {
+  width: 50px;
+}
+
+.text-h6 {
+  font-family: "Letra";
+  font-size: 30px;
 }
 </style>

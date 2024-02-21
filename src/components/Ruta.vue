@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h1 style="text-align: center">Rutas</h1>
+      <h1 style="text-align: center; margin-top: 50px;">Rutas</h1>
       <hr />
     </div>
     <!-- Modal -->
@@ -15,7 +15,7 @@
           <q-separator />
           <div v-if="mostrarData">
             <q-card-section style="max-height: 50vh" class="scroll">
-               <q-input v-model="codigo" label="codigo" style="width: 300px" />
+              <q-input v-model="codigo" label="codigo" style="width: 300px" />
               <q-input v-model="Origen" label="Origen" style="width: 300px" />
               <q-input v-model="Destino" label="Destino" style="width: 300px" />
               <q-input type="time" id="fechaInp" v-model="hora_salida" label="Hora De salida" style="width: 300px" />
@@ -29,31 +29,45 @@
           <q-separator />
 
           <q-card-actions align="center" style="gap: 30px; margin-top: 10px">
-            <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn flat label="Aceptar" color="primary" @click="editarAgregarRuta()" />
+            <button class="btn" v-close-popup>Cancelar</button>
+            <button @click="editarAgregarRuta()" class="btn">Aceptar</button>
           </q-card-actions>
         </div>
       </q-card>
     </q-dialog>
-    <div>
+    <div style="width: 1000px;">
       <div class="btn-agregar">
         <q-btn class="bg-secondary" label="Agregar ruta" @click="agregarRuta()" />
       </div>
-      <q-table title="Rutas" :rows="rows" :columns="columns" row-key="name">
-        <template v-slot:body-cell-estado="props">
-          <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
-            <label for="" v-else style="color: red">Inactivo</label>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-opciones="props">
-          <q-td :props="props" class="botones">
-            <q-btn color="white" text-align="center" text-color="black" label="🖋️" @click="EditarRuta(props.row._id)" />
-            <q-btn glossy label="❌" @click="InactivarRuta(props.row._id)" v-if="props.row.estado == 1" />
-            <q-btn glossy label="✔️" @click="ActivarRuta(props.row._id)" v-else />
-          </q-td>
-        </template>
-      </q-table>
+      <div class="q-pa-md">
+        <q-table class="my-sticky-virtscroll-table" virtual-scroll flat bordered v-model:pagination="pagination"
+          :rows-per-page-options="[0]" :virtual-scroll-sticky-size-start="48" row-key="index"  :rows="rows"
+          :columns="columns" style="height: 600px;">
+          <template v-slot:body-cell-estado="props">
+            <q-td :props="props">
+              <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
+              <label for="" v-else style="color: red">Inactivo</label>
+            </q-td>
+          </template>
+          <template v-slot:body-cell-opciones="props">
+            <q-td :props="props" class="botones">
+              <button @click="EditarRuta(props.row._id)" class="edi">
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <button @click="InactivarRuta(props.row._id)" v-if="props.row.estado == 1" class="inac">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <button @click="ActivarRuta(props.row._id)" v-else class="act">
+                <i class="fa-solid fa-check"></i>
+              </button>
+            </q-td>
+          </template>
+
+        </q-table>
+      </div>
+      <!--   <q-table title="Rutas" :rows="rows" :columns="columns" row-key="name">
+
+      </q-table> -->
     </div>
   </div>
 </template>
@@ -80,6 +94,7 @@ let hora_salida = ref("");
 let cambio = ref(0);
 let mostrarError = ref(false);
 let mostrarData = ref(true);
+let pagination = ref({ rowsPerPage: 0 })
 async function obtenerInfo() {
   try {
     await rutaStore.obtenerInfoRutas();
@@ -91,14 +106,15 @@ async function obtenerInfo() {
 }
 
 const columns = [
-  { name: "codigo", label: "codigo", field: "codigo", sortable: true },
-  { name: "Origen", label: "Origen", field: "Origen", sortable: true },
-  { name: "Destino", label: "Destino", field: "Destino", sortable: true },
+  { name: "Codigo", label: "Codigo", field: "codigo", sortable: true, align: "left" },
+  { name: "Origen", label: "Origen", field: "Origen", sortable: true, align: "left" },
+  { name: "Destino", label: "Destino", field: "Destino", sortable: true, align: "left" },
   {
     name: "hora_salida",
     label: "Hora De salida",
     field: "hora_salida",
     sortable: true,
+    align: "left"
     /*  format: (val) => {
       const date = new Date(val);
       const day = date.getDate() + 1;
@@ -112,6 +128,7 @@ const columns = [
     label: "Estado",
     field: "estado",
     sortable: true,
+    align: "left",
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
@@ -119,6 +136,7 @@ const columns = [
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align: "center",
   },
 ];
 
@@ -129,7 +147,7 @@ function agregarRuta() {
   limpiar();
 }
 function validar() {
-  if (Origen.value == "") {
+  if (Origen.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Digite el origen de la ruta porfavor";
@@ -139,7 +157,7 @@ function validar() {
       error.value = "";
     }, 2200);
 
-  } else if (Destino.value == "") {
+  } else if (Destino.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Especifique el destino de la ruta porfavor";
@@ -148,7 +166,7 @@ function validar() {
       mostrarError.value = false;
       error.value = "";
     }, 2200);
-  } else if (hora_salida.value == "") {
+  } else if (hora_salida.value.trim() == "") {
     mostrarData.value = false;
     mostrarError.value = true;
     error.value = "Seleccione la hora de salida porfavor";
@@ -165,6 +183,17 @@ async function editarAgregarRuta() {
   validar();
   if (validacion.value === true) {
     if (cambio.value === 0) {
+      if (codigo.value.trim() === '' || isNaN(codigo.value) || parseInt(codigo.value) <= 0) {
+        mostrarData.value = false;
+        mostrarError.value = true;
+        error.value = "El código debe ser un número mayor a 0";
+        setTimeout(() => {
+          mostrarData.value = true;
+          mostrarError.value = false;
+          error.value = "";
+        }, 2200);
+        return;
+      }
       try {
         showDefault();
         await rutaStore.postRuta({
@@ -212,7 +241,7 @@ async function editarAgregarRuta() {
           limpiar();
           $q.notify({
             spinner: false,
-            message: "Bus Actualizado",
+            message: "Ruta Actualizada",
             timeout: 2000,
             type: "positive",
           });
@@ -256,7 +285,7 @@ async function EditarRuta(id) {
     idRuta.value = String(rutaSeleccionada._id);
     fixed.value = true;
     text.value = "Editar Bus";
-    codigo.value =rutaSeleccionada.codigo;
+    codigo.value = rutaSeleccionada.codigo;
     Origen.value = rutaSeleccionada.Origen;
     Destino.value = rutaSeleccionada.Destino;
     hora_salida.value = rutaSeleccionada.hora_salida;
@@ -358,10 +387,11 @@ onMounted(async () => {
 
 .btn-agregar {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   display: flex;
-  justify-content: center;
-  justify-content: flex-end;
+  justify-content: left;
+  color: white;
+  margin-left: 19px;
 }
 
 .body {
@@ -418,4 +448,86 @@ h1 {
   font-family: "Letra";
   margin-bottom: 10px;
 }
+
+.botones .edi {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+
+.botones .edi:hover {
+  transform: scale(1.05);
+  transition: all 0.5s;
+}
+
+.botones .act {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: transparent;
+}
+
+.act i {
+  font-size: 22px;
+  color: green;
+}
+
+.inac {
+  /*   display: flex;
+  align-items: center; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0;
+  background-color: transparent;
+}
+
+.botones .edi i {
+  font-size: 20px;
+}
+
+.inac i {
+  font-size: 25px;
+  color: red;
+}
+
+.btn {
+  font-family: "Letra";
+  width: 100px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: -webkit-linear-gradient(bottom, #2dbd6e, #a6f77b);
+}
+</style>
+<style lang="sass">
+.my-sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 410px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #00926f
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
 </style>

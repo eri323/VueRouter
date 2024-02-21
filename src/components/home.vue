@@ -1,15 +1,16 @@
 <template>
   <q-layout view="hHh lpR fFf" class="body">
-    <q-header reveal elevated class="bg-primary text-white">
+    <q-header reveal elevated class="bg-secondary text-white ">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>
-          <q-avatar>
+        <q-toolbar-title style="text-align: center;">
+        <!--   <q-avatar>
             <i class="fa-solid fa-bus"></i>
-          </q-avatar>
-          Transporte
+          </q-avatar> -->
+          TransporteLEF
         </q-toolbar-title>
+        <q-btn dense flat round icon = "logout" @click="cerrarSesion" />
       </q-toolbar>
     </q-header>
 
@@ -29,12 +30,12 @@
       </div>
 
       <div class="btns">
-        <router-link class="link" to="/main">
+        <!-- <router-link class="link" to="/main">
           <button @click="mostrarta()">
             <i class="fa-solid fa-house"></i>
             Menu
-          </button></router-link>
-        <router-link class="link" to="/home">
+          </button></router-link> -->
+        <router-link class="link" to="/main">
           <button @click="mostrarta()">
             <i class="fa-solid fa-house"></i>
             Home
@@ -84,7 +85,10 @@
       </div>
     </q-drawer>
 
-    <q-page-container class="container">
+    <q-page-container style="padding-top:50px;">
+      <router-view />
+    </q-page-container>
+    <!-- <q-page-container class="container">
       <div class="tarjetas" v-if="mostrar">
         <router-link to="./Vendedores" class="a">
           <div @click="mostrart()">
@@ -130,14 +134,18 @@
             </router-link>
       </div>
       <router-view />
-    </q-page-container>
+    </q-page-container> -->
   </q-layout>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+const router=useRouter();
 
-
+function cerrarSesion(){
+  router.push('/');
+}
 const leftDrawerOpen = ref(false);
 let mostrar = ref(false);
 const toggleLeftDrawer = () => {
@@ -155,6 +163,7 @@ function mostrarta() {
 onMounted(async() => {
   mostrarta();
 })
+
 </script>
 
 <style scoped>
@@ -188,7 +197,7 @@ onMounted(async() => {
   display: flex;
   justify-content: center;
   padding: 15px;
-  background-color: #0088ff;
+  background-color: #00923f;
 }
 .btns {
   display: flex;
@@ -197,6 +206,7 @@ onMounted(async() => {
 
 }
 .btns button {
+  background-color: white;
   border: none;
   font-family: "Letra";
   width: 100%;
@@ -254,7 +264,5 @@ onMounted(async() => {
   margin: 0;
   height: auto;
 }
-.container {
-width: 90%;
-}
+
 </style>
